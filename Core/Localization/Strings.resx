@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    画面に表示する文字列（英語。既定の言語で、Windows の表示言語が日本語以外のときに使う）。SPEC §34。
+    キーは Strings.ja.resx と必ずそろえる（Tests/LocalizationTests が検査する）。名前が Format で終わるものは {0} 等の差し込みを持つ。
+    機能名（Master・Cursor Highlight・Click Effect・Laser・Magnifier・Key Display）と ON/OFF は日英共通の表記。
+  -->
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- 操作名（HotkeyActionNames） -->
+  <data name="ActionToggleMaster" xml:space="preserve"><value>Master ON/OFF</value></data>
+  <data name="ActionShowControlPanel" xml:space="preserve"><value>Show control panel</value></data>
+  <data name="ActionToggleCursorHighlight" xml:space="preserve"><value>Cursor Highlight ON/OFF</value></data>
+  <data name="ActionToggleClickEffect" xml:space="preserve"><value>Click Effect ON/OFF</value></data>
+  <data name="ActionToggleLaser" xml:space="preserve"><value>Laser ON/OFF</value></data>
+  <data name="ActionLaserHold" xml:space="preserve"><value>Laser drawing</value></data>
+  <data name="ActionToggleMagnifier" xml:space="preserve"><value>Magnifier ON/OFF</value></data>
+  <data name="ActionToggleKeyDisplay" xml:space="preserve"><value>Key Display ON/OFF</value></data>
+
+  <!-- ショートカットの検証（Shortcut・HotkeyBindings） -->
+  <data name="ShortcutUnassigned" xml:space="preserve"><value>Not assigned</value></data>
+  <data name="ShortcutModifierOnly" xml:space="preserve"><value>A shortcut cannot consist of modifier keys only</value></data>
+  <data name="ShortcutRequiresModifier" xml:space="preserve"><value>Combine the key with Ctrl, Alt, or Win (F13–F24 can be used alone)</value></data>
+  <data name="HotkeyParseErrorFormat" xml:space="preserve"><value>"{0}" is not a valid shortcut</value></data>
+  <data name="HotkeyDuplicateFormat" xml:space="preserve"><value>Same combination as "{0}"</value></data>
+
+  <!-- 設定の保存・読み込み（SettingsStore・AppHost） -->
+  <data name="SettingsSaveFailedFormat" xml:space="preserve"><value>Could not save the settings.
+Location: {0}
+{1}</value></data>
+  <data name="LoadCorrupted" xml:space="preserve"><value>The settings file could not be read, so PresenterTools started with the default settings.</value></data>
+  <data name="LoadCorruptedBackupFormat" xml:space="preserve"><value>The settings file could not be read, so PresenterTools started with the default settings (the original file was moved to {0}).</value></data>
+  <data name="LoadReadFailed" xml:space="preserve"><value>The settings file could not be loaded, so PresenterTools started with the default settings.</value></data>
+  <data name="LoadCorrected" xml:space="preserve"><value>Some settings had invalid values and were reset to their defaults.</value></data>
+
+  <!-- Key Display の IME キーの表示ラベル（KeyNames。設定ファイルのトークンは変えない） -->
+  <data name="KeyKana" xml:space="preserve"><value>Kana</value></data>
+  <data name="KeyHankakuZenkaku" xml:space="preserve"><value>Hankaku/Zenkaku</value></data>
+  <data name="KeyConvert" xml:space="preserve"><value>Henkan</value></data>
+  <data name="KeyNonConvert" xml:space="preserve"><value>Muhenkan</value></data>
+  <data name="KeyEisu" xml:space="preserve"><value>Eisu</value></data>
+  <data name="KeyKatakanaHiragana" xml:space="preserve"><value>Katakana/Hiragana</value></data>
+
+  <!-- 起動・未処理例外（App） -->
+  <data name="AppUnexpectedErrorFormat" xml:space="preserve"><value>An unexpected error occurred.
+{0}: {1}
+
+Details: {2}</value></data>
+  <data name="AppWillExit" xml:space="preserve"><value>PresenterTools will now exit.</value></data>
+
+  <!-- 通知・状態（AppHost） -->
+  <data name="HotkeyFailedBalloonTitle" xml:space="preserve"><value>PresenterTools: Cannot register shortcuts</value></data>
+  <data name="HotkeyFailedItemFormat" xml:space="preserve"><value>{0} ({1})</value></data>
+  <data name="HotkeyFailedBalloonHint" xml:space="preserve"><value>These shortcuts are already used by another app or Windows. Change them in Settings.</value></data>
+  <data name="StatusHotkeyFailedFormat" xml:space="preserve"><value>⚠ {0} shortcut(s) could not be registered (check Settings)</value></data>
+  <data name="StatusHotkeysSuspended" xml:space="preserve"><value>⏸ Shortcuts are paused while you enter a shortcut in Settings</value></data>
+  <data name="HookFeatureMouse" xml:space="preserve"><value>the mouse features (Cursor Highlight, Click Effect, Laser)</value></data>
+  <data name="HookFeatureKeyboard" xml:space="preserve"><value>Key Display</value></data>
+  <data name="HookFailedFormat" xml:space="preserve"><value>Could not install the input hook for {0} (error {1}).</value></data>
+
+  <!-- ショートカットの登録状態（GlobalHotkeyService・SettingsDraft） -->
+  <data name="HotkeyStatusRegistered" xml:space="preserve"><value>Registered</value></data>
+  <data name="HotkeyStatusSuspended" xml:space="preserve"><value>Paused (entering a shortcut)</value></data>
+  <data name="HotkeyStatusInUse" xml:space="preserve"><value>Already used by another app or Windows</value></data>
+  <data name="HotkeyStatusErrorFormat" xml:space="preserve"><value>Could not register (error {0})</value></data>
+  <data name="HotkeyStatusPending" xml:space="preserve"><value>Not applied (click Apply to register)</value></data>
+
+  <!-- ショートカットの入力欄・試し描き・クリックの札 -->
+  <data name="ShortcutBoxToolTip" xml:space="preserve"><value>Click here, then press the keys (Backspace / Delete clears the shortcut)</value></data>
+  <data name="ShortcutBoxEmpty" xml:space="preserve"><value>(Not assigned)</value></data>
+  <data name="LaserPreviewHint" xml:space="preserve"><value>Move the mouse inside this box to try drawing</value></data>
+  <data name="ClickLabelLeft" xml:space="preserve"><value>Left click</value></data>
+  <data name="ClickLabelRight" xml:space="preserve"><value>Right click</value></data>
+
+  <!-- タスクトレイ（TrayService） -->
+  <data name="TrayShowPanel" xml:space="preserve"><value>Show control panel</value></data>
+  <data name="TrayKeyDisplayOff" xml:space="preserve"><value>Turn Key Display OFF</value></data>
+  <data name="TraySettings" xml:space="preserve"><value>Settings...</value></data>
+  <data name="TrayExit" xml:space="preserve"><value>Exit</value></data>
+
+  <!-- 操作パネル（ControlPanelWindow） -->
+  <data name="PanelSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="PanelPin" xml:space="preserve"><value>📌 On top</value></data>
+  <data name="PanelPinToolTip" xml:space="preserve"><value>Keep this panel on top of other windows (Always On Top)</value></data>
+  <data name="PanelExit" xml:space="preserve"><value>Exit</value></data>
+  <data name="PanelExitToolTip" xml:space="preserve"><value>Exit PresenterTools (× only hides the panel to the notification area)</value></data>
+  <data name="PanelDrawPrefix" xml:space="preserve"><value>Draw:</value></data>
+  <data name="PanelFailedSuffix" xml:space="preserve"><value> (registration failed)</value></data>
+  <data name="PanelShortcut" xml:space="preserve"><value>Shortcut</value></data>
+  <data name="PanelMasterToolTip" xml:space="preserve"><value>Turn Master (display of all features) ON/OFF</value></data>
+  <data name="PanelPointerToolTip" xml:space="preserve"><value>Turn Cursor Highlight ON/OFF</value></data>
+  <data name="PanelClickToolTip" xml:space="preserve"><value>Turn Click Effect ON/OFF</value></data>
+  <data name="PanelLaserToolTipToggle" xml:space="preserve"><value>Laser ON/OFF (while ON, press the drawing key to start or stop drawing; Esc also stops)</value></data>
+  <data name="PanelLaserToolTipHold" xml:space="preserve"><value>Laser ON/OFF (while ON, hold the drawing key to draw)</value></data>
+  <data name="PanelLaserDrawToggle" xml:space="preserve"><value>Start/stop drawing</value></data>
+  <data name="PanelLaserDrawHold" xml:space="preserve"><value>Hold to draw</value></data>
+  <data name="PanelMagnifierToolTip" xml:space="preserve"><value>Turn Magnifier ON/OFF</value></data>
+  <data name="PanelKeyDisplayToolTip" xml:space="preserve"><value>Turn Key Display ON/OFF (while ON, everything you type is shown, including passwords)</value></data>
+
+  <!-- 設定画面: 共通（SettingsWindow） -->
+  <data name="SettingsTitle" xml:space="preserve"><value>PresenterTools Settings</value></data>
+  <data name="SetOk" xml:space="preserve"><value>OK</value></data>
+  <data name="SetApply" xml:space="preserve"><value>Apply</value></data>
+  <data name="SetCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="SetVersionUnknown" xml:space="preserve"><value>unknown</value></data>
+  <data name="SetManualLink" xml:space="preserve"><value>User Guide (web)</value></data>
+  <data name="SetManualOpenFailedFormat" xml:space="preserve"><value>The user guide could not be opened in your browser.
+{0}
+
+Open this address in your browser:
+{1}</value></data>
+  <data name="SetRevert" xml:space="preserve"><value>Revert this tab</value></data>
+  <data name="SetRevertToolTip" xml:space="preserve"><value>Restores this tab's values (including ON/OFF and this tab's shortcuts) to the values they had when Settings was opened. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetReset" xml:space="preserve"><value>Reset this tab</value></data>
+  <data name="SetResetToolTip" xml:space="preserve"><value>Resets this tab's settings to the defaults. ON/OFF and shortcuts do not change. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetClear" xml:space="preserve"><value>Clear</value></data>
+  <data name="SetHotkeysSuspendedNotice" xml:space="preserve"><value>⏸ While a shortcut box is selected, all PresenterTools shortcuts are paused so that the keys you press go into the box. They work again when you select another item or button, or switch to another window.</value></data>
+  <data name="SetColor" xml:space="preserve"><value>Color</value></data>
+  <data name="SetLineWidth" xml:space="preserve"><value>Line width (px)</value></data>
+  <data name="SetMouseButton" xml:space="preserve"><value>Mouse button</value></data>
+  <data name="SetMouseNone" xml:space="preserve"><value>None</value></data>
+
+  <!-- 設定画面: General -->
+  <data name="SetGeneralRevertToolTip" xml:space="preserve"><value>Restores this tab's values (including feature ON/OFF and all shortcuts) to the values they had when Settings was opened. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetGeneralResetToolTip" xml:space="preserve"><value>Resets the display and behavior settings on this tab (always on top, hiding own shortcuts in Key Display, showing shortcuts in the panel) to the defaults. ON/OFF and shortcuts do not change.</value></data>
+  <data name="SetResetAll" xml:space="preserve"><value>Reset all settings</value></data>
+  <data name="SetResetAllToolTip" xml:space="preserve"><value>Resets the settings, ON/OFF, and shortcuts on all tabs to the defaults. The position and size of the control panel do not change. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetGroupOnOff" xml:space="preserve"><value>Feature ON/OFF</value></data>
+  <data name="SetGroupPanel" xml:space="preserve"><value>Control panel and Key Display</value></data>
+  <data name="SetAlwaysOnTop" xml:space="preserve"><value>Always keep the control panel on top (Always On Top)</value></data>
+  <data name="SetHideOwnShortcuts" xml:space="preserve"><value>Do not show PresenterTools' own shortcuts in Key Display</value></data>
+  <data name="SetShowShortcutsInPanel" xml:space="preserve"><value>Show the assigned shortcut under each item of the control panel</value></data>
+  <data name="SetGroupHotkeys" xml:space="preserve"><value>Global shortcuts</value></data>
+  <data name="SetHotkeysHelp" xml:space="preserve"><value>Click a box and press the keys to set a shortcut (Backspace / Delete clears it). Combine the key with Ctrl, Alt, or Win (F13–F24 can be used alone). While a box is selected, all PresenterTools shortcuts are paused. Keys you assign can no longer be used in other apps.</value></data>
+  <data name="SetResetHotkeys" xml:space="preserve"><value>Reset shortcuts to defaults</value></data>
+  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>Resets all shortcuts to the defaults. They are registered again when you click Apply or OK, so check the result in the status column.</value></data>
+
+  <!-- 設定画面: Cursor Highlight -->
+  <data name="SetCursorEnable" xml:space="preserve"><value>Use Cursor Highlight</value></data>
+  <data name="SetShape" xml:space="preserve"><value>Shape</value></data>
+  <data name="SetShapeRing" xml:space="preserve"><value>Ring</value></data>
+  <data name="SetShapeFilled" xml:space="preserve"><value>Filled circle (highlighter)</value></data>
+  <data name="SetOpacity" xml:space="preserve"><value>Opacity</value></data>
+  <data name="SetOpacityToolTip" xml:space="preserve"><value>Opacity of the ring</value></data>
+  <data name="SetFillOpacity" xml:space="preserve"><value>Fill opacity</value></data>
+  <data name="SetFillOpacityToolTip" xml:space="preserve"><value>Opacity of the filled circle. A low value keeps the text underneath readable.</value></data>
+  <data name="SetDiameter" xml:space="preserve"><value>Diameter (px)</value></data>
+  <data name="SetDiameterToolTip" xml:space="preserve"><value>Diameter of the ring or filled circle</value></data>
+  <data name="SetRingWidthToolTip" xml:space="preserve"><value>Thickness of the ring line</value></data>
+  <data name="SetCursorHelp" xml:space="preserve"><value>Ring: uses opacity, diameter, and line width. Filled circle: uses fill opacity and diameter. Changes are shown on the ring right away (move the mouse over this window to check; click Apply or OK to keep them). px is at 100% display scaling. For Teams sharing or projectors, a diameter of about 60–100 is easy to see.</value></data>
+
+  <!-- 設定画面: Click Effect -->
+  <data name="SetClickEnable" xml:space="preserve"><value>Use Click Effect</value></data>
+  <data name="SetLeftColor" xml:space="preserve"><value>Left-click color</value></data>
+  <data name="SetRightColor" xml:space="preserve"><value>Right-click color</value></data>
+  <data name="SetSize" xml:space="preserve"><value>Size (px)</value></data>
+  <data name="SetDurationMs" xml:space="preserve"><value>Duration (ms)</value></data>
+  <data name="SetShowButtonLabel" xml:space="preserve"><value>Show "Left click" / "Right click" near the click position (at least 0.8 s)</value></data>
+  <data name="SetShowWhileHeld" xml:space="preserve"><value>Show a mark at the cursor while a button is held down (for explaining drags)</value></data>
+  <data name="SetClickHelp" xml:space="preserve"><value>A left click is shown as a solid circle and a right click as a dashed diamond. The mark for a held button appears only after the button is held for 0.2 seconds or more (so that normal clicks do not flicker). The click itself still goes to the app. Changes are shown right away (click an empty area of this window to check; click Apply or OK to keep them).</value></data>
+
+  <!-- 設定画面: Laser -->
+  <data name="SetLaserEnable" xml:space="preserve"><value>Use Laser (Enabled; start drawing with the drawing key or mouse button)</value></data>
+  <data name="SetTrailSeconds" xml:space="preserve"><value>Trail time (s)</value></data>
+  <data name="SetTryDrawing" xml:space="preserve"><value>Try it</value></data>
+  <data name="SetTriggerMode" xml:space="preserve"><value>Drawing mode</value></data>
+  <data name="SetTriggerHold" xml:space="preserve"><value>Draw only while held down</value></data>
+  <data name="SetTriggerToggle" xml:space="preserve"><value>Press to start drawing, press again to stop</value></data>
+  <data name="SetLaserX1" xml:space="preserve"><value>XButton1 (Back)</value></data>
+  <data name="SetLaserX2" xml:space="preserve"><value>XButton2 (Forward)</value></data>
+  <data name="SetLaserHelp" xml:space="preserve"><value>Color, line width, and trail time are shown in the try-it box right away (click Apply or OK to keep them). With "Press to start drawing, press again to stop", press the drawing key (or mouse button) once to draw, and press it again or press Esc to finish (Esc is also passed to the app in front). A side button you assign can no longer be used for Back / Forward in browsers. If a mouse utility maps the button to a key operation, the button cannot be detected (map it to F13–F24 or similar in the utility and set that key as a shortcut).</value></data>
+
+  <!-- 設定画面: Magnifier -->
+  <data name="SetMagEnable" xml:space="preserve"><value>Show Magnifier (always OFF at startup)</value></data>
+  <data name="SetZoom" xml:space="preserve"><value>Zoom</value></data>
+  <data name="SetMagWidth" xml:space="preserve"><value>Window width (px)</value></data>
+  <data name="SetMagHeight" xml:space="preserve"><value>Window height (px)</value></data>
+  <data name="SetMagX1" xml:space="preserve"><value>XButton1 (Back) turns it ON/OFF</value></data>
+  <data name="SetMagX2" xml:space="preserve"><value>XButton2 (Forward) turns it ON/OFF</value></data>
+  <data name="SetMagHelp" xml:space="preserve"><value>The magnifier window is placed automatically where it does not cover the area around the cursor, and follows the cursor. The screen is captured only while it is ON (about 30 fps).</value></data>
+
+  <!-- 設定画面: Key Display -->
+  <data name="SetKeyWarning" xml:space="preserve"><value>While ON, everything you type is shown on the screen, including passwords. Key Display is always OFF at startup. Turn it OFF before you type passwords or anything you do not want to show.</value></data>
+  <data name="SetKeyCurrent" xml:space="preserve"><value>Current ON/OFF</value></data>
+  <data name="SetKeyOn" xml:space="preserve"><value>ON (show everything typed)</value></data>
+  <data name="SetFontSize" xml:space="preserve"><value>Font size</value></data>
+  <data name="SetPosition" xml:space="preserve"><value>Position</value></data>
+  <data name="SetPosBottomCenter" xml:space="preserve"><value>Bottom center</value></data>
+  <data name="SetPosBottomLeft" xml:space="preserve"><value>Bottom left</value></data>
+  <data name="SetPosBottomRight" xml:space="preserve"><value>Bottom right</value></data>
+  <data name="SetPosTopCenter" xml:space="preserve"><value>Top center</value></data>
+  <data name="SetPosTopLeft" xml:space="preserve"><value>Top left</value></data>
+  <data name="SetPosTopRight" xml:space="preserve"><value>Top right</value></data>
+  <data name="SetTextColor" xml:space="preserve"><value>Text color</value></data>
+  <data name="SetBackColor" xml:space="preserve"><value>Background color</value></data>
+  <data name="SetBackOpacity" xml:space="preserve"><value>Background opacity</value></data>
+  <data name="SetChordSeconds" xml:space="preserve"><value>Shortcut display (s)</value></data>
+  <data name="SetTextSeconds" xml:space="preserve"><value>Typed text display (s)</value></data>
+  <data name="SetEnterSeconds" xml:space="preserve"><value>Hold after Enter (s)</value></data>
+
+  <!-- 設定画面: 操作後の通知・検証（SettingsWindow.xaml.cs） -->
+  <data name="NoticeTabReset" xml:space="preserve"><value>This tab was reset to the defaults</value></data>
+  <data name="NoticeTabReverted" xml:space="preserve"><value>This tab was restored to the values when Settings was opened</value></data>
+  <data name="NoticeHotkeysReset" xml:space="preserve"><value>The shortcuts were reset to the defaults</value></data>
+  <data name="NoticeAllReset" xml:space="preserve"><value>All settings were reset to the defaults</value></data>
+  <data name="NoticeNotAppliedFormat" xml:space="preserve"><value>{0} (click Apply or OK to use them, or Cancel to discard).</value></data>
+  <data name="ValidationHeader" xml:space="preserve"><value>Please check the following items.</value></data>
+  <data name="ValidationColorFormat" xml:space="preserve"><value>• {0}: "{1}" is not a valid color (use the #RRGGBB format)</value></data>
+  <data name="ValidationHotkeyFormat" xml:space="preserve"><value>• Shortcut "{0}": {1}</value></data>
+  <data name="ValidationSameMouseButton" xml:space="preserve"><value>• Laser and Magnifier cannot use the same mouse button</value></data>
+  <data name="ColorNameCursor" xml:space="preserve"><value>Cursor Highlight color</value></data>
+  <data name="ColorNameClickLeft" xml:space="preserve"><value>Click Effect left-click color</value></data>
+  <data name="ColorNameClickRight" xml:space="preserve"><value>Click Effect right-click color</value></data>
+  <data name="ColorNameLaser" xml:space="preserve"><value>Laser color</value></data>
+  <data name="ColorNameKeyText" xml:space="preserve"><value>Key Display text color</value></data>
+  <data name="ColorNameKeyBackground" xml:space="preserve"><value>Key Display background color</value></data>
+  <data name="SaveFailedNotice" xml:space="preserve"><value>The changes are in effect, but the settings could not be saved.</value></data>
+  <data name="SaveFailedMessageFormat" xml:space="preserve"><value>The changes are in effect for now, but the settings could not be saved.
+Check the save location, then click Apply or OK to try again.
+
+{0}</value></data>
+  <data name="SaveFailedHotkeyNotice" xml:space="preserve"><value>Some shortcuts also could not be registered. Check their status.</value></data>
+  <data name="HotkeyFailuresMessageFormat" xml:space="preserve"><value>The following shortcuts could not be registered. Please choose different combinations.
+The settings were saved, but these shortcuts will not work.
+
+{0}</value></data>
+  <data name="HotkeyFailureLineFormat" xml:space="preserve"><value>• {0} ({1}): {2}</value></data>
+
+  <!-- 表示言語の設定と再起動（V1.3.1。SettingsWindow・AppHost） -->
+  <data name="SetGroupLanguage" xml:space="preserve"><value>Language</value></data>
+  <data name="LanguageSystem" xml:space="preserve"><value>Use the Windows display language</value></data>
+  <data name="SetLanguageNote" xml:space="preserve"><value>The change takes effect after PresenterTools restarts. "Reset this tab" does not change the language.</value></data>
+  <data name="RestartPrompt" xml:space="preserve"><value>The new language will be applied after PresenterTools restarts.
+
+Restart PresenterTools now?</value></data>
+  <data name="RestartPromptStateReset" xml:space="preserve"><value>After the restart, Key Display and Magnifier will be OFF, and Laser drawing will stop.</value></data>
+  <data name="RestartFailed" xml:space="preserve"><value>PresenterTools could not be restarted. Please exit PresenterTools and start it again.</value></data>
+</root>

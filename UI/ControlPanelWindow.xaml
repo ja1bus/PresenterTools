@@ -1,0 +1,170 @@
+<Window x:Class="PresenterTools.UI.ControlPanelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:PresenterTools.Core.Localization;assembly=PresenterTools.Core"
+        Title="Presenter Tools"
+        Width="300" MinWidth="290" SizeToContent="Height"
+        Background="#F3F4F6"
+        FontFamily="Segoe UI, Meiryo UI" FontSize="13"
+        WindowStartupLocation="Manual">
+    <Window.Resources>
+        <!-- 状態表示を兼ねるボタン。背景色はコードで状態に合わせて変える。 -->
+        <Style x:Key="StateButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="6"
+                                BorderBrush="#33000000" BorderThickness="1" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#AA000000" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource StateButton}">
+            <Setter Property="Height" Value="26" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Margin" Value="4,0,0,0" />
+            <Setter Property="MinWidth" Value="40" />
+        </Style>
+        <Style x:Key="RowLabel" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#222" />
+        </Style>
+        <!-- 項目名の下に添えるショートカット（未割当なら非表示） -->
+        <Style x:Key="HintText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="#5F6368" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+        <Style x:Key="PlainButton" TargetType="Button">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="4,0" />
+        </Style>
+        <!-- 最前面ボタン。ON の間は濃い青で塗り、OFF との違いをはっきりさせる -->
+        <Style x:Key="PinToggle" TargetType="ToggleButton">
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="4,0" />
+            <Setter Property="Background" Value="#E1E1E1" />
+            <Setter Property="BorderBrush" Value="#ADADAD" />
+            <Setter Property="Foreground" Value="#222" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#0078D4" />
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1565C0" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#0D47A1" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- 高さは内容に合わせる（SPEC §10.1）。利用者が変えられるのは幅だけ。 -->
+    <DockPanel Margin="12,8,12,10">
+
+        <!-- 下部: 操作ボタン・状態メッセージ -->
+        <StackPanel DockPanel.Dock="Bottom">
+            <TextBlock x:Name="StatusText" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#B71C1C"
+                       FontSize="12" Visibility="Collapsed" />
+            <!-- 3 つのボタンは同じ幅（D-36） -->
+            <UniformGrid Rows="1" Margin="-6,8,0,0">
+                <Button Margin="6,0,0,0" Content="{x:Static l:Strings.PanelSettings}" Style="{StaticResource PlainButton}" Click="OnSettingsClick" />
+                <ToggleButton Margin="6,0,0,0" x:Name="PinButton" Style="{StaticResource PinToggle}" Click="OnPinClick"
+                              ToolTip="{x:Static l:Strings.PanelPinToolTip}">
+                    <TextBlock x:Name="PinText" Text="{x:Static l:Strings.PanelPin}" TextTrimming="CharacterEllipsis" />
+                </ToggleButton>
+                <Button Margin="6,0,0,0" Content="{x:Static l:Strings.PanelExit}" Style="{StaticResource PlainButton}" Click="OnExitClick"
+                        ToolTip="{x:Static l:Strings.PanelExitToolTip}" />
+            </UniformGrid>
+        </StackPanel>
+
+        <!-- 各機能の状態 -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="104" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,0,6,0">
+                <TextBlock Text="Master" Style="{StaticResource RowLabel}" FontSize="14" />
+                <TextBlock x:Name="MasterHint" Style="{StaticResource HintText}" />
+            </StackPanel>
+            <Button Grid.Row="0" Grid.Column="1" x:Name="MasterButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnMasterClick" />
+
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="0,0,6,0">
+                <TextBlock Text="Pointer" Style="{StaticResource RowLabel}" />
+                <TextBlock x:Name="PointerHint" Style="{StaticResource HintText}" />
+            </StackPanel>
+            <Button Grid.Row="1" Grid.Column="1" x:Name="PointerButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnPointerClick" />
+
+            <StackPanel Grid.Row="2" VerticalAlignment="Center" Margin="0,0,6,0">
+                <TextBlock Text="Click FX" Style="{StaticResource RowLabel}" />
+                <TextBlock x:Name="ClickHint" Style="{StaticResource HintText}" />
+            </StackPanel>
+            <Button Grid.Row="2" Grid.Column="1" x:Name="ClickButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnClickFxClick" />
+
+            <StackPanel Grid.Row="3" VerticalAlignment="Center" Margin="0,0,6,0">
+                <TextBlock Text="Laser" Style="{StaticResource RowLabel}" />
+                <TextBlock x:Name="LaserHint" Style="{StaticResource HintText}" />
+            </StackPanel>
+            <Button Grid.Row="3" Grid.Column="1" x:Name="LaserButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnLaserClick" />
+
+            <StackPanel Grid.Row="4" VerticalAlignment="Center" Margin="0,0,6,0">
+                <TextBlock Text="Magnifier" Style="{StaticResource RowLabel}" />
+                <TextBlock x:Name="MagnifierHint" Style="{StaticResource HintText}" />
+            </StackPanel>
+            <Button Grid.Row="4" Grid.Column="1" x:Name="MagnifierButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnMagnifierClick" />
+            <UniformGrid Grid.Row="5" Grid.Column="1" Rows="1" Margin="-4,0,0,2">
+                <Button x:Name="Zoom200" Style="{StaticResource SmallButton}" Padding="0" Content="200%" Tag="200" Click="OnZoomClick" />
+                <Button x:Name="Zoom300" Style="{StaticResource SmallButton}" Padding="0" Content="300%" Tag="300" Click="OnZoomClick" />
+                <Button x:Name="Zoom400" Style="{StaticResource SmallButton}" Padding="0" Content="400%" Tag="400" Click="OnZoomClick" />
+            </UniformGrid>
+
+            <StackPanel Grid.Row="6" VerticalAlignment="Center" Margin="0,0,6,0">
+                <TextBlock Text="Key Display" Style="{StaticResource RowLabel}" />
+                <TextBlock x:Name="KeyDisplayHint" Style="{StaticResource HintText}" />
+            </StackPanel>
+            <Button Grid.Row="6" Grid.Column="1" x:Name="KeyDisplayButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnKeyDisplayClick" />
+        </Grid>
+    </DockPanel>
+</Window>

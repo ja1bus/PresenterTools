@@ -66,6 +66,15 @@ public static class MagnifierLayout
         return best!.Value;
     }
 
+    /// <summary>
+    /// このフレームの画面取得を見送るか（V1.4.0）。取得は拡大窓を動かす前に行うため、画面上にある今の窓
+    /// （<paramref name="shown"/>）が新しい取得範囲に掛かると、窓自身が写り込む。そのときは先に窓を
+    /// <paramref name="next"/> へ動かして、取得は次のフレームで行う（前の画像のまま 1 フレーム待つ）。
+    /// 窓が動かない場合（どの候補でも重なる場合を含む）は見送らない（見送ると取得が止まり続けるため）。
+    /// </summary>
+    public static bool ShouldDeferCapture(RectInt? shown, RectInt next, RectInt source) =>
+        shown is { } s && s != next && s.IntersectsWith(source);
+
     private static RectInt Place(MagnifierQuadrant q, SizeInt size, RectInt keepOut) => q switch
     {
         MagnifierQuadrant.BottomRight => new RectInt(keepOut.Right, keepOut.Bottom, size.Width, size.Height),

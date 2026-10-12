@@ -72,6 +72,8 @@ To create the distributable folder (framework-dependent, win-x64), run the follo
 dotnet publish PresenterTools.csproj -c Release -p:PublishProfile=FrameworkDependent
 ```
 
+The output also includes `LICENSE` and `THIRD-PARTY-NOTICES.md` (v1.4.0 and later; shown from "MIT License" and "Third-party notices" in the app's Settings window).
+
 ### Layout
 
 | Path | Contents |

@@ -120,6 +120,20 @@ Details: {2}</value></data>
 
 Open this address in your browser:
 {1}</value></data>
+  <data name="SetLicenseLink" xml:space="preserve"><value>MIT License</value></data>
+  <data name="SetLicenseToolTip" xml:space="preserve"><value>PresenterTools is open-source software released under the MIT License. Click to show the full license text.</value></data>
+  <data name="SetSourceLink" xml:space="preserve"><value>Source code</value></data>
+  <data name="SetNoticesLink" xml:space="preserve"><value>Third-party notices</value></data>
+  <data name="SetNoticesToolTip" xml:space="preserve"><value>Opens the notices for third-party software (such as .NET) in Notepad.</value></data>
+  <data name="SetLicenseUnreadableFormat" xml:space="preserve"><value>The license file could not be read. Check the following file.
+{0}</value></data>
+  <data name="SetNoticesOpenFailedFormat" xml:space="preserve"><value>The third-party notices could not be opened. Check the following file.
+{0}</value></data>
+  <data name="SetSourceOpenFailedFormat" xml:space="preserve"><value>The source code page could not be opened in your browser.
+{0}
+
+Open this address in your browser:
+{1}</value></data>
   <data name="SetRevert" xml:space="preserve"><value>Revert this tab</value></data>
   <data name="SetRevertToolTip" xml:space="preserve"><value>Restores this tab's values (including ON/OFF and this tab's shortcuts) to the values they had when Settings was opened. Click Apply or OK to use them, or Cancel to discard.</value></data>
   <data name="SetReset" xml:space="preserve"><value>Reset this tab</value></data>

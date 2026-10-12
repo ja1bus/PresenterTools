@@ -119,6 +119,20 @@
 
 次のアドレスをブラウザーで開いてください。
 {1}</value></data>
+  <data name="SetLicenseLink" xml:space="preserve"><value>MIT License</value></data>
+  <data name="SetLicenseToolTip" xml:space="preserve"><value>PresenterTools は MIT License で公開しているオープンソースソフトウェアです。押すとライセンスの全文を表示します。</value></data>
+  <data name="SetSourceLink" xml:space="preserve"><value>ソースコード</value></data>
+  <data name="SetNoticesLink" xml:space="preserve"><value>第三者のソフトウェア</value></data>
+  <data name="SetNoticesToolTip" xml:space="preserve"><value>第三者のソフトウェア（.NET など）の表記をメモ帳で開きます。</value></data>
+  <data name="SetLicenseUnreadableFormat" xml:space="preserve"><value>ライセンスのファイルを読み込めませんでした。次のファイルを確認してください。
+{0}</value></data>
+  <data name="SetNoticesOpenFailedFormat" xml:space="preserve"><value>第三者のソフトウェアの表記を開けませんでした。次のファイルを確認してください。
+{0}</value></data>
+  <data name="SetSourceOpenFailedFormat" xml:space="preserve"><value>ソースコードのページをブラウザーで開けませんでした。
+{0}
+
+次のアドレスをブラウザーで開いてください。
+{1}</value></data>
   <data name="SetRevert" xml:space="preserve"><value>開いたときの値に戻す</value></data>
   <data name="SetRevertToolTip" xml:space="preserve"><value>このタブの値（ON/OFF・ショートカットを含む）を、設定画面を開いたときの値に戻します。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
   <data name="SetReset" xml:space="preserve"><value>このタブを既定値に戻す</value></data>

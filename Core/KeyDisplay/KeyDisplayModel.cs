@@ -56,7 +56,13 @@ public sealed class KeyDisplayModel
         {
             if (_text.Length == 0) return "";
             var max = Math.Max(1, Options.MaxTextLength);
-            var body = _text.Length > max ? Ellipsis + _text.ToString(_text.Length - max, max) : _text.ToString();
+            string body;
+            if (_text.Length > max)
+            {
+                var start = TailStart(max);
+                body = Ellipsis + _text.ToString(start, _text.Length - start);
+            }
+            else body = _text.ToString();
             return _committed ? body + EnterMark : body;
         }
     }
@@ -190,9 +196,20 @@ public sealed class KeyDisplayModel
         _text.Append(text);
         // 無制限に伸びないよう、表示に必要な分（＋余裕）だけ残す。
         var keep = Math.Max(1, Options.MaxTextLength) * 2;
-        if (_text.Length > keep) _text.Remove(0, _text.Length - keep);
+        if (_text.Length > keep) _text.Remove(0, TailStart(keep));
         _textExpiresAt = now + Options.TextDuration;
         return true;
+    }
+
+    /// <summary>
+    /// 末尾の <paramref name="count"/> 単位（UTF-16）を残すときの開始位置。サロゲートペア（絵文字など）の
+    /// 後半から始まる場合は 1 つ後ろへずらし、ペアを分断しない（V1.4.0）。
+    /// </summary>
+    private int TailStart(int count)
+    {
+        var start = _text.Length - count;
+        if (start > 0 && start < _text.Length && char.IsLowSurrogate(_text[start]) && char.IsHighSurrogate(_text[start - 1])) start++;
+        return start;
     }
 
     private void ShowChord(in KeyInput input, TimeSpan now)

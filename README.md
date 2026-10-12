@@ -72,6 +72,8 @@ dotnet run --project PresenterTools.csproj
 dotnet publish PresenterTools.csproj -c Release -p:PublishProfile=FrameworkDependent
 ```
 
+出力には `LICENSE` と `THIRD-PARTY-NOTICES.md` も入ります（v1.4.0〜。アプリの設定画面の「MIT License」「第三者のソフトウェア」から表示します）。
+
 ### 構成
 
 | パス | 内容 |

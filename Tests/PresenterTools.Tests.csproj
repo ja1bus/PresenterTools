@@ -16,4 +16,13 @@
     <Using Include="Xunit" />
     <ProjectReference Include="../Core/PresenterTools.Core.csproj" />
   </ItemGroup>
+  <!-- 同梱するライセンス表記（V1.4.0）を本体と同じく出力先へ置き、LicenseFiles で読めることを確かめる（scripts は public-repo/、公開リポジトリはルート）。 -->
+  <ItemGroup Condition="Exists('../public-repo/LICENSE')">
+    <None Include="../public-repo/LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../public-repo/THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup Condition="!Exists('../public-repo/LICENSE') And Exists('../LICENSE')">
+    <None Include="../LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

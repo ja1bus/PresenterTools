@@ -8,7 +8,7 @@ namespace PresenterTools.Overlay;
 
 /// <summary>
 /// 拡大窓（SPEC §16.1）。取得した画像を窓いっぱいに最近傍補間で表示し、カーソル位置の十字マーカー・枠・倍率を重ねる。
-/// レイヤードウィンドウ（AllowsTransparency）のため、CAPTUREBLT なしの画面取得に自分自身は写らない。
+/// 画面取得（ScreenCapture）にはこの窓自身も写る（SPEC §16.3）。取得範囲と重ならない位置に置くことで再帰拡大を防ぐ（§16.2）。
 /// </summary>
 public sealed class MagnifierWindow : ClickThroughWindow
 {

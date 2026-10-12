@@ -175,6 +175,7 @@ public sealed class AppHost : IDisposable
         SettingsNormalizer.Normalize(newSettings);
         newSettings.ControlPanel = _settings.ControlPanel; // パネルの位置は Settings 画面では編集しない
         var triggerModeChanged = newSettings.Laser.TriggerMode != _settings.Laser.TriggerMode;
+        var laserMouseChanged = newSettings.Laser.MouseButton != _settings.Laser.MouseButton;
         _settings = newSettings;
         ApplySettingsToComponents();
 
@@ -183,6 +184,8 @@ public sealed class AppHost : IDisposable
         {
             // 描画方式を変えたら描画中のものは終える（押している間／押すたびの判断が食い違わないように）。
             if (triggerModeChanged) _state.EndAllLaser();
+            // マウスボタンの割当を変えたら、旧ボタンによる描画を終える（旧ボタンを離しても新しい割当と一致せず終われないため）。
+            else if (laserMouseChanged) _state.EndLaser(LaserTrigger.Mouse);
             _state.SetMaster(_settings.General.MasterEnabled);
             _state.SetCursorHighlight(_settings.CursorHighlight.Enabled);
             _state.SetClickEffect(_settings.ClickEffect.Enabled);

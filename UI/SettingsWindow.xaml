@@ -114,7 +114,22 @@
                     </Hyperlink>
                 </TextBlock>
                 <TextBlock x:Name="VersionText" FontSize="11" Foreground="#555" />
-                <TextBlock Text="© ja1bus" FontSize="11" Foreground="#555" />
+                <!-- ライセンス表記（V1.4.0。SPEC §10.2）。全文は同梱の LICENSE をこの画面から表示し、Web だけに頼らない。 -->
+                <TextBlock FontSize="11" Foreground="#555" TextWrapping="Wrap">
+                    <Run Text="© ja1bus" />
+                    <Run Text="   " />
+                    <Hyperlink Click="OnShowLicense" ToolTip="{x:Static l:Strings.SetLicenseToolTip}">
+                        <Run Text="{x:Static l:Strings.SetLicenseLink}" />
+                    </Hyperlink>
+                    <Run Text=" · " />
+                    <Hyperlink x:Name="SourceLink" Click="OnOpenSource">
+                        <Run Text="{x:Static l:Strings.SetSourceLink}" />
+                    </Hyperlink>
+                    <Run Text=" · " />
+                    <Hyperlink Click="OnOpenNotices" ToolTip="{x:Static l:Strings.SetNoticesToolTip}">
+                        <Run Text="{x:Static l:Strings.SetNoticesLink}" />
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </DockPanel>
 

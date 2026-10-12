@@ -18,6 +18,8 @@ public sealed class MagnifierController : IDisposable
     private MagnifierWindow? _window;
     private MagnifierSettings _settings = new();
     private MagnifierQuadrant? _quadrant;
+    /// <summary>拡大窓の今の位置（物理ピクセル）。窓を出していなければ null。</summary>
+    private RectInt? _shownRect;
 
     public MagnifierController(MonitorService monitors)
     {
@@ -41,6 +43,7 @@ public sealed class MagnifierController : IDisposable
         _window ??= new MagnifierWindow();
         _window.SetZoomLabel(_settings.ZoomPercent);
         _quadrant = null;
+        _shownRect = null;
         UpdateFrame(); // 表示前に位置と画像を決める
         _window.Show();
         _window.BringToTop();
@@ -54,6 +57,7 @@ public sealed class MagnifierController : IDisposable
         // 窓は破棄して、取得用のバッファも解放する（長時間の常駐でメモリを持ち続けない）。
         _window?.Close();
         _window = null;
+        _shownRect = null;
         _capture.Dispose();
     }
 
@@ -73,8 +77,11 @@ public sealed class MagnifierController : IDisposable
         var rect = MagnifierLayout.ComputeWindowRect(size, source, monitor.WorkArea, _quadrant, out var quadrant);
         _quadrant = quadrant;
 
-        if (_capture.Capture(source)) _window.SetImage(_capture.Bitmap);
+        // 今の窓が取得範囲に掛かるなら、窓を先に動かして取得は次のフレームにする（窓自身の写り込みを防ぐ。§16.2）。
+        var defer = MagnifierLayout.ShouldDeferCapture(_shownRect, rect, source);
+        if (!defer && _capture.Capture(source)) _window.SetImage(_capture.Bitmap);
         _window.SetBounds(rect);
+        _shownRect = rect;
         _window.SetMarker(
             (cursor.X - source.Left + 0.5) / source.Width,
             (cursor.Y - source.Top + 0.5) / source.Height);

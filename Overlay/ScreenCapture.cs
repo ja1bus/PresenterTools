@@ -9,8 +9,8 @@ namespace PresenterTools.Overlay;
 
 /// <summary>
 /// Magnifier 用の画面取得（SPEC §16.3）。GDI の BitBlt（SRCCOPY、CAPTUREBLT なし）で取得範囲だけを
-/// DIB セクションへ複写し、WriteableBitmap へ転送する。CAPTUREBLT を付けないため、
-/// レイヤードウィンドウ（拡大窓自身・オーバーレイ）は写らない。
+/// DIB セクションへ複写し、WriteableBitmap へ転送する。Windows 11（DWM 常時有効）では CAPTUREBLT の有無にかかわらず
+/// レイヤードウィンドウ（拡大窓自身・オーバーレイ）も写る（実測）。拡大窓の写り込みは MagnifierLayout の配置規則で防ぐ。
 /// </summary>
 public sealed class ScreenCapture : IDisposable
 {

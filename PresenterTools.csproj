@@ -11,7 +11,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>PresenterTools</RootNamespace>
     <AssemblyName>PresenterTools</AssemblyName>
-    <Version>1.4.0</Version>
+    <Version>1.4.1</Version>
     <InformationalVersion>1.4.0</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Copyright>© ja1bus</Copyright>

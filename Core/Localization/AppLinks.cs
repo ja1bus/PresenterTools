@@ -8,8 +8,8 @@ namespace PresenterTools.Core.Localization;
 /// </summary>
 public static class AppLinks
 {
-    public const string ManualJapanese = "https://www.iwanaga.net/presentertools/manual/";
-    public const string ManualEnglish = "https://www.iwanaga.net/presentertools/en/manual/";
+    public const string ManualJapanese = "https://www.ja1bus.com/presentertools/manual/";
+    public const string ManualEnglish = "https://www.ja1bus.com/presentertools/en/manual/";
     /// <summary>ソースを MIT License で公開している公開リポジトリ（V1.4.0。設定画面の「ソースコード」）。</summary>
     public const string Repository = "https://github.com/ja1bus/PresenterTools";
 

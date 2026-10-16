@@ -43,7 +43,7 @@ PresenterTools は、Teams の画面共有・会議室のディスプレイへ�
 
 詳しい使い方は取扱説明書をご覧ください。
 
-- 取扱説明書: https://www.iwanaga.net/presentertools/manual/
+- 取扱説明書: https://www.ja1bus.com/presentertools/manual/
 
 ## ビルド方法
 
@@ -107,9 +107,9 @@ Copyright (c) 2026 ja1bus（© ja1bus）
 
 ## 関連リンク
 
-- Web ページ: https://www.iwanaga.net/presentertools/
-- 取扱説明書: https://www.iwanaga.net/presentertools/manual/
-- 更新履歴: https://www.iwanaga.net/presentertools/changelog/
-- プライバシーポリシー: https://www.iwanaga.net/presentertools/privacy/
+- Web ページ: https://www.ja1bus.com/presentertools/
+- 取扱説明書: https://www.ja1bus.com/presentertools/manual/
+- 更新履歴: https://www.ja1bus.com/presentertools/changelog/
+- プライバシーポリシー: https://www.ja1bus.com/presentertools/privacy/
 - Microsoft Store: https://apps.microsoft.com/detail/9PP65NZK3TZ7
-- お問い合わせ: support@iwanaga.net
+- お問い合わせ: contact@ja1bus.com

@@ -245,11 +245,11 @@ public sealed class UiLanguageApplyTests
     }
 
     [Theory]
-    [InlineData("ja", "https://www.iwanaga.net/presentertools/manual/")]
-    [InlineData("ja-JP", "https://www.iwanaga.net/presentertools/manual/")]
-    [InlineData("en", "https://www.iwanaga.net/presentertools/en/manual/")]
-    [InlineData("en-US", "https://www.iwanaga.net/presentertools/en/manual/")]
-    [InlineData("fr-FR", "https://www.iwanaga.net/presentertools/en/manual/")]
+    [InlineData("ja", "https://www.ja1bus.com/presentertools/manual/")]
+    [InlineData("ja-JP", "https://www.ja1bus.com/presentertools/manual/")]
+    [InlineData("en", "https://www.ja1bus.com/presentertools/en/manual/")]
+    [InlineData("en-US", "https://www.ja1bus.com/presentertools/en/manual/")]
+    [InlineData("fr-FR", "https://www.ja1bus.com/presentertools/en/manual/")]
     public void Manual_link_follows_ui_language(string culture, string expected)
     {
         // 取扱説明書（Web）は表示言語の版を開く。日本語以外は英語（SPEC §10.2）。

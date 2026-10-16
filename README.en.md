@@ -43,7 +43,7 @@ This GitHub repository does not distribute executables (binaries).
 
 See the user guide for details.
 
-- User guide: https://www.iwanaga.net/presentertools/en/manual/
+- User guide: https://www.ja1bus.com/presentertools/en/manual/
 
 ## Building
 
@@ -107,9 +107,9 @@ This software is provided "as is", without warranty of any kind, express or impl
 
 ## Links
 
-- Web page: https://www.iwanaga.net/presentertools/en/
-- User guide: https://www.iwanaga.net/presentertools/en/manual/
-- Changelog: https://www.iwanaga.net/presentertools/en/changelog/
-- Privacy policy: https://www.iwanaga.net/presentertools/en/privacy/
+- Web page: https://www.ja1bus.com/presentertools/en/
+- User guide: https://www.ja1bus.com/presentertools/en/manual/
+- Changelog: https://www.ja1bus.com/presentertools/en/changelog/
+- Privacy policy: https://www.ja1bus.com/presentertools/en/privacy/
 - Microsoft Store: https://apps.microsoft.com/detail/9PP65NZK3TZ7
-- Contact: support@iwanaga.net
+- Contact: contact@ja1bus.com

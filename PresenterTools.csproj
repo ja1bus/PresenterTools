@@ -11,8 +11,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>PresenterTools</RootNamespace>
     <AssemblyName>PresenterTools</AssemblyName>
-    <Version>1.4.1</Version>
-    <InformationalVersion>1.4.0</InformationalVersion>
+    <Version>1.4.2</Version>
+    <!-- 設定画面の表示に使う。Version の更新漏れを防ぐため直接書かず Version を参照する。 -->
+    <InformationalVersion>$(Version)</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Copyright>© ja1bus</Copyright>
     <ApplicationIcon>Resources/icon.ico</ApplicationIcon>

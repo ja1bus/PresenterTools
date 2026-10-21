@@ -62,7 +62,12 @@ public sealed class KeyDisplayView : Border
         if (!_shownKeys.SequenceEqual(keys))
         {
             _caps.Children.Clear();
-            foreach (var key in keys) _caps.Children.Add(CreateCap(key));
+            // キーキャップが複数並ぶのは同時に押した組み合わせだけなので、間に「+」を入れる（V1.5.0。SPEC §15.5）。
+            for (var i = 0; i < keys.Count; i++)
+            {
+                if (i > 0) _caps.Children.Add(CreatePlus());
+                _caps.Children.Add(CreateCap(keys[i]));
+            }
             _shownKeys = [.. keys];
         }
         _caps.Visibility = keys.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
@@ -96,6 +101,17 @@ public sealed class KeyDisplayView : Border
             FontWeight = FontWeights.SemiBold,
             Foreground = _foreground,
         },
+    };
+
+    private TextBlock CreatePlus() => new()
+    {
+        Text = "+",
+        FontFamily = Font,
+        FontSize = _fontSize * 0.7,
+        FontWeight = FontWeights.SemiBold,
+        Foreground = _foreground,
+        VerticalAlignment = VerticalAlignment.Center,
+        Margin = new Thickness(_fontSize * 0.04, 0, _fontSize * 0.04, 0),
     };
 
     private static Brush Freeze(SolidColorBrush b)

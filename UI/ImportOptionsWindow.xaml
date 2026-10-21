@@ -1,0 +1,25 @@
+<Window x:Class="PresenterTools.UI.ImportOptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:PresenterTools.Core.Localization;assembly=PresenterTools.Core"
+        Title="{x:Static l:Strings.ImportDialogTitle}"
+        Width="460" SizeToContent="Height" ResizeMode="NoResize" ShowInTaskbar="False"
+        FontFamily="Segoe UI, Meiryo UI" FontSize="13"
+        WindowStartupLocation="CenterOwner">
+    <!-- 設定のインポートの確認（V1.5.0。SPEC §10.2）。ファイルを検証した後に、何を読み込むかを選ぶ。 -->
+    <StackPanel Margin="16">
+        <TextBlock x:Name="FileText" TextWrapping="Wrap" FontWeight="SemiBold" />
+        <TextBlock x:Name="SourceText" TextWrapping="Wrap" Foreground="#555" FontSize="12" Margin="0,4,0,0" />
+        <CheckBox x:Name="HotkeysBox" Margin="0,14,0,3">
+            <TextBlock TextWrapping="Wrap" Text="{x:Static l:Strings.SetImportHotkeys}" />
+        </CheckBox>
+        <CheckBox x:Name="MouseButtonsBox" Margin="0,3">
+            <TextBlock TextWrapping="Wrap" Text="{x:Static l:Strings.SetImportMouseButtons}" />
+        </CheckBox>
+        <TextBlock TextWrapping="Wrap" Foreground="#555" FontSize="12" Margin="0,8,0,0" Text="{x:Static l:Strings.SetImportNote}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Content="{x:Static l:Strings.ImportConfirm}" MinWidth="90" Height="28" Padding="8,0" IsDefault="True" Click="OnImport" />
+            <Button Content="{x:Static l:Strings.SetCancel}" MinWidth="90" Height="28" Padding="8,0" Margin="8,0,0,0" IsCancel="True" />
+        </StackPanel>
+    </StackPanel>
+</Window>

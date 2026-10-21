@@ -156,8 +156,8 @@
   <data name="SetShowShortcutsInPanel" xml:space="preserve"><value>操作パネルの各項目に割り当て中のショートカットを表示する</value></data>
   <data name="SetGroupHotkeys" xml:space="preserve"><value>グローバルショートカット</value></data>
   <data name="SetHotkeysHelp" xml:space="preserve"><value>入力欄をクリックしてキーを押すと設定されます（Backspace / Delete で未割当）。Ctrl・Alt・Win のいずれかとの組み合わせが必要です（F13～F24 は単独可）。入力欄を選んでいる間は PresenterTools のショートカットをすべて一時解除します。登録したキーは他のアプリでは使えなくなります。</value></data>
-  <data name="SetResetHotkeys" xml:space="preserve"><value>ショートカットを既定に戻す</value></data>
-  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>すべてのショートカットを既定値に戻します。［適用］／［OK］で登録し直すので、登録状態の欄で結果を確認してください。</value></data>
+  <data name="SetResetHotkeys" xml:space="preserve"><value>全てのショートカットを未割当にする</value></data>
+  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>全てのショートカットを未割当（既定値）にします。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
 
   <!-- 設定画面: Cursor Highlight -->
   <data name="SetCursorEnable" xml:space="preserve"><value>Cursor Highlight を使う</value></data>
@@ -205,8 +205,6 @@
 
   <!-- 設定画面: Key Display -->
   <data name="SetKeyWarning" xml:space="preserve"><value>ON の間は入力した文字がパスワードも含めてすべて画面に表示されます。起動直後は常に OFF です。パスワードなどを入力するときは OFF にしてください。</value></data>
-  <data name="SetKeyCurrent" xml:space="preserve"><value>現在の ON/OFF</value></data>
-  <data name="SetKeyOn" xml:space="preserve"><value>ON（入力文字をすべて表示）</value></data>
   <data name="SetFontSize" xml:space="preserve"><value>フォントサイズ</value></data>
   <data name="SetPosition" xml:space="preserve"><value>表示位置</value></data>
   <data name="SetPosBottomCenter" xml:space="preserve"><value>下中央</value></data>
@@ -225,9 +223,9 @@
   <!-- 設定画面: 操作後の通知・検証（SettingsWindow.xaml.cs） -->
   <data name="NoticeTabReset" xml:space="preserve"><value>このタブを既定値に戻しました</value></data>
   <data name="NoticeTabReverted" xml:space="preserve"><value>このタブを開いたときの値に戻しました</value></data>
-  <data name="NoticeHotkeysReset" xml:space="preserve"><value>ショートカットを既定値に戻しました</value></data>
+  <data name="NoticeHotkeysReset" xml:space="preserve"><value>全てのショートカットを未割当にしました</value></data>
   <data name="NoticeAllReset" xml:space="preserve"><value>すべての設定を既定値に戻しました</value></data>
-  <data name="NoticeNotAppliedFormat" xml:space="preserve"><value>{0}（［適用］／［OK］で反映、［キャンセル］で取り消し）。</value></data>
+  <data name="NoticeNotAppliedFormat" xml:space="preserve"><value>{0}（まだ適用していません）。</value></data>
   <data name="ValidationHeader" xml:space="preserve"><value>次の項目を確認してください。</value></data>
   <data name="ValidationColorFormat" xml:space="preserve"><value>・{0}: 「{1}」は色として解釈できません（#RRGGBB の形式で入力）</value></data>
   <data name="ValidationHotkeyFormat" xml:space="preserve"><value>・ショートカット「{0}」: {1}</value></data>
@@ -259,4 +257,54 @@
 今すぐ PresenterTools を再起動しますか？</value></data>
   <data name="RestartPromptStateReset" xml:space="preserve"><value>再起動すると Key Display と Magnifier は OFF になり、描画中の Laser も終わります。</value></data>
   <data name="RestartFailed" xml:space="preserve"><value>PresenterTools を再起動できませんでした。終了してから起動し直してください。</value></data>
+
+  <!-- 未適用の変更・［キャンセル］（V1.5.0。SettingsWindow） -->
+  <data name="SetCancelToolTip" xml:space="preserve"><value>未適用の変更を破棄して閉じます。［適用］で反映済みの変更は戻りません。</value></data>
+  <data name="PendingChanges" xml:space="preserve"><value>未適用の変更があります。［適用］／［OK］で確定、［キャンセル］で破棄します。</value></data>
+  <data name="PendingChangesAfterApply" xml:space="preserve"><value>未適用の変更があります。［適用］／［OK］で確定します。［キャンセル］で破棄するのは未適用の変更だけで、適用済みの変更は戻りません。</value></data>
+  <data name="PendingRetry" xml:space="preserve"><value>設定の保存またはショートカットの登録に失敗しています。原因を取り除いてから［適用］で再試行できます。</value></data>
+  <data name="PendingNoneAfterApply" xml:space="preserve"><value>変更は適用済みです。［キャンセル］で閉じても元に戻りません。</value></data>
+  <data name="HotkeyFailuresRetryHint" xml:space="preserve"><value>設定画面で変更または解除してください。使用しているアプリを終了した場合は、［適用］で登録し直せます。</value></data>
+  <!-- About タブ（V1.5.0） -->
+  <data name="AboutVersionFormat" xml:space="preserve"><value>バージョン {0}</value></data>
+  <!-- Key Display の ON/OFF と見本（V1.5.0） -->
+  <data name="SetKeyEnable" xml:space="preserve"><value>Key Display を ON にする（入力した文字をすべて表示）</value></data>
+  <data name="SetKeySample" xml:space="preserve"><value>見本</value></data>
+  <data name="KeySampleText" xml:space="preserve"><value>Sample</value></data>
+  <!-- Laser の操作が未設定のときの案内（V1.5.0。SettingsWindow・ControlPanelWindow） -->
+  <data name="SetLaserNoTrigger" xml:space="preserve"><value>Laser で描くには、Laser 描画のショートカットかマウスボタンを設定してください。</value></data>
+  <data name="PanelLaserNoTrigger" xml:space="preserve"><value>描く操作を設定してください</value></data>
+  <!-- 設定の管理（エクスポート・インポート。V1.5.0。SettingsWindow） -->
+  <data name="SetGroupManage" xml:space="preserve"><value>設定の管理</value></data>
+  <data name="SetExport" xml:space="preserve"><value>エクスポート...</value></data>
+  <data name="SetExportToolTip" xml:space="preserve"><value>確定済みの設定をファイルに保存します。未適用の変更は含まれません。</value></data>
+  <data name="SetImport" xml:space="preserve"><value>インポート...</value></data>
+  <data name="SetImportToolTip" xml:space="preserve"><value>エクスポートしたファイルの設定をこの画面に読み込みます。［適用］／［OK］で確定します。</value></data>
+  <data name="SetImportHotkeys" xml:space="preserve"><value>ショートカットも読み込む</value></data>
+  <data name="SetImportMouseButtons" xml:space="preserve"><value>マウスボタンの割り当ても読み込む</value></data>
+  <data name="SetImportNote" xml:space="preserve"><value>表示言語・各機能の ON/OFF・操作パネルの位置とサイズは、この PC の状態のまま変わりません。ショートカットとマウスボタンの割り当ては、上の項目を選んだときだけ読み込みます。読み込んだ設定は、設定画面で［適用］／［OK］を押すと確定します。</value></data>
+  <data name="ImportConfirm" xml:space="preserve"><value>読み込む</value></data>
+  <data name="ImportSourceFormat" xml:space="preserve"><value>PresenterTools {0} でエクスポート（{1}）</value></data>
+  <data name="TransferFileFilter" xml:space="preserve"><value>PresenterTools の設定 (*.json)|*.json</value></data>
+  <data name="ExportDialogTitle" xml:space="preserve"><value>設定のエクスポート</value></data>
+  <data name="ExportPendingPrompt" xml:space="preserve"><value>未適用の変更があります。エクスポートされるのは確定済みの設定だけです。
+
+［OK］で確定済みの設定をエクスポートします。未適用の変更を含めるには、［キャンセル］を押し、［適用］してからエクスポートしてください。</value></data>
+  <data name="ExportFailedFormat" xml:space="preserve"><value>設定をエクスポートできませんでした。
+
+ファイル: {0}
+{1}</value></data>
+  <data name="NoticeExportedFormat" xml:space="preserve"><value>設定をエクスポートしました: {0}</value></data>
+  <data name="ImportDialogTitle" xml:space="preserve"><value>設定のインポート</value></data>
+  <data name="ImportFailedFormat" xml:space="preserve"><value>設定をインポートできませんでした。
+{0}
+
+ファイル: {1}</value></data>
+  <data name="ImportErrorTooLarge" xml:space="preserve"><value>PresenterTools の設定ファイルとしては大きすぎます。</value></data>
+  <data name="ImportErrorNotJson" xml:space="preserve"><value>JSON 形式のファイルとして読み込めません。</value></data>
+  <data name="ImportErrorNotExportFile" xml:space="preserve"><value>PresenterTools でエクスポートした設定ファイルではありません。settings.json を含め、他の JSON ファイルは読み込めません。</value></data>
+  <data name="ImportErrorNewerFormat" xml:space="preserve"><value>このファイルは新しいバージョンの PresenterTools（{0}）で作られているため、このバージョンでは読み込めません。PresenterTools を更新してください。</value></data>
+  <data name="ImportErrorInvalid" xml:space="preserve"><value>ファイル内の設定を読み込めません。</value></data>
+  <data name="NoticeImportedFormat" xml:space="preserve"><value>{0} から設定を読み込みました</value></data>
+  <data name="NoticeImportCorrected" xml:space="preserve"><value>（範囲外の値などを補正しました）</value></data>
 </root>

@@ -124,19 +124,28 @@ public sealed class AppHost : IDisposable
         _panel.ShowAndActivate(_monitors.Monitors);
     }
 
-    public void ShowSettings()
+    /// <summary>
+    /// 設定画面を開く。<paramref name="section"/> を指定するとそのタブを開く（V1.5.0。操作パネルの Laser の案内から）。
+    /// 開いている場合は前面に出す（編集中の内容はそのまま）。
+    /// </summary>
+    public void ShowSettings(SettingsSection? section = null)
     {
         if (_settingsWindow is { } existing)
         {
             if (existing.WindowState == WindowState.Minimized) existing.WindowState = WindowState.Normal;
+            if (section is { } s) existing.SelectSection(s);
             existing.Activate();
             return;
         }
         _settingsWindow = new SettingsWindow(this);
         _settingsWindow.Closed += (_, _) => _settingsWindow = null;
+        if (section is { } first) _settingsWindow.SelectSection(first);
         _settingsWindow.Show();
         _settingsWindow.Activate();
     }
+
+    /// <summary>直前の保存に失敗している（設定画面で［適用］による再試行を許すため。V1.5.0）。</summary>
+    public bool HasSaveError => _saveError is not null;
 
     public void SetAlwaysOnTop(bool on)
     {

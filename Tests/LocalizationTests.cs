@@ -201,7 +201,6 @@ public sealed partial class LocalizationTests
             using var _ = new UiCultureScope(language);
             Assert.True(Shortcut.TryParse("Ctrl+Shift+F10", out var sc));
             Assert.Equal("Ctrl+Shift+F10", sc.ToString());
-            Assert.Equal("Ctrl+Shift+F10", new HotkeySettings().ShowControlPanel);
         }
     }
 }

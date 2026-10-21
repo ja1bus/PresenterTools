@@ -37,7 +37,7 @@ This GitHub repository does not distribute executables (binaries).
 
 1. When started, PresenterTools shows its control panel and an icon in the notification area.
 2. Turn each feature on and off with the buttons on the control panel.
-3. The default shortcuts are `Ctrl+Shift+F9` for Master on/off and `Ctrl+Shift+F10` to show the control panel. Other actions (such as drawing with the laser) are unassigned by default; assign them from "Settings" on the control panel.
+3. No shortcuts are assigned by default (from version 1.5.0). Assign them to the actions you want to use (such as drawing with the laser) from "Settings" on the control panel. After hiding the control panel, double-click the tray icon or start the app again to show it.
 4. When sharing in Teams, share your "Screen" (the whole monitor). If you share a single window, the PresenterTools effects are not visible to others.
 5. The × on the control panel only hides it. To quit, choose "Exit" in the tray menu or on the control panel.
 

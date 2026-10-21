@@ -20,14 +20,13 @@ public sealed class V12FeatureTests : IDisposable
     // ---- ショートカットの既定（D-32） ----
 
     [Fact]
-    public void DefaultHotkeys_OnlyMasterAndPanel()
+    public void DefaultHotkeys_AllUnassigned()
     {
+        // V1.5.0 で Master・操作パネルを表示も未割当にした（D-32）。
         var h = new HotkeySettings();
-        Assert.Equal("Ctrl+Shift+F9", h.ToggleMaster);
-        Assert.Equal("Ctrl+Shift+F10", h.ShowControlPanel);
-        foreach (var action in HotkeyActionNames.All.Where(a => a is not (HotkeyAction.ToggleMaster or HotkeyAction.ShowControlPanel)))
+        foreach (var action in HotkeyActionNames.All)
             Assert.Equal("", h.Get(action));
-        Assert.Equal(2, HotkeyBindings.Parse(h).Count);
+        Assert.Empty(HotkeyBindings.Parse(h));
     }
 
     [Fact]

@@ -75,7 +75,19 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,6,0" />
                 <c:ShortcutBox Grid.Column="1" Shortcut="{Binding Shortcut, UpdateSourceTrigger=PropertyChanged}" Height="26"
-                               CaptureStarted="OnCaptureStarted" CaptureEnded="OnCaptureEnded" />
+                               CaptureStarted="OnCaptureStarted" CaptureEnded="OnCaptureEnded">
+                    <!-- 入力規則・重複の問題がある欄を強調する（V1.5.0） -->
+                    <c:ShortcutBox.Style>
+                        <Style TargetType="c:ShortcutBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasProblem}" Value="True">
+                                    <Setter Property="BorderBrush" Value="#C62828" />
+                                    <Setter Property="BorderThickness" Value="2" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </c:ShortcutBox.Style>
+                </c:ShortcutBox>
                 <Button Grid.Column="2" Content="{x:Static l:Strings.SetClear}" Margin="4,0,0,0" Padding="8,0" Click="OnClearHotkey" Focusable="False" />
                 <TextBlock Grid.Column="3" Text="{Binding Status}" VerticalAlignment="Center" Margin="8,0,0,0"
                            TextWrapping="Wrap" FontSize="12">
@@ -101,50 +113,26 @@
             <TextBlock DockPanel.Dock="Top" x:Name="SuspendNotice" TextWrapping="Wrap" FontSize="12" Foreground="#8A4B00"
                        Margin="0,0,0,6" Visibility="Collapsed" Text="{x:Static l:Strings.SetHotkeysSuspendedNotice}" />
             <TextBlock DockPanel.Dock="Top" x:Name="NoticeText" TextWrapping="Wrap" FontSize="12" Foreground="#1565C0" Margin="0,0,0,6" />
-            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                 <Button Content="{x:Static l:Strings.SetOk}" MinWidth="90" Height="28" Padding="8,0" IsDefault="True" Click="OnOk" />
-                <Button Content="{x:Static l:Strings.SetApply}" MinWidth="90" Height="28" Padding="8,0" Margin="8,0,0,0" Click="OnApply" />
-                <Button Content="{x:Static l:Strings.SetCancel}" MinWidth="90" Height="28" Padding="8,0" Margin="8,0,0,0" IsCancel="True" Click="OnCancel" />
+                <Button x:Name="ApplyButton" Content="{x:Static l:Strings.SetApply}" MinWidth="90" Height="28" Padding="8,0" Margin="8,0,0,0" Click="OnApply" />
+                <Button Content="{x:Static l:Strings.SetCancel}" MinWidth="90" Height="28" Padding="8,0" Margin="8,0,0,0" IsCancel="True" Click="OnCancel"
+                        ToolTip="{x:Static l:Strings.SetCancelToolTip}" ToolTipService.ShowOnDisabled="True" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="0,0,8,0">
-                <!-- 取扱説明書は Web にだけ置く。表示言語に合わせた URL を既定のブラウザーで開く（SPEC §10.2）。 -->
-                <TextBlock Margin="0,0,0,2">
-                    <Hyperlink x:Name="ManualLink" Click="OnOpenManual">
-                        <Run Text="{x:Static l:Strings.SetManualLink}" />
-                    </Hyperlink>
-                </TextBlock>
-                <TextBlock x:Name="VersionText" FontSize="11" Foreground="#555" />
-                <!-- ライセンス表記（V1.4.0。SPEC §10.2）。全文は同梱の LICENSE をこの画面から表示し、Web だけに頼らない。 -->
-                <TextBlock FontSize="11" Foreground="#555" TextWrapping="Wrap">
-                    <Run Text="© ja1bus" />
-                    <Run Text="   " />
-                    <Hyperlink Click="OnShowLicense" ToolTip="{x:Static l:Strings.SetLicenseToolTip}">
-                        <Run Text="{x:Static l:Strings.SetLicenseLink}" />
-                    </Hyperlink>
-                    <Run Text=" · " />
-                    <Hyperlink x:Name="SourceLink" Click="OnOpenSource">
-                        <Run Text="{x:Static l:Strings.SetSourceLink}" />
-                    </Hyperlink>
-                    <Run Text=" · " />
-                    <Hyperlink Click="OnOpenNotices" ToolTip="{x:Static l:Strings.SetNoticesToolTip}">
-                        <Run Text="{x:Static l:Strings.SetNoticesLink}" />
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
+            <!-- 未適用の変更の有無（V1.5.0。SPEC §10.2）。どのタブからも見える位置に出す。 -->
+            <TextBlock x:Name="PendingText" VerticalAlignment="Center" Margin="0,0,8,0" TextWrapping="Wrap" FontSize="12" />
         </DockPanel>
 
-        <TabControl>
+        <TabControl x:Name="Tabs">
             <!-- General -->
-            <TabItem Header="General">
+            <TabItem Header="General" x:Name="GeneralTab">
                 <DockPanel>
-                <DockPanel DockPanel.Dock="Bottom" Margin="12,4,12,8">
-                    <Button DockPanel.Dock="Right" Style="{StaticResource ResetButton}" Tag="General" Click="OnResetSection"
-                            ToolTip="{x:Static l:Strings.SetGeneralResetToolTip}" />
-                    <Button DockPanel.Dock="Right" Style="{StaticResource RevertButton}" Margin="8,0,0,0" Tag="General" Click="OnRevertSection"
+                <StackPanel Style="{StaticResource TabFooter}">
+                    <Button Style="{StaticResource RevertButton}" Tag="General" Click="OnRevertSection"
                             ToolTip="{x:Static l:Strings.SetGeneralRevertToolTip}" />
-                    <Button HorizontalAlignment="Left" Padding="10,3" Content="{x:Static l:Strings.SetResetAll}" Click="OnResetAll"
-                            ToolTip="{x:Static l:Strings.SetResetAllToolTip}" />
-                </DockPanel>
+                    <Button Style="{StaticResource ResetButton}" Tag="General" Click="OnResetSection"
+                            ToolTip="{x:Static l:Strings.SetGeneralResetToolTip}" />
+                </StackPanel>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
                         <GroupBox Header="{x:Static l:Strings.SetGroupOnOff}">
@@ -191,13 +179,27 @@
                                         ToolTip="{x:Static l:Strings.SetResetHotkeysToolTip}" />
                             </StackPanel>
                         </GroupBox>
+                        <!-- 設定の管理（V1.5.0。SPEC §10.2・§17.2）。エクスポートは確定済みの設定、インポートは編集中の値へ読み込む。 -->
+                        <GroupBox Header="{x:Static l:Strings.SetGroupManage}">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Padding="10,3" Content="{x:Static l:Strings.SetExport}" Click="OnExport"
+                                            ToolTip="{x:Static l:Strings.SetExportToolTip}" />
+                                    <Button Padding="10,3" Margin="8,0,0,0" Content="{x:Static l:Strings.SetImport}" Click="OnImport"
+                                            ToolTip="{x:Static l:Strings.SetImportToolTip}" />
+                                </StackPanel>
+                                <!-- 読み込む範囲（ショートカット・マウスボタン）はファイルを選んだ後の確認画面で選ぶ（ImportOptionsWindow） -->
+                                <Button HorizontalAlignment="Left" Margin="0,10,0,0" Padding="10,3" Content="{x:Static l:Strings.SetResetAll}" Click="OnResetAll"
+                                        ToolTip="{x:Static l:Strings.SetResetAllToolTip}" />
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
                 </ScrollViewer>
                 </DockPanel>
             </TabItem>
 
             <!-- Cursor Highlight -->
-            <TabItem Header="Cursor Highlight">
+            <TabItem Header="Cursor Highlight" x:Name="CursorTab">
                 <DockPanel>
                 <StackPanel Style="{StaticResource TabFooter}">
                     <Button Style="{StaticResource RevertButton}" Tag="CursorHighlight" Click="OnRevertSection" />
@@ -222,19 +224,20 @@
                             <ComboBoxItem Tag="{x:Static m:CursorHighlightStyle.FilledCircle}" Content="{x:Static l:Strings.SetShapeFilled}" />
                         </ComboBox>
                         <TextBlock Grid.Row="2" Text="{x:Static l:Strings.SetColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Color="{Binding Settings.CursorHighlight.Color}" />
-                        <TextBlock Grid.Row="3" Text="{x:Static l:Strings.SetOpacity}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetOpacityToolTip}" />
+                        <c:ColorField Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="CursorColor" Color="{Binding Settings.CursorHighlight.Color}" />
+                        <!-- 選んだ形で使わない項目は薄くして操作できなくする（V1.5.0。位置は動かさない）。リング: 不透明度・線幅、塗りつぶし円: 塗りの不透明度 -->
+                        <TextBlock Grid.Row="3" x:Name="RingOpacityLabel" Text="{x:Static l:Strings.SetOpacity}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetOpacityToolTip}" />
                         <Slider Grid.Row="3" Grid.Column="1" x:Name="RingOpacity" Minimum="0.1" Maximum="1" TickFrequency="0.05" Value="{Binding Settings.CursorHighlight.Opacity}" />
-                        <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingOpacity, StringFormat={}{0:P0}}" />
-                        <TextBlock Grid.Row="4" Text="{x:Static l:Strings.SetFillOpacity}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetFillOpacityToolTip}" />
+                        <TextBlock Grid.Row="3" Grid.Column="2" x:Name="RingOpacityValue" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingOpacity, StringFormat={}{0:P0}}" />
+                        <TextBlock Grid.Row="4" x:Name="RingFillOpacityLabel" Text="{x:Static l:Strings.SetFillOpacity}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetFillOpacityToolTip}" />
                         <Slider Grid.Row="4" Grid.Column="1" x:Name="RingFillOpacity" Minimum="0.05" Maximum="0.8" TickFrequency="0.05" Value="{Binding Settings.CursorHighlight.FillOpacity}" />
-                        <TextBlock Grid.Row="4" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingFillOpacity, StringFormat={}{0:P0}}" />
+                        <TextBlock Grid.Row="4" Grid.Column="2" x:Name="RingFillOpacityValue" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingFillOpacity, StringFormat={}{0:P0}}" />
                         <TextBlock Grid.Row="5" Text="{x:Static l:Strings.SetDiameter}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetDiameterToolTip}" />
                         <Slider Grid.Row="5" Grid.Column="1" x:Name="RingSize" Minimum="20" Maximum="300" TickFrequency="2" Value="{Binding Settings.CursorHighlight.Diameter}" />
                         <TextBlock Grid.Row="5" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingSize}" />
-                        <TextBlock Grid.Row="6" Text="{x:Static l:Strings.SetLineWidth}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetRingWidthToolTip}" />
+                        <TextBlock Grid.Row="6" x:Name="RingThicknessLabel" Text="{x:Static l:Strings.SetLineWidth}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetRingWidthToolTip}" />
                         <Slider Grid.Row="6" Grid.Column="1" x:Name="RingThickness" Minimum="1" Maximum="30" TickFrequency="1" Value="{Binding Settings.CursorHighlight.Thickness}" />
-                        <TextBlock Grid.Row="6" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingThickness}" />
+                        <TextBlock Grid.Row="6" Grid.Column="2" x:Name="RingThicknessValue" Style="{StaticResource Value}" Text="{Binding Value, ElementName=RingThickness}" />
                         <ContentControl Grid.Row="7" Grid.ColumnSpan="3" Margin="0,8,0,0" Content="{Binding Hotkeys.ToggleCursorHighlight}" ContentTemplate="{StaticResource HotkeyRow}" />
                         <TextBlock Grid.Row="8" Grid.ColumnSpan="3" Style="{StaticResource Help}" Text="{x:Static l:Strings.SetCursorHelp}" />
                     </Grid>
@@ -243,7 +246,7 @@
             </TabItem>
 
             <!-- Click Effect -->
-            <TabItem Header="Click Effect">
+            <TabItem Header="Click Effect" x:Name="ClickTab">
                 <DockPanel>
                 <StackPanel Style="{StaticResource TabFooter}">
                     <Button Style="{StaticResource RevertButton}" Tag="ClickEffect" Click="OnRevertSection" />
@@ -263,9 +266,9 @@
                         </Grid.RowDefinitions>
                         <CheckBox Grid.ColumnSpan="3" Content="{x:Static l:Strings.SetClickEnable}" IsChecked="{Binding Settings.ClickEffect.Enabled}" />
                         <TextBlock Grid.Row="1" Text="{x:Static l:Strings.SetLeftColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Color="{Binding Settings.ClickEffect.LeftColor}" />
+                        <c:ColorField Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ClickLeftColor" Color="{Binding Settings.ClickEffect.LeftColor}" />
                         <TextBlock Grid.Row="2" Text="{x:Static l:Strings.SetRightColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Color="{Binding Settings.ClickEffect.RightColor}" />
+                        <c:ColorField Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="ClickRightColor" Color="{Binding Settings.ClickEffect.RightColor}" />
                         <TextBlock Grid.Row="3" Text="{x:Static l:Strings.SetSize}" Style="{StaticResource Label}" />
                         <Slider Grid.Row="3" Grid.Column="1" x:Name="ClickSize" Minimum="20" Maximum="300" TickFrequency="2" Value="{Binding Settings.ClickEffect.Size}" />
                         <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=ClickSize}" />
@@ -286,7 +289,7 @@
             </TabItem>
 
             <!-- Laser -->
-            <TabItem Header="Laser">
+            <TabItem Header="Laser" x:Name="LaserTab">
                 <DockPanel>
                 <StackPanel Style="{StaticResource TabFooter}">
                     <Button Style="{StaticResource RevertButton}" Tag="Laser" Click="OnRevertSection" />
@@ -303,13 +306,13 @@
                             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <CheckBox Grid.ColumnSpan="3" IsChecked="{Binding Settings.Laser.Enabled}">
                             <TextBlock TextWrapping="Wrap" Text="{x:Static l:Strings.SetLaserEnable}" />
                         </CheckBox>
                         <TextBlock Grid.Row="1" Text="{x:Static l:Strings.SetColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Color="{Binding Settings.Laser.Color}" />
+                        <c:ColorField Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" x:Name="LaserColor" Color="{Binding Settings.Laser.Color}" />
                         <TextBlock Grid.Row="2" Text="{x:Static l:Strings.SetLineWidth}" Style="{StaticResource Label}" />
                         <Slider Grid.Row="2" Grid.Column="1" x:Name="LaserWidth" Minimum="2" Maximum="40" TickFrequency="1" Value="{Binding Settings.Laser.Width}" />
                         <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=LaserWidth}" />
@@ -326,19 +329,24 @@
                         <ContentControl Grid.Row="6" Grid.ColumnSpan="3" Margin="0,8,0,0" Content="{Binding Hotkeys.LaserHold}" ContentTemplate="{StaticResource HotkeyRow}" />
                         <ContentControl Grid.Row="7" Grid.ColumnSpan="3" Content="{Binding Hotkeys.ToggleLaser}" ContentTemplate="{StaticResource HotkeyRow}" />
                         <TextBlock Grid.Row="8" Text="{x:Static l:Strings.SetMouseButton}" Style="{StaticResource Label}" />
-                        <ComboBox Grid.Row="8" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding Settings.Laser.MouseButton}">
+                        <ComboBox Grid.Row="8" Grid.Column="1" x:Name="LaserMouseBox" SelectedValuePath="Tag" SelectedValue="{Binding Settings.Laser.MouseButton}">
                             <ComboBoxItem Tag="{x:Static m:MouseTriggerButton.None}" Content="{x:Static l:Strings.SetMouseNone}" />
                             <ComboBoxItem Tag="{x:Static m:MouseTriggerButton.XButton1}" Content="{x:Static l:Strings.SetLaserX1}" />
                             <ComboBoxItem Tag="{x:Static m:MouseTriggerButton.XButton2}" Content="{x:Static l:Strings.SetLaserX2}" />
                         </ComboBox>
-                        <TextBlock Grid.Row="9" Grid.ColumnSpan="3" Style="{StaticResource Help}" Text="{x:Static l:Strings.SetLaserHelp}" />
+                        <!-- 描画ショートカットとマウスボタンがどちらも未割当なら、描けないことを示す（V1.5.0。編集中の値で判断） -->
+                        <Border Grid.Row="9" Grid.ColumnSpan="3" x:Name="LaserNoTriggerNotice" Background="#FFF8E1" BorderBrush="#F9A825" BorderThickness="1"
+                                Padding="8" Margin="0,8,0,0" Visibility="Collapsed">
+                            <TextBlock TextWrapping="Wrap" Foreground="#6D4C00" Text="{x:Static l:Strings.SetLaserNoTrigger}" />
+                        </Border>
+                        <TextBlock Grid.Row="10" Grid.ColumnSpan="3" Style="{StaticResource Help}" Text="{x:Static l:Strings.SetLaserHelp}" />
                     </Grid>
                 </ScrollViewer>
                 </DockPanel>
             </TabItem>
 
             <!-- Magnifier -->
-            <TabItem Header="Magnifier">
+            <TabItem Header="Magnifier" x:Name="MagnifierTab">
                 <DockPanel>
                 <StackPanel Style="{StaticResource TabFooter}">
                     <Button Style="{StaticResource RevertButton}" Tag="Magnifier" Click="OnRevertSection" />
@@ -371,7 +379,7 @@
                         <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=MagHeight}" />
                         <ContentControl Grid.Row="4" Grid.ColumnSpan="3" Margin="0,8,0,0" Content="{Binding Hotkeys.ToggleMagnifier}" ContentTemplate="{StaticResource HotkeyRow}" />
                         <TextBlock Grid.Row="5" Text="{x:Static l:Strings.SetMouseButton}" Style="{StaticResource Label}" />
-                        <ComboBox Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding Settings.Magnifier.MouseButton}">
+                        <ComboBox Grid.Row="5" Grid.Column="1" x:Name="MagMouseBox" SelectedValuePath="Tag" SelectedValue="{Binding Settings.Magnifier.MouseButton}">
                             <ComboBoxItem Tag="{x:Static m:MouseTriggerButton.None}" Content="{x:Static l:Strings.SetMouseNone}" />
                             <ComboBoxItem Tag="{x:Static m:MouseTriggerButton.XButton1}" Content="{x:Static l:Strings.SetMagX1}" />
                             <ComboBoxItem Tag="{x:Static m:MouseTriggerButton.XButton2}" Content="{x:Static l:Strings.SetMagX2}" />
@@ -383,7 +391,7 @@
             </TabItem>
 
             <!-- Key Display -->
-            <TabItem Header="Key Display">
+            <TabItem Header="Key Display" x:Name="KeyDisplayTab">
                 <DockPanel>
                 <StackPanel Style="{StaticResource TabFooter}">
                     <Button Style="{StaticResource RevertButton}" Tag="KeyDisplay" Click="OnRevertSection" />
@@ -406,11 +414,13 @@
                         <Border Grid.ColumnSpan="3" Background="#FFEBEE" BorderBrush="#C62828" BorderThickness="1" Padding="8" Margin="0,0,0,8">
                             <TextBlock TextWrapping="Wrap" Foreground="#B71C1C" Text="{x:Static l:Strings.SetKeyWarning}" />
                         </Border>
-                        <TextBlock Grid.Row="1" Text="{x:Static l:Strings.SetKeyCurrent}" Style="{StaticResource Label}" />
-                        <ComboBox Grid.Row="1" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding KeyDisplayMode}">
-                            <ComboBoxItem Tag="{x:Static m:KeyDisplayMode.Off}" Content="OFF" />
-                            <ComboBoxItem Tag="{x:Static m:KeyDisplayMode.FullText}" Content="{x:Static l:Strings.SetKeyOn}" />
-                        </ComboBox>
+                        <!-- ON/OFF は他の機能と同じチェックボックス（V1.5.0）。General の ON/OFF 欄には置かない（起動時は常に OFF の機能のため） -->
+                        <CheckBox Grid.Row="1" Grid.ColumnSpan="3" IsChecked="{Binding KeyDisplayEnabled}">
+                            <TextBlock TextWrapping="Wrap" Text="{x:Static l:Strings.SetKeyEnable}" />
+                        </CheckBox>
+                        <!-- 見本（V1.5.0）。決まった文字で文字サイズ・色・背景を確かめる。キー入力は読まない（ON にしなくても使える） -->
+                        <TextBlock Grid.Row="2" Text="{x:Static l:Strings.SetKeySample}" Style="{StaticResource Label}" VerticalAlignment="Top" />
+                        <c:KeyDisplayPreviewBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyPreview" Margin="0,6" />
                         <TextBlock Grid.Row="3" Text="{x:Static l:Strings.SetFontSize}" Style="{StaticResource Label}" />
                         <Slider Grid.Row="3" Grid.Column="1" x:Name="KeyFont" Minimum="16" Maximum="120" TickFrequency="2" Value="{Binding Settings.KeyDisplay.FontSize}" />
                         <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyFont}" />
@@ -424,9 +434,9 @@
                             <ComboBoxItem Tag="{x:Static m:KeyDisplayPosition.TopRight}" Content="{x:Static l:Strings.SetPosTopRight}" />
                         </ComboBox>
                         <TextBlock Grid.Row="5" Text="{x:Static l:Strings.SetTextColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Color="{Binding Settings.KeyDisplay.TextColor}" />
+                        <c:ColorField Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyTextColor" Color="{Binding Settings.KeyDisplay.TextColor}" />
                         <TextBlock Grid.Row="6" Text="{x:Static l:Strings.SetBackColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Color="{Binding Settings.KeyDisplay.BackgroundColor}" />
+                        <c:ColorField Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyBackColor" Color="{Binding Settings.KeyDisplay.BackgroundColor}" />
                         <TextBlock Grid.Row="7" Text="{x:Static l:Strings.SetBackOpacity}" Style="{StaticResource Label}" />
                         <Slider Grid.Row="7" Grid.Column="1" x:Name="KeyBgOpacity" Minimum="0" Maximum="1" TickFrequency="0.05" Value="{Binding Settings.KeyDisplay.BackgroundOpacity}" />
                         <TextBlock Grid.Row="7" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyBgOpacity, StringFormat={}{0:P0}}" />
@@ -443,6 +453,39 @@
                     </Grid>
                 </ScrollViewer>
                 </DockPanel>
+            </TabItem>
+
+            <!-- About（V1.5.0。SPEC §10.2）。アプリ名・バージョン・© ja1bus・取扱説明書・ライセンス表記を集める。タブ名は他のタブと同じく英語のまま。 -->
+            <TabItem Header="About" x:Name="AboutTab">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="16">
+                        <TextBlock Text="PresenterTools" FontSize="20" FontWeight="SemiBold" />
+                        <TextBlock x:Name="VersionText" Margin="0,4,0,0" Foreground="#555" />
+                        <TextBlock Text="© ja1bus" Margin="0,2,0,0" Foreground="#555" />
+                        <!-- 取扱説明書は Web にだけ置く。表示言語に合わせた URL を既定のブラウザーで開く（SPEC §10.2）。 -->
+                        <TextBlock Margin="0,16,0,0">
+                            <Hyperlink x:Name="ManualLink" Click="OnOpenManual">
+                                <Run Text="{x:Static l:Strings.SetManualLink}" />
+                            </Hyperlink>
+                        </TextBlock>
+                        <!-- ライセンス表記（V1.4.0。SPEC §10.2）。全文は同梱の LICENSE をこの画面から表示し、Web だけに頼らない。 -->
+                        <TextBlock Margin="0,8,0,0">
+                            <Hyperlink Click="OnShowLicense" ToolTip="{x:Static l:Strings.SetLicenseToolTip}">
+                                <Run Text="{x:Static l:Strings.SetLicenseLink}" />
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="0,8,0,0">
+                            <Hyperlink x:Name="SourceLink" Click="OnOpenSource">
+                                <Run Text="{x:Static l:Strings.SetSourceLink}" />
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="0,8,0,0">
+                            <Hyperlink Click="OnOpenNotices" ToolTip="{x:Static l:Strings.SetNoticesToolTip}">
+                                <Run Text="{x:Static l:Strings.SetNoticesLink}" />
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </DockPanel>

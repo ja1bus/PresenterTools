@@ -47,9 +47,12 @@ public sealed class GeneralSettings
 /// <summary>ショートカットは "Ctrl+Shift+F9" 形式の文字列。空文字は未割当。</summary>
 public sealed class HotkeySettings
 {
-    public string ToggleMaster { get; set; } = "Ctrl+Shift+F9";
-    public string ShowControlPanel { get; set; } = "Ctrl+Shift+F10";
-    // 以下の既定は未割当（SPEC §11.1・D-32）。利用者が押しやすい空きキーを選んで割り当てる。
+    // 既定はすべて未割当（SPEC §11.1・D-32）。利用者が押しやすい空きキーを選んで割り当てる。
+    // V1.5.0 で Master（旧既定 Ctrl+Shift+F9）と操作パネルを表示（旧既定 Ctrl+Shift+F10）も未割当にした。
+    // 操作パネルは起動時に表示し、閉じた後も再起動（起動中のパネルを前面に出す）・トレイから出せる。
+    // 既存の設定ファイルに保存済みの割り当て（旧既定を含む）はそのまま読む。
+    public string ToggleMaster { get; set; } = "";
+    public string ShowControlPanel { get; set; } = "";
     public string ToggleCursorHighlight { get; set; } = "";
     public string ToggleClickEffect { get; set; } = "";
     public string ToggleLaser { get; set; } = "";

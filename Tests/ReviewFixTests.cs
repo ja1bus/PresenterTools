@@ -115,7 +115,7 @@ public sealed class ReviewFixTests
         var result = edit.Build(current, false, KeyDisplayMode.Off);
         Assert.True(result.Settings.General.MasterEnabled);
         Assert.True(result.Settings.CursorHighlight.Enabled);
-        Assert.Equal("Ctrl+Shift+F9", result.Settings.Hotkeys.ToggleMaster);
+        Assert.Equal("", result.Settings.Hotkeys.ToggleMaster); // 開いたときの値（既定の未割当）
         Assert.True(result.MagnifierEnabled);
         Assert.Equal(KeyDisplayMode.Off, result.KeyDisplayMode);
     }

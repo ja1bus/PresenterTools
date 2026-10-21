@@ -8,6 +8,7 @@ using PresenterTools.Core.Geometry;
 using PresenterTools.Core.Input;
 using PresenterTools.Core.Localization;
 using PresenterTools.Core.Models;
+using PresenterTools.Core.Settings;
 using PresenterTools.Core.State;
 using PresenterTools.Services;
 using static PresenterTools.Interop.NativeMethods;
@@ -128,6 +129,8 @@ public partial class ControlPanelWindow : Window
             _ => s.LaserEnabled ? ("READY", ReadyBrush) : ("OFF", OffBrush),
         };
         SetButton(LaserButton, master ? laserText : laserText + "  (Master OFF)", laserBrush, !master);
+        // Laser が ON でも描く操作が 1 つも無ければ描けないので、設定へ案内する（V1.5.0）。
+        LaserSetupNotice.Visibility = s.LaserEnabled && !SettingsValidator.HasLaserTrigger(settings) ? Visibility.Visible : Visibility.Collapsed;
 
         var zoom = settings.Magnifier.ZoomPercent;
         SetButton(MagnifierButton, s.MagnifierEnabled ? $"ON  {zoom}%" + (master ? "" : "  (Master OFF)") : OnOff(false, master),
@@ -320,6 +323,8 @@ public partial class ControlPanelWindow : Window
     private void OnKeyDisplayClick(object sender, RoutedEventArgs e) => _host.State.ToggleKeyDisplay();
     private void OnPinClick(object sender, RoutedEventArgs e) => _host.SetAlwaysOnTop(PinButton.IsChecked == true);
     private void OnSettingsClick(object sender, RoutedEventArgs e) => _host.ShowSettings();
+
+    private void OnLaserSetupClick(object sender, RoutedEventArgs e) => _host.ShowSettings(SettingsSection.Laser);
     private void OnExitClick(object sender, RoutedEventArgs e) => _host.Exit();
 
     private void OnZoomClick(object sender, RoutedEventArgs e)

@@ -123,6 +123,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" VerticalAlignment="Center" Margin="0,0,6,0">
@@ -148,23 +149,29 @@
                 <TextBlock x:Name="LaserHint" Style="{StaticResource HintText}" />
             </StackPanel>
             <Button Grid.Row="3" Grid.Column="1" x:Name="LaserButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnLaserClick" />
+            <!-- Laser を描く操作（描画ショートカット・マウスボタン）が無いときだけ出す（V1.5.0。SPEC §10.1） -->
+            <!-- 文全体をリンクにし、押すと設定画面の Laser タブを開く -->
+            <TextBlock Grid.Row="4" Grid.Column="1" x:Name="LaserSetupNotice" Margin="0,0,0,2" FontSize="11"
+                       TextWrapping="Wrap" Visibility="Collapsed">
+                <Hyperlink Click="OnLaserSetupClick" Foreground="#8A4B00"><Run Text="{x:Static l:Strings.PanelLaserNoTrigger}" /></Hyperlink>
+            </TextBlock>
 
-            <StackPanel Grid.Row="4" VerticalAlignment="Center" Margin="0,0,6,0">
+            <StackPanel Grid.Row="5" VerticalAlignment="Center" Margin="0,0,6,0">
                 <TextBlock Text="Magnifier" Style="{StaticResource RowLabel}" />
                 <TextBlock x:Name="MagnifierHint" Style="{StaticResource HintText}" />
             </StackPanel>
-            <Button Grid.Row="4" Grid.Column="1" x:Name="MagnifierButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnMagnifierClick" />
-            <UniformGrid Grid.Row="5" Grid.Column="1" Rows="1" Margin="-4,0,0,2">
+            <Button Grid.Row="5" Grid.Column="1" x:Name="MagnifierButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnMagnifierClick" />
+            <UniformGrid Grid.Row="6" Grid.Column="1" Rows="1" Margin="-4,0,0,2">
                 <Button x:Name="Zoom200" Style="{StaticResource SmallButton}" Padding="0" Content="200%" Tag="200" Click="OnZoomClick" />
                 <Button x:Name="Zoom300" Style="{StaticResource SmallButton}" Padding="0" Content="300%" Tag="300" Click="OnZoomClick" />
                 <Button x:Name="Zoom400" Style="{StaticResource SmallButton}" Padding="0" Content="400%" Tag="400" Click="OnZoomClick" />
             </UniformGrid>
 
-            <StackPanel Grid.Row="6" VerticalAlignment="Center" Margin="0,0,6,0">
+            <StackPanel Grid.Row="7" VerticalAlignment="Center" Margin="0,0,6,0">
                 <TextBlock Text="Key Display" Style="{StaticResource RowLabel}" />
                 <TextBlock x:Name="KeyDisplayHint" Style="{StaticResource HintText}" />
             </StackPanel>
-            <Button Grid.Row="6" Grid.Column="1" x:Name="KeyDisplayButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnKeyDisplayClick" />
+            <Button Grid.Row="7" Grid.Column="1" x:Name="KeyDisplayButton" Style="{StaticResource StateButton}" Margin="0,2" Click="OnKeyDisplayClick" />
         </Grid>
     </DockPanel>
 </Window>

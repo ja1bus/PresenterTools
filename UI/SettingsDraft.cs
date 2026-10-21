@@ -14,6 +14,7 @@ public sealed class HotkeyEntry : INotifyPropertyChanged
     private string _shortcut;
     private string _status = "";
     private bool _isError;
+    private bool _hasProblem;
 
     public HotkeyEntry(HotkeyAction action, string shortcut)
     {
@@ -48,12 +49,29 @@ public sealed class HotkeyEntry : INotifyPropertyChanged
         private set => Set(ref _isError, value);
     }
 
+    /// <summary>入力欄を強調する（入力規則・重複の問題がある。V1.5.0）。</summary>
+    public bool HasProblem
+    {
+        get => _hasProblem;
+        private set => Set(ref _hasProblem, value);
+    }
+
     /// <summary>状態の再計算を依頼する先（SettingsDraft が設定）。</summary>
     internal Action<HotkeyEntry>? StatusSource { get; set; }
 
-    /// <summary>現在登録されているものと比べて状態を表示する。</summary>
-    public void UpdateStatus(HotkeyRegistration? registration)
+    /// <summary>
+    /// 現在登録されているものと比べて状態を表示する。<paramref name="problem"/> は編集中の値の入力規則・重複の問題
+    /// （V1.5.0。適用する前に、どの欄を直せばよいかを示す）。
+    /// </summary>
+    public void UpdateStatus(HotkeyRegistration? registration, string? problem = null)
     {
+        HasProblem = problem is not null;
+        if (problem is not null)
+        {
+            Status = problem;
+            IsError = true;
+            return;
+        }
         var applied = registration?.Shortcut.ToString() ?? "";
         var normalized = Core.Input.Shortcut.TryParse(Shortcut, out var sc) ? sc.ToString() : Shortcut;
         if (normalized != applied)
@@ -141,12 +159,15 @@ public sealed class SettingsDraft : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Settings)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MagnifierEnabled)));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KeyDisplayMode)));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KeyDisplayEnabled)));
     }
 
     public void ResetSection(SettingsSection section) => Edit(() => _session.ResetSection(section));
     public void RevertSection(SettingsSection section) => Edit(() => _session.RevertSection(section));
     public void ResetHotkeys() => Edit(_session.ResetHotkeys);
     public void ResetAll() => Edit(_session.ResetAll);
+    public void Import(AppSettings imported, bool includeHotkeys, bool includeMouseButtons) =>
+        Edit(() => _session.Import(imported, includeHotkeys, includeMouseButtons));
 
     public bool MagnifierEnabled
     {
@@ -167,13 +188,28 @@ public sealed class SettingsDraft : INotifyPropertyChanged
             if (_session.KeyDisplayMode == value) return;
             _session.KeyDisplayMode = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KeyDisplayMode)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(KeyDisplayEnabled)));
         }
+    }
+
+    /// <summary>Key Display タブのチェックボックス用（V1.5.0。ON は全文表示の FullText）。</summary>
+    public bool KeyDisplayEnabled
+    {
+        get => KeyDisplayMode != KeyDisplayMode.Off;
+        set => KeyDisplayMode = value ? KeyDisplayMode.FullText : KeyDisplayMode.Off;
     }
 
     public SettingsEditResult Build(AppSettings current, bool magnifier, KeyDisplayMode keyDisplay)
     {
         _session.Settings.Hotkeys = Hotkeys.ToSettings();
         return _session.Build(current, magnifier, keyDisplay);
+    }
+
+    /// <summary>［適用］すると今の動作・設定が変わるか（<see cref="SettingsEditSession.HasChanges"/>）。</summary>
+    public bool HasChanges(AppSettings current, bool magnifier, KeyDisplayMode keyDisplay)
+    {
+        _session.Settings.Hotkeys = Hotkeys.ToSettings();
+        return _session.HasChanges(current, magnifier, keyDisplay);
     }
 
     public void Accept(SettingsEditResult applied)

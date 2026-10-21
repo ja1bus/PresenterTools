@@ -157,8 +157,8 @@ Open this address in your browser:
   <data name="SetShowShortcutsInPanel" xml:space="preserve"><value>Show the assigned shortcut under each item of the control panel</value></data>
   <data name="SetGroupHotkeys" xml:space="preserve"><value>Global shortcuts</value></data>
   <data name="SetHotkeysHelp" xml:space="preserve"><value>Click a box and press the keys to set a shortcut (Backspace / Delete clears it). Combine the key with Ctrl, Alt, or Win (F13–F24 can be used alone). While a box is selected, all PresenterTools shortcuts are paused. Keys you assign can no longer be used in other apps.</value></data>
-  <data name="SetResetHotkeys" xml:space="preserve"><value>Reset shortcuts to defaults</value></data>
-  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>Resets all shortcuts to the defaults. They are registered again when you click Apply or OK, so check the result in the status column.</value></data>
+  <data name="SetResetHotkeys" xml:space="preserve"><value>Clear all shortcuts</value></data>
+  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>Clears all shortcuts (the default is no shortcuts). Click Apply or OK to use this, or Cancel to discard.</value></data>
 
   <!-- 設定画面: Cursor Highlight -->
   <data name="SetCursorEnable" xml:space="preserve"><value>Use Cursor Highlight</value></data>
@@ -206,8 +206,6 @@ Open this address in your browser:
 
   <!-- 設定画面: Key Display -->
   <data name="SetKeyWarning" xml:space="preserve"><value>While ON, everything you type is shown on the screen, including passwords. Key Display is always OFF at startup. Turn it OFF before you type passwords or anything you do not want to show.</value></data>
-  <data name="SetKeyCurrent" xml:space="preserve"><value>Current ON/OFF</value></data>
-  <data name="SetKeyOn" xml:space="preserve"><value>ON (show everything typed)</value></data>
   <data name="SetFontSize" xml:space="preserve"><value>Font size</value></data>
   <data name="SetPosition" xml:space="preserve"><value>Position</value></data>
   <data name="SetPosBottomCenter" xml:space="preserve"><value>Bottom center</value></data>
@@ -226,9 +224,9 @@ Open this address in your browser:
   <!-- 設定画面: 操作後の通知・検証（SettingsWindow.xaml.cs） -->
   <data name="NoticeTabReset" xml:space="preserve"><value>This tab was reset to the defaults</value></data>
   <data name="NoticeTabReverted" xml:space="preserve"><value>This tab was restored to the values when Settings was opened</value></data>
-  <data name="NoticeHotkeysReset" xml:space="preserve"><value>The shortcuts were reset to the defaults</value></data>
+  <data name="NoticeHotkeysReset" xml:space="preserve"><value>All shortcuts were cleared</value></data>
   <data name="NoticeAllReset" xml:space="preserve"><value>All settings were reset to the defaults</value></data>
-  <data name="NoticeNotAppliedFormat" xml:space="preserve"><value>{0} (click Apply or OK to use them, or Cancel to discard).</value></data>
+  <data name="NoticeNotAppliedFormat" xml:space="preserve"><value>{0} (not applied yet).</value></data>
   <data name="ValidationHeader" xml:space="preserve"><value>Please check the following items.</value></data>
   <data name="ValidationColorFormat" xml:space="preserve"><value>• {0}: "{1}" is not a valid color (use the #RRGGBB format)</value></data>
   <data name="ValidationHotkeyFormat" xml:space="preserve"><value>• Shortcut "{0}": {1}</value></data>
@@ -260,4 +258,54 @@ The settings were saved, but these shortcuts will not work.
 Restart PresenterTools now?</value></data>
   <data name="RestartPromptStateReset" xml:space="preserve"><value>After the restart, Key Display and Magnifier will be OFF, and Laser drawing will stop.</value></data>
   <data name="RestartFailed" xml:space="preserve"><value>PresenterTools could not be restarted. Please exit PresenterTools and start it again.</value></data>
+
+  <!-- 未適用の変更・［キャンセル］（V1.5.0。SettingsWindow） -->
+  <data name="SetCancelToolTip" xml:space="preserve"><value>Closes without applying the pending changes. Changes already applied with Apply are not undone.</value></data>
+  <data name="PendingChanges" xml:space="preserve"><value>There are pending changes. Click Apply or OK to use them, or Cancel to discard them.</value></data>
+  <data name="PendingChangesAfterApply" xml:space="preserve"><value>There are pending changes. Click Apply or OK to use them. Cancel discards only the pending changes; changes already applied are kept.</value></data>
+  <data name="PendingRetry" xml:space="preserve"><value>Saving the settings or registering a shortcut failed. After removing the cause, click Apply to try again.</value></data>
+  <data name="PendingNoneAfterApply" xml:space="preserve"><value>The changes have been applied. Closing with Cancel does not undo them.</value></data>
+  <data name="HotkeyFailuresRetryHint" xml:space="preserve"><value>Change or clear these shortcuts in Settings. If you closed the app that uses them, click Apply to register them again.</value></data>
+  <!-- About タブ（V1.5.0） -->
+  <data name="AboutVersionFormat" xml:space="preserve"><value>Version {0}</value></data>
+  <!-- Key Display の ON/OFF と見本（V1.5.0） -->
+  <data name="SetKeyEnable" xml:space="preserve"><value>Turn Key Display ON (shows everything you type)</value></data>
+  <data name="SetKeySample" xml:space="preserve"><value>Sample</value></data>
+  <data name="KeySampleText" xml:space="preserve"><value>Sample</value></data>
+  <!-- Laser の操作が未設定のときの案内（V1.5.0。SettingsWindow・ControlPanelWindow） -->
+  <data name="SetLaserNoTrigger" xml:space="preserve"><value>To draw with Laser, set a Laser drawing shortcut or a mouse button.</value></data>
+  <data name="PanelLaserNoTrigger" xml:space="preserve"><value>Set up a way to draw</value></data>
+  <!-- 設定の管理（エクスポート・インポート。V1.5.0。SettingsWindow） -->
+  <data name="SetGroupManage" xml:space="preserve"><value>Manage settings</value></data>
+  <data name="SetExport" xml:space="preserve"><value>Export...</value></data>
+  <data name="SetExportToolTip" xml:space="preserve"><value>Saves the applied settings to a file. Pending changes are not included.</value></data>
+  <data name="SetImport" xml:space="preserve"><value>Import...</value></data>
+  <data name="SetImportToolTip" xml:space="preserve"><value>Loads settings from an exported file into this screen. Click Apply or OK to use them.</value></data>
+  <data name="SetImportHotkeys" xml:space="preserve"><value>Also import shortcuts</value></data>
+  <data name="SetImportMouseButtons" xml:space="preserve"><value>Also import mouse button assignments</value></data>
+  <data name="SetImportNote" xml:space="preserve"><value>The display language, the ON/OFF of each feature, and the position and size of the control panel are kept as they are on this PC. Shortcuts and mouse buttons are kept unless checked above. The settings are loaded into the Settings screen; click Apply or OK to use them.</value></data>
+  <data name="ImportConfirm" xml:space="preserve"><value>Import</value></data>
+  <data name="ImportSourceFormat" xml:space="preserve"><value>Exported by PresenterTools {0} on {1}</value></data>
+  <data name="TransferFileFilter" xml:space="preserve"><value>PresenterTools settings (*.json)|*.json</value></data>
+  <data name="ExportDialogTitle" xml:space="preserve"><value>Export settings</value></data>
+  <data name="ExportPendingPrompt" xml:space="preserve"><value>There are pending changes. The export contains only the applied settings.
+
+Click OK to export the applied settings. To include the pending changes, click Cancel, click Apply, and then export again.</value></data>
+  <data name="ExportFailedFormat" xml:space="preserve"><value>The settings could not be exported.
+
+File: {0}
+{1}</value></data>
+  <data name="NoticeExportedFormat" xml:space="preserve"><value>The settings were exported: {0}</value></data>
+  <data name="ImportDialogTitle" xml:space="preserve"><value>Import settings</value></data>
+  <data name="ImportFailedFormat" xml:space="preserve"><value>The settings could not be imported.
+{0}
+
+File: {1}</value></data>
+  <data name="ImportErrorTooLarge" xml:space="preserve"><value>The file is too large to be a PresenterTools settings file.</value></data>
+  <data name="ImportErrorNotJson" xml:space="preserve"><value>The file is not a valid JSON file.</value></data>
+  <data name="ImportErrorNotExportFile" xml:space="preserve"><value>The file is not a settings file exported from PresenterTools. Other JSON files, including settings.json, cannot be imported.</value></data>
+  <data name="ImportErrorNewerFormat" xml:space="preserve"><value>The file was made by a newer version of PresenterTools ({0}) and cannot be read by this version. Please update PresenterTools.</value></data>
+  <data name="ImportErrorInvalid" xml:space="preserve"><value>The settings in the file could not be read.</value></data>
+  <data name="NoticeImportedFormat" xml:space="preserve"><value>The settings were loaded from {0}</value></data>
+  <data name="NoticeImportCorrected" xml:space="preserve"><value> (some values were out of range and were corrected)</value></data>
 </root>

@@ -62,6 +62,13 @@ public sealed class ColorField : StackPanel
         set => SetValue(ColorProperty, value);
     }
 
+    /// <summary>入力欄へフォーカスを移し、入力済みの文字を選ぶ（設定エラーの欄を示すとき。V1.5.0）。</summary>
+    public void FocusInput()
+    {
+        _text.Focus();
+        _text.SelectAll();
+    }
+
     private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var field = (ColorField)d;

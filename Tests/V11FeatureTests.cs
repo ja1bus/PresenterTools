@@ -101,7 +101,7 @@ public sealed class V11FeatureTests : IDisposable
     [Fact]
     public void NewHotkeys_DuplicateWithExistingIsDetectedAndFixed()
     {
-        var h = new HotkeySettings { ToggleCursorHighlight = "Ctrl+Shift+F9" }; // Master と重複
+        var h = new HotkeySettings { ToggleMaster = "Ctrl+Shift+F9", ToggleCursorHighlight = "Ctrl+Shift+F9" }; // Master と重複
         Assert.Contains(HotkeyBindings.Validate(h), i => i.Action == HotkeyAction.ToggleCursorHighlight);
 
         var s = new AppSettings { Hotkeys = h };
@@ -201,7 +201,7 @@ public sealed class V11FeatureTests : IDisposable
     {
         var s = Customized();
         SettingsReset.ResetHotkeys(s);
-        Assert.Equal("Ctrl+Shift+F9", s.Hotkeys.ToggleMaster);
+        Assert.Equal("", s.Hotkeys.ToggleMaster); // 既定（V1.5.0 から未割当）
         Assert.Equal("", s.Hotkeys.ToggleCursorHighlight);
         Assert.Equal(150, s.CursorHighlight.Diameter);
     }
@@ -214,7 +214,7 @@ public sealed class V11FeatureTests : IDisposable
         Assert.True(s.General.MasterEnabled);
         Assert.True(s.CursorHighlight.Enabled);
         Assert.True(s.Laser.Enabled);
-        Assert.Equal("Ctrl+Shift+F9", s.Hotkeys.ToggleMaster);
+        Assert.Equal("", s.Hotkeys.ToggleMaster);
         Assert.Equal(64, s.CursorHighlight.Diameter);
         Assert.Equal(MouseTriggerButton.None, s.Laser.MouseButton);
         Assert.Equal(100, s.ControlPanel.Left);
@@ -229,7 +229,7 @@ public sealed class V11FeatureTests : IDisposable
     public void Hints_AlwaysFullNotation()
     {
         // V1.2: 修飾キーが共通でも見出しにまとめず、各項目を正式な表記にする（D-30）。
-        var h = new HotkeySettings { ToggleLaser = "Ctrl+Shift+F4", LaserHold = "Ctrl+Shift+F1", ToggleMagnifier = "Ctrl+Alt+Z" };
+        var h = new HotkeySettings { ToggleMaster = "Ctrl+Shift+F9", ShowControlPanel = "Ctrl+Shift+F10", ToggleLaser = "Ctrl+Shift+F4", LaserHold = "Ctrl+Shift+F1", ToggleMagnifier = "Ctrl+Alt+Z" };
         var hints = ShortcutHints.Build(HotkeyBindings.Parse(h), PanelActions);
         Assert.Equal("Ctrl+Shift+F9", hints[HotkeyAction.ToggleMaster]);
         Assert.Equal("Ctrl+Shift+F4", hints[HotkeyAction.ToggleLaser]);

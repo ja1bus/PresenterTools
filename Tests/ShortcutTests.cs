@@ -83,11 +83,11 @@ public sealed class ShortcutTests
     [Fact]
     public void HotkeyBindings_ParseSkipsUnassigned()
     {
-        var h = new HotkeySettings { ToggleLaser = "Ctrl+Shift+F4", ToggleMagnifier = "" };
+        var h = new HotkeySettings { ToggleMaster = "Ctrl+Shift+F9", ShowControlPanel = "Ctrl+Shift+F10", ToggleLaser = "Ctrl+Shift+F4", ToggleMagnifier = "" };
         var map = HotkeyBindings.Parse(h);
         Assert.False(map.ContainsKey(HotkeyAction.ToggleMagnifier));
         Assert.Equal(new Shortcut(KeyModifiers.Control | KeyModifiers.Shift, 0x78), map[HotkeyAction.ToggleMaster]);
-        Assert.Equal(3, map.Count); // Master・操作パネル（既定）＋ Laser ON/OFF
+        Assert.Equal(3, map.Count); // Master・操作パネル・Laser ON/OFF
     }
 
     [Fact]

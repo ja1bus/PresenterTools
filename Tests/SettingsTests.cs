@@ -24,7 +24,7 @@ public sealed class SettingsTests : IDisposable
         Assert.True(s.General.AlwaysOnTop);
         Assert.Equal(300, s.Magnifier.ZoomPercent);
         Assert.Equal(0.8, s.Laser.TrailSeconds);
-        Assert.Equal("Ctrl+Shift+F9", s.Hotkeys.ToggleMaster);
+        Assert.Equal("", s.Hotkeys.ToggleMaster); // V1.5.0 から既定はすべて未割当
         Assert.Equal("", s.Hotkeys.LaserHold); // V1.2 から既定は未割当
         Assert.Empty(HotkeyBindings.Validate(s.Hotkeys));
     }
@@ -79,7 +79,7 @@ public sealed class SettingsTests : IDisposable
         var json = File.ReadAllText(FilePath);
         Assert.Contains("\"position\": \"BottomCenter\"", json);
         Assert.Contains("\"mouseButton\": \"None\"", json);
-        Assert.Contains("\"toggleMaster\": \"Ctrl+Shift+F9\"", json);
+        Assert.Contains("\"toggleMaster\": \"\"", json);
     }
 
     [Fact]
@@ -200,9 +200,9 @@ public sealed class SettingsTests : IDisposable
         var s = new AppSettings();
         var c = s.Clone();
         c.CursorHighlight.Diameter = 200;
-        c.Hotkeys.ToggleMaster = "";
+        c.Hotkeys.ToggleMaster = "Ctrl+Alt+M";
         Assert.Equal(64, s.CursorHighlight.Diameter);
-        Assert.Equal("Ctrl+Shift+F9", s.Hotkeys.ToggleMaster);
+        Assert.Equal("", s.Hotkeys.ToggleMaster);
     }
 
     [Theory]

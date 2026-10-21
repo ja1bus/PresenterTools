@@ -38,6 +38,64 @@ public sealed class SettingsEditSession
             _forceKeyDisplay || KeyDisplayMode != _baseline.KeyDisplayMode ? KeyDisplayMode : keyDisplay);
     }
 
+    /// <summary>
+    /// ［適用］すると今の動作・設定が変わるか（V1.5.0。未適用の変更の表示と［適用］の有効化に使う）。
+    /// 編集中の値ではなく <see cref="Build"/> の結果を確定済みの値と比べる。設定画面を開いている間に操作パネルなどで
+    /// ON/OFF を変えても、触っていない項目を未適用の変更と数えないため。
+    /// </summary>
+    public bool HasChanges(AppSettings current, bool magnifier, KeyDisplayMode keyDisplay)
+    {
+        var pending = Build(current, magnifier, keyDisplay);
+        if (pending.MagnifierEnabled != magnifier || pending.KeyDisplayMode != keyDisplay) return true;
+        var a = ToNode(pending.Settings);
+        var b = ToNode(current);
+        foreach (var key in new[] { "controlPanel", "schemaVersion" })
+        {
+            a.Remove(key);
+            b.Remove(key);
+        }
+        return !JsonNode.DeepEquals(a, b);
+    }
+
+    /// <summary>
+    /// インポートしたファイルの設定を編集中の値へ読み込む（V1.5.0。SPEC §10.2）。確定は［適用］／［OK］で行う。
+    /// 表示言語・各機能の ON/OFF・操作パネルの位置とサイズは、この PC の状態を残す。
+    /// ショートカットとマウスボタンの割り当ては、指定したときだけ読み込む（既定は残す。PC ごとに空きキーが違うため）。
+    /// </summary>
+    public void Import(AppSettings imported, bool includeHotkeys, bool includeMouseButtons)
+    {
+        var s = Settings.Clone();
+        var i = imported.Clone();
+        s.General = new GeneralSettings
+        {
+            MasterEnabled = s.General.MasterEnabled,
+            Language = s.General.Language,
+            AlwaysOnTop = i.General.AlwaysOnTop,
+            HideOwnShortcutsInKeyDisplay = i.General.HideOwnShortcutsInKeyDisplay,
+            ShowShortcutsInPanel = i.General.ShowShortcutsInPanel,
+        };
+        i.CursorHighlight.Enabled = s.CursorHighlight.Enabled;
+        s.CursorHighlight = i.CursorHighlight;
+        i.ClickEffect.Enabled = s.ClickEffect.Enabled;
+        s.ClickEffect = i.ClickEffect;
+        i.Laser.Enabled = s.Laser.Enabled;
+        if (!includeMouseButtons) i.Laser.MouseButton = s.Laser.MouseButton;
+        s.Laser = i.Laser;
+        if (!includeMouseButtons) i.Magnifier.MouseButton = s.Magnifier.MouseButton;
+        s.Magnifier = i.Magnifier;
+        s.KeyDisplay = i.KeyDisplay;
+        if (includeHotkeys) s.Hotkeys = i.Hotkeys;
+        Settings = s;
+
+        // 読み込んだ項目は、確定済みの値と同じでも編集として扱う（既定値に戻す操作と同じ）。
+        var node = ToNode(Settings);
+        var keep = new HashSet<string> { "enabled", "masterEnabled", "language" };
+        if (!includeMouseButtons) keep.Add("mouseButton");
+        foreach (var section in new[] { "general", "cursorHighlight", "clickEffect", "laser", "magnifier", "keyDisplay" })
+            ForceLeaves(node[section]!.AsObject(), section, keep);
+        if (includeHotkeys) ForceLeaves(node["hotkeys"]!.AsObject(), "hotkeys");
+    }
+
     // 保存に失敗しても動作への適用は済んでいるため、適用済みの値を次の比較基準にする。
     public void Accept(SettingsEditResult applied)
     {

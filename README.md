@@ -23,7 +23,7 @@ PresenterTools は、Teams の画面共有・会議室のディスプレイへ�
 
 - Windows 11（64 ビット、x64）
 - Microsoft Store 版は .NET を内包しているため、追加のインストールは不要です。
-- このリポジトリのソースからビルドして実行する場合は、[.NET 8 Desktop Runtime（x64）](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
+- このリポジトリのソースからビルドして実行する場合は、[.NET 10 Desktop Runtime（x64）](https://dotnet.microsoft.com/download/dotnet/10.0) が必要です。
 
 ## インストール
 
@@ -50,7 +50,7 @@ PresenterTools は、Teams の画面共有・会議室のディスプレイへ�
 ### 必要な環境
 
 - Windows 11 x64
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0)（確認済み: 8.0.425）
+- [.NET SDK 10.0](https://dotnet.microsoft.com/download/dotnet/10.0)（確認済み: 10.0.402）
 - `dotnet` CLI だけでビルドできます（Visual Studio は不要）。
 - 本体は NuGet パッケージに依存しません。テストだけが NuGet の `Microsoft.NET.Test.Sdk`・`xunit`・`xunit.runner.visualstudio` を使います（初回のビルド時に nuget.org から取得します）。
 
@@ -66,7 +66,7 @@ dotnet run --project PresenterTools.csproj
 
 `dotnet run` で起動すると操作パネルが表示され、タスクトレイに常駐します。
 
-配布用のフォルダ一式（Framework-dependent、win-x64）を作るには次を実行します。出力先は `publish\FrameworkDependent\` で、実行には .NET 8 Desktop Runtime（x64）が必要です。
+配布用のフォルダ一式（Framework-dependent、win-x64）を作るには次を実行します。出力先は `publish\FrameworkDependent\` で、実行には .NET 10 Desktop Runtime（x64）が必要です。
 
 ```powershell
 dotnet publish PresenterTools.csproj -c Release -p:PublishProfile=FrameworkDependent
@@ -78,7 +78,7 @@ dotnet publish PresenterTools.csproj -c Release -p:PublishProfile=FrameworkDepen
 
 | パス | 内容 |
 |---|---|
-| `PresenterTools.csproj` | 本体（WPF、`net8.0-windows`）。タスクトレイだけ WinForms の `NotifyIcon` を使用 |
+| `PresenterTools.csproj` | 本体（WPF、`net10.0-windows`）。タスクトレイだけ WinForms の `NotifyIcon` を使用 |
 | `AppHost.cs` | 入力・状態・表示のつなぎ込み、設定の保存と適用 |
 | `Core/` | 画面・Win32 に依存しないロジック（設定・ショートカット・状態・キー表示・配置計算）と、画面の文字列（英語 `Strings.resx`・日本語 `Strings.ja.resx`） |
 | `Input/` | グローバルショートカット（`RegisterHotKey`）と低レベルのマウス・キーボードフック |

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <!-- タスクトレイの NotifyIcon だけに使う（.NET の WindowsDesktop 共有フレームワークに含まれ、NuGet 依存ではない）。 -->
     <UseWindowsForms>true</UseWindowsForms>
@@ -11,17 +11,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>PresenterTools</RootNamespace>
     <AssemblyName>PresenterTools</AssemblyName>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
     <!-- 設定画面の表示に使う。Version の更新漏れを防ぐため直接書かず Version を参照する。 -->
     <InformationalVersion>$(Version)</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Copyright>© ja1bus</Copyright>
     <ApplicationIcon>Resources/icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <!-- WFAC010: WinForms 向けの「DPI 設定は manifest でなく API で」という助言。WPF は manifest の PerMonitorV2 を使うため抑止する。 -->
-    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+    <!--
+      WinForms 向けの「DPI 設定は manifest でなく API で」という助言。WPF は manifest の PerMonitorV2 を使うため抑止する。
+      .NET 8 では WFAC010、.NET 9 以降は WFO0003 という ID で出る。
+    -->
+    <NoWarn>$(NoWarn);WFAC010;WFO0003</NoWarn>
 
-    <!-- 配布は Framework-dependent。対象 PC の .NET 8 Desktop Runtime を使い、.NET は内包しない。 -->
+    <!-- 配布は Framework-dependent。対象 PC の .NET 10 Desktop Runtime を使い、.NET は内包しない。 -->
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>false</SelfContained>
     <PublishSingleFile>false</PublishSingleFile>
@@ -33,7 +36,7 @@
   </PropertyGroup>
   <!--
     Microsoft Store 用の MSIX（V1.3.2〜。SPEC §28.1）。installer/msix/build-msix.ps1 が -p:PresenterToolsMsix=true で publish する。
-    Store から入れた PC に .NET 8 Desktop Runtime があるとは限らないため、MSIX の中身だけは .NET を内包する（Self-contained・複数ファイル）。
+    Store から入れた PC に .NET 10 Desktop Runtime があるとは限らないため、MSIX の中身だけは .NET を内包する（Self-contained・複数ファイル）。
     直接配布（フォルダ一式・Inno Setup）は従来どおり Framework-dependent で、この設定の影響を受けない。
   -->
   <PropertyGroup Condition="'$(PresenterToolsMsix)' == 'true'">

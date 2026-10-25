@@ -23,7 +23,7 @@ This repository contains the source code of the publicly released PresenterTools
 
 - Windows 11 (64-bit, x64)
 - The Microsoft Store version includes .NET, so nothing else needs to be installed.
-- To build and run from the source in this repository, the [.NET 8 Desktop Runtime (x64)](https://dotnet.microsoft.com/download/dotnet/8.0) is required.
+- To build and run from the source in this repository, the [.NET 10 Desktop Runtime (x64)](https://dotnet.microsoft.com/download/dotnet/10.0) is required.
 
 ## Installation
 
@@ -50,7 +50,7 @@ See the user guide for details.
 ### Requirements
 
 - Windows 11 x64
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) (verified: 8.0.425)
+- [.NET SDK 10.0](https://dotnet.microsoft.com/download/dotnet/10.0) (verified: 10.0.402)
 - Only the `dotnet` CLI is needed (Visual Studio is not required).
 - The app itself has no NuGet package dependencies. Only the tests use the NuGet packages `Microsoft.NET.Test.Sdk`, `xunit` and `xunit.runner.visualstudio` (restored from nuget.org on the first build).
 
@@ -66,7 +66,7 @@ dotnet run --project PresenterTools.csproj
 
 `dotnet run` shows the control panel and keeps PresenterTools in the notification area.
 
-To create the distributable folder (framework-dependent, win-x64), run the following. The output goes to `publish\FrameworkDependent\` and requires the .NET 8 Desktop Runtime (x64) to run.
+To create the distributable folder (framework-dependent, win-x64), run the following. The output goes to `publish\FrameworkDependent\` and requires the .NET 10 Desktop Runtime (x64) to run.
 
 ```powershell
 dotnet publish PresenterTools.csproj -c Release -p:PublishProfile=FrameworkDependent
@@ -78,7 +78,7 @@ The output also includes `LICENSE` and `THIRD-PARTY-NOTICES.md` (v1.4.0 and late
 
 | Path | Contents |
 |---|---|
-| `PresenterTools.csproj` | The app (WPF, `net8.0-windows`). Only the tray icon uses WinForms `NotifyIcon` |
+| `PresenterTools.csproj` | The app (WPF, `net10.0-windows`). Only the tray icon uses WinForms `NotifyIcon` |
 | `AppHost.cs` | Wires input, state and display together; saves and applies settings |
 | `Core/` | Logic independent of UI and Win32 (settings, shortcuts, state, key display, layout calculations), and UI strings (English `Strings.resx`, Japanese `Strings.ja.resx`) |
 | `Input/` | Global shortcuts (`RegisterHotKey`) and low-level mouse and keyboard hooks |

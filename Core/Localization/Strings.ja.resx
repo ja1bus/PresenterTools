@@ -134,30 +134,30 @@
 次のアドレスをブラウザーで開いてください。
 {1}</value></data>
   <data name="SetRevert" xml:space="preserve"><value>開いたときの値に戻す</value></data>
-  <data name="SetRevertToolTip" xml:space="preserve"><value>このタブの値（ON/OFF・ショートカットを含む）を、設定画面を開いたときの値に戻します。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
+  <data name="SetRevertToolTip" xml:space="preserve"><value>このタブを、設定画面を開いたときの値に戻します。</value></data>
   <data name="SetReset" xml:space="preserve"><value>このタブを既定値に戻す</value></data>
-  <data name="SetResetToolTip" xml:space="preserve"><value>このタブの設定を既定値に戻します。ON/OFF とショートカットは変わりません。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
+  <data name="SetResetToolTip" xml:space="preserve"><value>このタブの設定を既定値に戻します。ON/OFF とショートカットは変わりません。</value></data>
   <data name="SetClear" xml:space="preserve"><value>クリア</value></data>
-  <data name="SetHotkeysSuspendedNotice" xml:space="preserve"><value>⏸ ショートカットの入力欄を選んでいる間は、押したキーが入力欄に入るよう、PresenterTools のショートカットをすべて一時解除しています。別の項目・ボタンを選ぶか、別のウィンドウに切り替えると再び使えます。</value></data>
+  <data name="SetHotkeysSuspendedNotice" xml:space="preserve"><value>⏸ 入力欄を選んでいる間は、PresenterTools のショートカットを一時解除しています。</value></data>
   <data name="SetColor" xml:space="preserve"><value>色</value></data>
   <data name="SetLineWidth" xml:space="preserve"><value>線幅 (px)</value></data>
   <data name="SetMouseButton" xml:space="preserve"><value>マウスボタン</value></data>
   <data name="SetMouseNone" xml:space="preserve"><value>なし</value></data>
 
   <!-- 設定画面: General -->
-  <data name="SetGeneralRevertToolTip" xml:space="preserve"><value>このタブの値（機能の ON/OFF・すべてのショートカットを含む）を、設定画面を開いたときの値に戻します。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
-  <data name="SetGeneralResetToolTip" xml:space="preserve"><value>このタブの表示・動作の設定（最前面、Key Display の除外、パネルのショートカット表示）を既定値に戻します。ON/OFF とショートカットは変わりません。</value></data>
+  <data name="SetGeneralRevertToolTip" xml:space="preserve"><value>このタブを、設定画面を開いたときの値に戻します。</value></data>
+  <data name="SetGeneralResetToolTip" xml:space="preserve"><value>このタブの表示・動作の設定を既定値に戻します。ON/OFF とショートカットは変わりません。</value></data>
   <data name="SetResetAll" xml:space="preserve"><value>すべての設定を初期化</value></data>
-  <data name="SetResetAllToolTip" xml:space="preserve"><value>全タブの設定・ON/OFF・ショートカットを既定値に戻します。操作パネルの位置・サイズは変わりません。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
+  <data name="SetResetAllToolTip" xml:space="preserve"><value>すべての設定・ON/OFF・ショートカットを既定値に戻します。操作パネルの位置とサイズは変わりません。</value></data>
   <data name="SetGroupOnOff" xml:space="preserve"><value>機能の ON/OFF</value></data>
   <data name="SetGroupPanel" xml:space="preserve"><value>操作パネル・Key Display</value></data>
   <data name="SetAlwaysOnTop" xml:space="preserve"><value>操作パネルを常に最前面に表示（Always On Top）</value></data>
   <data name="SetHideOwnShortcuts" xml:space="preserve"><value>PresenterTools 自身のショートカットを Key Display に表示しない</value></data>
   <data name="SetShowShortcutsInPanel" xml:space="preserve"><value>操作パネルの各項目に割り当て中のショートカットを表示する</value></data>
   <data name="SetGroupHotkeys" xml:space="preserve"><value>グローバルショートカット</value></data>
-  <data name="SetHotkeysHelp" xml:space="preserve"><value>入力欄をクリックしてキーを押すと設定されます（Backspace / Delete で未割当）。Ctrl・Alt・Win のいずれかとの組み合わせが必要です（F13～F24 は単独可）。入力欄を選んでいる間は PresenterTools のショートカットをすべて一時解除します。登録したキーは他のアプリでは使えなくなります。</value></data>
-  <data name="SetResetHotkeys" xml:space="preserve"><value>全てのショートカットを未割当にする</value></data>
-  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>全てのショートカットを未割当（既定値）にします。［適用］／［OK］で反映、［キャンセル］で取り消せます。</value></data>
+  <data name="SetHotkeysHelp" xml:space="preserve"><value>入力欄をクリックしてキーを押します（Backspace / Delete で未割当）。Ctrl・Alt・Win のいずれかと組み合わせてください（F13～F24 は単独可）。登録したキーは他のアプリでは使えなくなります。</value></data>
+  <data name="SetResetHotkeys" xml:space="preserve"><value>すべてのショートカットを未割当にする</value></data>
+  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>すべてのショートカットを未割当にします。</value></data>
 
   <!-- 設定画面: Cursor Highlight -->
   <data name="SetCursorEnable" xml:space="preserve"><value>Cursor Highlight を使う</value></data>
@@ -171,7 +171,7 @@
   <data name="SetDiameter" xml:space="preserve"><value>直径 (px)</value></data>
   <data name="SetDiameterToolTip" xml:space="preserve"><value>リング・塗りつぶし円の直径</value></data>
   <data name="SetRingWidthToolTip" xml:space="preserve"><value>リングの線の太さ</value></data>
-  <data name="SetCursorHelp" xml:space="preserve"><value>リング: 不透明度・直径・線幅を使用。塗りつぶし円: 塗りの不透明度・直径を使用。値を変えるとすぐに表示中のリングへ反映されます（この画面の上でマウスを動かして確認できます。確定は［適用］／［OK］）。px は表示倍率 100% 換算。Teams 共有・投影では直径 60～100 程度が見やすい目安です。</value></data>
+  <data name="SetCursorHelp" xml:space="preserve"><value>値を変えると、すぐに表示で確認できます（この画面の上でマウスを動かします）。共有・投影では直径 60～100 が目安です。</value></data>
 
   <!-- 設定画面: Click Effect -->
   <data name="SetClickEnable" xml:space="preserve"><value>Click Effect を使う</value></data>
@@ -179,12 +179,12 @@
   <data name="SetRightColor" xml:space="preserve"><value>右クリックの色</value></data>
   <data name="SetSize" xml:space="preserve"><value>サイズ (px)</value></data>
   <data name="SetDurationMs" xml:space="preserve"><value>表示時間 (ms)</value></data>
-  <data name="SetShowButtonLabel" xml:space="preserve"><value>クリック位置の近くに「左クリック」「右クリック」を表示する（最低 0.8 秒）</value></data>
-  <data name="SetShowWhileHeld" xml:space="preserve"><value>ボタンを押している間、カーソルに印を表示する（ドラッグの説明向け）</value></data>
-  <data name="SetClickHelp" xml:space="preserve"><value>左クリックは円の実線、右クリックはひし形の破線で表示します。押している間の印は 0.2 秒以上押し続けたときだけ出ます（普通のクリックではちらつかせないため）。クリック自体はそのまま対象のアプリへ届きます。値を変えるとすぐに反映されます（この画面の空いた所をクリックして確認できます。確定は［適用］／［OK］）。</value></data>
+  <data name="SetShowButtonLabel" xml:space="preserve"><value>クリック位置の近くに「左クリック」「右クリック」を表示する</value></data>
+  <data name="SetShowWhileHeld" xml:space="preserve"><value>ボタンを押している間、カーソルに印を表示する</value></data>
+  <data name="SetClickHelp" xml:space="preserve"><value>左クリックは円、右クリックはひし形で表示します。値を変えると、すぐに表示で確認できます（この画面の空いた所をクリックします）。</value></data>
 
   <!-- 設定画面: Laser -->
-  <data name="SetLaserEnable" xml:space="preserve"><value>Laser を使う（Enabled。描画のキー・マウスボタンで描き始める）</value></data>
+  <data name="SetLaserEnable" xml:space="preserve"><value>Laser を使う</value></data>
   <data name="SetTrailSeconds" xml:space="preserve"><value>残像時間 (秒)</value></data>
   <data name="SetTryDrawing" xml:space="preserve"><value>試し描き</value></data>
   <data name="SetTriggerMode" xml:space="preserve"><value>描画方式</value></data>
@@ -192,7 +192,7 @@
   <data name="SetTriggerToggle" xml:space="preserve"><value>押すたびに描画の開始・終了を切り替える</value></data>
   <data name="SetLaserX1" xml:space="preserve"><value>XButton1（戻る）</value></data>
   <data name="SetLaserX2" xml:space="preserve"><value>XButton2（進む）</value></data>
-  <data name="SetLaserHelp" xml:space="preserve"><value>色・線幅・残像時間は試し描きの枠にすぐ反映されます（確定は［適用］／［OK］）。「押すたびに切り替える」では、描画のキー（またはマウスボタン）を 1 回押して描き、もう 1 回押すか Esc で終わります（Esc は前面のアプリにもそのまま届きます）。割り当てたサイドボタンはブラウザの「戻る」「進む」には使えなくなります。マウスのユーティリティでボタンをキー操作に割り当てている場合は検出できません（F13～F24 等に割り当ててショートカットに設定してください）。</value></data>
+  <data name="SetLaserHelp" xml:space="preserve"><value>割り当てたサイドボタンは、ブラウザーの「戻る」「進む」には使えなくなります。</value></data>
 
   <!-- 設定画面: Magnifier -->
   <data name="SetMagEnable" xml:space="preserve"><value>Magnifier を表示する（起動時は常に OFF）</value></data>
@@ -201,10 +201,11 @@
   <data name="SetMagHeight" xml:space="preserve"><value>拡大窓の高さ (px)</value></data>
   <data name="SetMagX1" xml:space="preserve"><value>XButton1（戻る）で ON/OFF</value></data>
   <data name="SetMagX2" xml:space="preserve"><value>XButton2（進む）で ON/OFF</value></data>
-  <data name="SetMagHelp" xml:space="preserve"><value>拡大窓はカーソルの周辺を覆わない位置へ自動で配置され、カーソルに追従します。ON の間だけ画面を取得します（約 30 fps）。</value></data>
+  <data name="SetMagHelp" xml:space="preserve"><value>拡大窓はカーソルに追従し、カーソルの周辺を隠さない位置に表示します。</value></data>
 
   <!-- 設定画面: Key Display -->
-  <data name="SetKeyWarning" xml:space="preserve"><value>ON の間は入力した文字がパスワードも含めてすべて画面に表示されます。起動直後は常に OFF です。パスワードなどを入力するときは OFF にしてください。</value></data>
+  <data name="SetKeyWarning" xml:space="preserve"><value>ON の間は、パスワードを含め、入力した文字がすべて画面に表示されます。
+パスワードを入力するときは OFF にしてください。</value></data>
   <data name="SetFontSize" xml:space="preserve"><value>フォントサイズ</value></data>
   <data name="SetPosition" xml:space="preserve"><value>表示位置</value></data>
   <data name="SetPosBottomCenter" xml:space="preserve"><value>下中央</value></data>
@@ -223,7 +224,7 @@
   <!-- 設定画面: 操作後の通知・検証（SettingsWindow.xaml.cs） -->
   <data name="NoticeTabReset" xml:space="preserve"><value>このタブを既定値に戻しました</value></data>
   <data name="NoticeTabReverted" xml:space="preserve"><value>このタブを開いたときの値に戻しました</value></data>
-  <data name="NoticeHotkeysReset" xml:space="preserve"><value>全てのショートカットを未割当にしました</value></data>
+  <data name="NoticeHotkeysReset" xml:space="preserve"><value>すべてのショートカットを未割当にしました</value></data>
   <data name="NoticeAllReset" xml:space="preserve"><value>すべての設定を既定値に戻しました</value></data>
   <data name="NoticeNotAppliedFormat" xml:space="preserve"><value>{0}（まだ適用していません）。</value></data>
   <data name="ValidationHeader" xml:space="preserve"><value>次の項目を確認してください。</value></data>
@@ -251,7 +252,7 @@
   <!-- 表示言語の設定と再起動（V1.3.1。SettingsWindow・AppHost） -->
   <data name="SetGroupLanguage" xml:space="preserve"><value>言語 (Language)</value></data>
   <data name="LanguageSystem" xml:space="preserve"><value>Windows の表示言語に合わせる</value></data>
-  <data name="SetLanguageNote" xml:space="preserve"><value>変更は PresenterTools の再起動後に反映されます。［このタブを既定値に戻す］では言語は変わりません。</value></data>
+  <data name="SetLanguageNote" xml:space="preserve"><value>変更は PresenterTools の再起動後に反映されます。</value></data>
   <data name="RestartPrompt" xml:space="preserve"><value>言語の変更は PresenterTools の再起動後に反映されます。
 
 今すぐ PresenterTools を再起動しますか？</value></data>
@@ -261,7 +262,7 @@
   <!-- 未適用の変更・［キャンセル］（V1.5.0。SettingsWindow） -->
   <data name="SetCancelToolTip" xml:space="preserve"><value>未適用の変更を破棄して閉じます。［適用］で反映済みの変更は戻りません。</value></data>
   <data name="PendingChanges" xml:space="preserve"><value>未適用の変更があります。［適用］／［OK］で確定、［キャンセル］で破棄します。</value></data>
-  <data name="PendingChangesAfterApply" xml:space="preserve"><value>未適用の変更があります。［適用］／［OK］で確定します。［キャンセル］で破棄するのは未適用の変更だけで、適用済みの変更は戻りません。</value></data>
+  <data name="PendingChangesAfterApply" xml:space="preserve"><value>未適用の変更があります。［キャンセル］で破棄されるのは、未適用の変更だけです。</value></data>
   <data name="PendingRetry" xml:space="preserve"><value>設定の保存またはショートカットの登録に失敗しています。原因を取り除いてから［適用］で再試行できます。</value></data>
   <data name="PendingNoneAfterApply" xml:space="preserve"><value>変更は適用済みです。［キャンセル］で閉じても元に戻りません。</value></data>
   <data name="HotkeyFailuresRetryHint" xml:space="preserve"><value>設定画面で変更または解除してください。使用しているアプリを終了した場合は、［適用］で登録し直せます。</value></data>
@@ -282,14 +283,15 @@
   <data name="SetImportToolTip" xml:space="preserve"><value>エクスポートしたファイルの設定をこの画面に読み込みます。［適用］／［OK］で確定します。</value></data>
   <data name="SetImportHotkeys" xml:space="preserve"><value>ショートカットも読み込む</value></data>
   <data name="SetImportMouseButtons" xml:space="preserve"><value>マウスボタンの割り当ても読み込む</value></data>
-  <data name="SetImportNote" xml:space="preserve"><value>表示言語・各機能の ON/OFF・操作パネルの位置とサイズは、この PC の状態のまま変わりません。ショートカットとマウスボタンの割り当ては、上の項目を選んだときだけ読み込みます。読み込んだ設定は、設定画面で［適用］／［OK］を押すと確定します。</value></data>
+  <data name="SetImportNote" xml:space="preserve"><value>表示言語・ON/OFF・操作パネルの位置とサイズは読み込みません。読み込んだ設定は［適用］／［OK］で確定します。</value></data>
   <data name="ImportConfirm" xml:space="preserve"><value>読み込む</value></data>
   <data name="ImportSourceFormat" xml:space="preserve"><value>PresenterTools {0} でエクスポート（{1}）</value></data>
   <data name="TransferFileFilter" xml:space="preserve"><value>PresenterTools の設定 (*.json)|*.json</value></data>
   <data name="ExportDialogTitle" xml:space="preserve"><value>設定のエクスポート</value></data>
-  <data name="ExportPendingPrompt" xml:space="preserve"><value>未適用の変更があります。エクスポートされるのは確定済みの設定だけです。
+  <data name="ExportPendingPrompt" xml:space="preserve"><value>未適用の変更はエクスポートされません。
 
-［OK］で確定済みの設定をエクスポートします。未適用の変更を含めるには、［キャンセル］を押し、［適用］してからエクスポートしてください。</value></data>
+［OK］: 確定済みの設定をエクスポートする
+［キャンセル］: 中止する（［適用］してからやり直してください）</value></data>
   <data name="ExportFailedFormat" xml:space="preserve"><value>設定をエクスポートできませんでした。
 
 ファイル: {0}
@@ -307,4 +309,6 @@
   <data name="ImportErrorInvalid" xml:space="preserve"><value>ファイル内の設定を読み込めません。</value></data>
   <data name="NoticeImportedFormat" xml:space="preserve"><value>{0} から設定を読み込みました</value></data>
   <data name="NoticeImportCorrected" xml:space="preserve"><value>（範囲外の値などを補正しました）</value></data>
+  <data name="TabGeneral" xml:space="preserve"><value>全般</value></data>
+  <data name="TabAbout" xml:space="preserve"><value>バージョン情報</value></data>
 </root>

@@ -135,30 +135,30 @@ Open this address in your browser:
 Open this address in your browser:
 {1}</value></data>
   <data name="SetRevert" xml:space="preserve"><value>Revert this tab</value></data>
-  <data name="SetRevertToolTip" xml:space="preserve"><value>Restores this tab's values (including ON/OFF and this tab's shortcuts) to the values they had when Settings was opened. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetRevertToolTip" xml:space="preserve"><value>Restores this tab to the values it had when Settings was opened.</value></data>
   <data name="SetReset" xml:space="preserve"><value>Reset this tab</value></data>
-  <data name="SetResetToolTip" xml:space="preserve"><value>Resets this tab's settings to the defaults. ON/OFF and shortcuts do not change. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetResetToolTip" xml:space="preserve"><value>Resets this tab's settings to the defaults. ON/OFF and shortcuts do not change.</value></data>
   <data name="SetClear" xml:space="preserve"><value>Clear</value></data>
-  <data name="SetHotkeysSuspendedNotice" xml:space="preserve"><value>⏸ While a shortcut box is selected, all PresenterTools shortcuts are paused so that the keys you press go into the box. They work again when you select another item or button, or switch to another window.</value></data>
+  <data name="SetHotkeysSuspendedNotice" xml:space="preserve"><value>⏸ While a shortcut box is selected, PresenterTools shortcuts are paused.</value></data>
   <data name="SetColor" xml:space="preserve"><value>Color</value></data>
   <data name="SetLineWidth" xml:space="preserve"><value>Line width (px)</value></data>
   <data name="SetMouseButton" xml:space="preserve"><value>Mouse button</value></data>
   <data name="SetMouseNone" xml:space="preserve"><value>None</value></data>
 
   <!-- 設定画面: General -->
-  <data name="SetGeneralRevertToolTip" xml:space="preserve"><value>Restores this tab's values (including feature ON/OFF and all shortcuts) to the values they had when Settings was opened. Click Apply or OK to use them, or Cancel to discard.</value></data>
-  <data name="SetGeneralResetToolTip" xml:space="preserve"><value>Resets the display and behavior settings on this tab (always on top, hiding own shortcuts in Key Display, showing shortcuts in the panel) to the defaults. ON/OFF and shortcuts do not change.</value></data>
+  <data name="SetGeneralRevertToolTip" xml:space="preserve"><value>Restores this tab to the values it had when Settings was opened.</value></data>
+  <data name="SetGeneralResetToolTip" xml:space="preserve"><value>Resets the display and behavior settings on this tab to the defaults. ON/OFF and shortcuts do not change.</value></data>
   <data name="SetResetAll" xml:space="preserve"><value>Reset all settings</value></data>
-  <data name="SetResetAllToolTip" xml:space="preserve"><value>Resets the settings, ON/OFF, and shortcuts on all tabs to the defaults. The position and size of the control panel do not change. Click Apply or OK to use them, or Cancel to discard.</value></data>
+  <data name="SetResetAllToolTip" xml:space="preserve"><value>Resets all settings, ON/OFF, and shortcuts to the defaults. The position and size of the control panel do not change.</value></data>
   <data name="SetGroupOnOff" xml:space="preserve"><value>Feature ON/OFF</value></data>
   <data name="SetGroupPanel" xml:space="preserve"><value>Control panel and Key Display</value></data>
   <data name="SetAlwaysOnTop" xml:space="preserve"><value>Always keep the control panel on top (Always On Top)</value></data>
   <data name="SetHideOwnShortcuts" xml:space="preserve"><value>Do not show PresenterTools' own shortcuts in Key Display</value></data>
   <data name="SetShowShortcutsInPanel" xml:space="preserve"><value>Show the assigned shortcut under each item of the control panel</value></data>
   <data name="SetGroupHotkeys" xml:space="preserve"><value>Global shortcuts</value></data>
-  <data name="SetHotkeysHelp" xml:space="preserve"><value>Click a box and press the keys to set a shortcut (Backspace / Delete clears it). Combine the key with Ctrl, Alt, or Win (F13–F24 can be used alone). While a box is selected, all PresenterTools shortcuts are paused. Keys you assign can no longer be used in other apps.</value></data>
+  <data name="SetHotkeysHelp" xml:space="preserve"><value>Click a box and press the keys (Backspace / Delete clears it). Combine the key with Ctrl, Alt, or Win (F13–F24 can be used alone). Keys you assign can no longer be used in other apps.</value></data>
   <data name="SetResetHotkeys" xml:space="preserve"><value>Clear all shortcuts</value></data>
-  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>Clears all shortcuts (the default is no shortcuts). Click Apply or OK to use this, or Cancel to discard.</value></data>
+  <data name="SetResetHotkeysToolTip" xml:space="preserve"><value>Clears all shortcuts.</value></data>
 
   <!-- 設定画面: Cursor Highlight -->
   <data name="SetCursorEnable" xml:space="preserve"><value>Use Cursor Highlight</value></data>
@@ -172,7 +172,7 @@ Open this address in your browser:
   <data name="SetDiameter" xml:space="preserve"><value>Diameter (px)</value></data>
   <data name="SetDiameterToolTip" xml:space="preserve"><value>Diameter of the ring or filled circle</value></data>
   <data name="SetRingWidthToolTip" xml:space="preserve"><value>Thickness of the ring line</value></data>
-  <data name="SetCursorHelp" xml:space="preserve"><value>Ring: uses opacity, diameter, and line width. Filled circle: uses fill opacity and diameter. Changes are shown on the ring right away (move the mouse over this window to check; click Apply or OK to keep them). px is at 100% display scaling. For Teams sharing or projectors, a diameter of about 60–100 is easy to see.</value></data>
+  <data name="SetCursorHelp" xml:space="preserve"><value>Changes are shown right away. Move the mouse over this window to check. For sharing or projecting, a diameter of about 60–100 works well.</value></data>
 
   <!-- 設定画面: Click Effect -->
   <data name="SetClickEnable" xml:space="preserve"><value>Use Click Effect</value></data>
@@ -180,12 +180,12 @@ Open this address in your browser:
   <data name="SetRightColor" xml:space="preserve"><value>Right-click color</value></data>
   <data name="SetSize" xml:space="preserve"><value>Size (px)</value></data>
   <data name="SetDurationMs" xml:space="preserve"><value>Duration (ms)</value></data>
-  <data name="SetShowButtonLabel" xml:space="preserve"><value>Show "Left click" / "Right click" near the click position (at least 0.8 s)</value></data>
-  <data name="SetShowWhileHeld" xml:space="preserve"><value>Show a mark at the cursor while a button is held down (for explaining drags)</value></data>
-  <data name="SetClickHelp" xml:space="preserve"><value>A left click is shown as a solid circle and a right click as a dashed diamond. The mark for a held button appears only after the button is held for 0.2 seconds or more (so that normal clicks do not flicker). The click itself still goes to the app. Changes are shown right away (click an empty area of this window to check; click Apply or OK to keep them).</value></data>
+  <data name="SetShowButtonLabel" xml:space="preserve"><value>Show "Left click" / "Right click" near the click position</value></data>
+  <data name="SetShowWhileHeld" xml:space="preserve"><value>Show a mark at the cursor while a button is held down</value></data>
+  <data name="SetClickHelp" xml:space="preserve"><value>A left click is shown as a circle and a right click as a diamond. Changes are shown right away; click an empty area of this window to check.</value></data>
 
   <!-- 設定画面: Laser -->
-  <data name="SetLaserEnable" xml:space="preserve"><value>Use Laser (Enabled; start drawing with the drawing key or mouse button)</value></data>
+  <data name="SetLaserEnable" xml:space="preserve"><value>Use Laser</value></data>
   <data name="SetTrailSeconds" xml:space="preserve"><value>Trail time (s)</value></data>
   <data name="SetTryDrawing" xml:space="preserve"><value>Try it</value></data>
   <data name="SetTriggerMode" xml:space="preserve"><value>Drawing mode</value></data>
@@ -193,7 +193,7 @@ Open this address in your browser:
   <data name="SetTriggerToggle" xml:space="preserve"><value>Press to start drawing, press again to stop</value></data>
   <data name="SetLaserX1" xml:space="preserve"><value>XButton1 (Back)</value></data>
   <data name="SetLaserX2" xml:space="preserve"><value>XButton2 (Forward)</value></data>
-  <data name="SetLaserHelp" xml:space="preserve"><value>Color, line width, and trail time are shown in the try-it box right away (click Apply or OK to keep them). With "Press to start drawing, press again to stop", press the drawing key (or mouse button) once to draw, and press it again or press Esc to finish (Esc is also passed to the app in front). A side button you assign can no longer be used for Back / Forward in browsers. If a mouse utility maps the button to a key operation, the button cannot be detected (map it to F13–F24 or similar in the utility and set that key as a shortcut).</value></data>
+  <data name="SetLaserHelp" xml:space="preserve"><value>A side button you assign can no longer be used for Back / Forward in browsers.</value></data>
 
   <!-- 設定画面: Magnifier -->
   <data name="SetMagEnable" xml:space="preserve"><value>Show Magnifier (always OFF at startup)</value></data>
@@ -202,10 +202,10 @@ Open this address in your browser:
   <data name="SetMagHeight" xml:space="preserve"><value>Window height (px)</value></data>
   <data name="SetMagX1" xml:space="preserve"><value>XButton1 (Back) turns it ON/OFF</value></data>
   <data name="SetMagX2" xml:space="preserve"><value>XButton2 (Forward) turns it ON/OFF</value></data>
-  <data name="SetMagHelp" xml:space="preserve"><value>The magnifier window is placed automatically where it does not cover the area around the cursor, and follows the cursor. The screen is captured only while it is ON (about 30 fps).</value></data>
+  <data name="SetMagHelp" xml:space="preserve"><value>The magnifier follows the cursor and is placed where it does not cover the area around the cursor.</value></data>
 
   <!-- 設定画面: Key Display -->
-  <data name="SetKeyWarning" xml:space="preserve"><value>While ON, everything you type is shown on the screen, including passwords. Key Display is always OFF at startup. Turn it OFF before you type passwords or anything you do not want to show.</value></data>
+  <data name="SetKeyWarning" xml:space="preserve"><value>While ON, everything you type is shown on the screen, including passwords. Turn it OFF before you type passwords.</value></data>
   <data name="SetFontSize" xml:space="preserve"><value>Font size</value></data>
   <data name="SetPosition" xml:space="preserve"><value>Position</value></data>
   <data name="SetPosBottomCenter" xml:space="preserve"><value>Bottom center</value></data>
@@ -252,7 +252,7 @@ The settings were saved, but these shortcuts will not work.
   <!-- 表示言語の設定と再起動（V1.3.1。SettingsWindow・AppHost） -->
   <data name="SetGroupLanguage" xml:space="preserve"><value>Language</value></data>
   <data name="LanguageSystem" xml:space="preserve"><value>Use the Windows display language</value></data>
-  <data name="SetLanguageNote" xml:space="preserve"><value>The change takes effect after PresenterTools restarts. "Reset this tab" does not change the language.</value></data>
+  <data name="SetLanguageNote" xml:space="preserve"><value>The change takes effect after PresenterTools restarts.</value></data>
   <data name="RestartPrompt" xml:space="preserve"><value>The new language will be applied after PresenterTools restarts.
 
 Restart PresenterTools now?</value></data>
@@ -262,7 +262,7 @@ Restart PresenterTools now?</value></data>
   <!-- 未適用の変更・［キャンセル］（V1.5.0。SettingsWindow） -->
   <data name="SetCancelToolTip" xml:space="preserve"><value>Closes without applying the pending changes. Changes already applied with Apply are not undone.</value></data>
   <data name="PendingChanges" xml:space="preserve"><value>There are pending changes. Click Apply or OK to use them, or Cancel to discard them.</value></data>
-  <data name="PendingChangesAfterApply" xml:space="preserve"><value>There are pending changes. Click Apply or OK to use them. Cancel discards only the pending changes; changes already applied are kept.</value></data>
+  <data name="PendingChangesAfterApply" xml:space="preserve"><value>There are pending changes. Cancel discards only the pending changes.</value></data>
   <data name="PendingRetry" xml:space="preserve"><value>Saving the settings or registering a shortcut failed. After removing the cause, click Apply to try again.</value></data>
   <data name="PendingNoneAfterApply" xml:space="preserve"><value>The changes have been applied. Closing with Cancel does not undo them.</value></data>
   <data name="HotkeyFailuresRetryHint" xml:space="preserve"><value>Change or clear these shortcuts in Settings. If you closed the app that uses them, click Apply to register them again.</value></data>
@@ -283,14 +283,15 @@ Restart PresenterTools now?</value></data>
   <data name="SetImportToolTip" xml:space="preserve"><value>Loads settings from an exported file into this screen. Click Apply or OK to use them.</value></data>
   <data name="SetImportHotkeys" xml:space="preserve"><value>Also import shortcuts</value></data>
   <data name="SetImportMouseButtons" xml:space="preserve"><value>Also import mouse button assignments</value></data>
-  <data name="SetImportNote" xml:space="preserve"><value>The display language, the ON/OFF of each feature, and the position and size of the control panel are kept as they are on this PC. Shortcuts and mouse buttons are kept unless checked above. The settings are loaded into the Settings screen; click Apply or OK to use them.</value></data>
+  <data name="SetImportNote" xml:space="preserve"><value>The display language, ON/OFF, and the position and size of the control panel are not loaded. Click Apply or OK to use the loaded settings.</value></data>
   <data name="ImportConfirm" xml:space="preserve"><value>Import</value></data>
   <data name="ImportSourceFormat" xml:space="preserve"><value>Exported by PresenterTools {0} on {1}</value></data>
   <data name="TransferFileFilter" xml:space="preserve"><value>PresenterTools settings (*.json)|*.json</value></data>
   <data name="ExportDialogTitle" xml:space="preserve"><value>Export settings</value></data>
-  <data name="ExportPendingPrompt" xml:space="preserve"><value>There are pending changes. The export contains only the applied settings.
+  <data name="ExportPendingPrompt" xml:space="preserve"><value>Pending changes are not exported.
 
-Click OK to export the applied settings. To include the pending changes, click Cancel, click Apply, and then export again.</value></data>
+OK: Export the applied settings
+Cancel: Stop (click Apply, and then export again)</value></data>
   <data name="ExportFailedFormat" xml:space="preserve"><value>The settings could not be exported.
 
 File: {0}
@@ -308,4 +309,6 @@ File: {1}</value></data>
   <data name="ImportErrorInvalid" xml:space="preserve"><value>The settings in the file could not be read.</value></data>
   <data name="NoticeImportedFormat" xml:space="preserve"><value>The settings were loaded from {0}</value></data>
   <data name="NoticeImportCorrected" xml:space="preserve"><value> (some values were out of range and were corrected)</value></data>
+  <data name="TabGeneral" xml:space="preserve"><value>General</value></data>
+  <data name="TabAbout" xml:space="preserve"><value>About</value></data>
 </root>

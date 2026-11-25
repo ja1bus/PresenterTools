@@ -204,8 +204,10 @@
   <data name="SetMagHelp" xml:space="preserve"><value>拡大窓はカーソルに追従し、カーソルの周辺を隠さない位置に表示します。</value></data>
 
   <!-- 設定画面: Key Display -->
-  <data name="SetKeyWarning" xml:space="preserve"><value>ON の間は、パスワードを含め、入力した文字がすべて画面に表示されます。
-パスワードを入力するときは OFF にしてください。</value></data>
+  <data name="SetKeyWarning" xml:space="preserve"><value>ON の間は、入力した文字が画面に表示されます。
+自動で隠せない入力の前には OFF にしてください。</value></data>
+  <data name="SetKeyHidePassword" xml:space="preserve"><value>パスワード欄ではキー入力を表示しない</value></data>
+  <data name="SetKeyHidePasswordNote" xml:space="preserve"><value>Edge・Chrome やアプリのパスワード欄が対象です。端末ソフトの画面や数字欄のワンタイムコードは判定できないため、入力の前に OFF にしてください。</value></data>
   <data name="SetFontSize" xml:space="preserve"><value>フォントサイズ</value></data>
   <data name="SetPosition" xml:space="preserve"><value>表示位置</value></data>
   <data name="SetPosBottomCenter" xml:space="preserve"><value>下中央</value></data>

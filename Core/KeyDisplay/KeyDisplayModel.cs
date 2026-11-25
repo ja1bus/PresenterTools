@@ -108,6 +108,29 @@ public sealed class KeyDisplayModel
         _suppressedDownKeys.Clear();
     }
 
+    /// <summary>
+    /// 表示中の文字・キー名・回数だけを消す（V1.6.0。パスワード欄での自動非表示）。除外中のショートカットの押下状態は残し、
+    /// 押したまま欄を移っても自動リピートを表示しない。
+    /// </summary>
+    public void ClearDisplay()
+    {
+        _text.Clear();
+        _committed = false;
+        _chordKeys = [];
+        _chordCount = 0;
+    }
+
+    /// <summary>
+    /// 表示しなかった押下を、除外するショートカットの押下としてだけ記録する（V1.6.0）。表示は変えない。
+    /// パスワード欄で押した自身のショートカットの自動リピートを、通常の欄へ戻った後も表示しないため。
+    /// </summary>
+    public void ObserveHidden(in KeyInput input)
+    {
+        if (Mode == KeyDisplayMode.Off || !input.IsKeyDown) return;
+        if (Options.SuppressedShortcuts.Contains(new Shortcut(input.Modifiers, input.VirtualKey)))
+            _suppressedDownKeys.Add(input.VirtualKey);
+    }
+
     /// <summary>キーイベントを処理する。表示が変わったら true。</summary>
     public bool Process(in KeyInput input, TimeSpan now)
     {

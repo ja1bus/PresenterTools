@@ -418,14 +418,21 @@
                         <CheckBox Grid.Row="1" Grid.ColumnSpan="3" IsChecked="{Binding KeyDisplayEnabled}">
                             <TextBlock TextWrapping="Wrap" Text="{x:Static l:Strings.SetKeyEnable}" />
                         </CheckBox>
+                        <!-- パスワード欄での自動非表示（V1.6.0。SPEC §15.6）。対象の範囲を 1 文で添える -->
+                        <StackPanel Grid.Row="2" Grid.ColumnSpan="3">
+                            <CheckBox x:Name="KeyHidePassword" IsChecked="{Binding Settings.KeyDisplay.HidePasswordInput}">
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static l:Strings.SetKeyHidePassword}" />
+                            </CheckBox>
+                            <TextBlock Style="{StaticResource Help}" Margin="20,0,0,4" Text="{x:Static l:Strings.SetKeyHidePasswordNote}" />
+                        </StackPanel>
                         <!-- 見本（V1.5.0）。決まった文字で文字サイズ・色・背景を確かめる。キー入力は読まない（ON にしなくても使える） -->
-                        <TextBlock Grid.Row="2" Text="{x:Static l:Strings.SetKeySample}" Style="{StaticResource Label}" VerticalAlignment="Top" />
-                        <c:KeyDisplayPreviewBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyPreview" Margin="0,6" />
-                        <TextBlock Grid.Row="3" Text="{x:Static l:Strings.SetFontSize}" Style="{StaticResource Label}" />
-                        <Slider Grid.Row="3" Grid.Column="1" x:Name="KeyFont" Minimum="16" Maximum="120" TickFrequency="2" Value="{Binding Settings.KeyDisplay.FontSize}" />
-                        <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyFont}" />
-                        <TextBlock Grid.Row="4" Text="{x:Static l:Strings.SetPosition}" Style="{StaticResource Label}" />
-                        <ComboBox Grid.Row="4" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding Settings.KeyDisplay.Position}">
+                        <TextBlock Grid.Row="3" Text="{x:Static l:Strings.SetKeySample}" Style="{StaticResource Label}" VerticalAlignment="Top" />
+                        <c:KeyDisplayPreviewBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyPreview" Margin="0,6" />
+                        <TextBlock Grid.Row="4" Text="{x:Static l:Strings.SetFontSize}" Style="{StaticResource Label}" />
+                        <Slider Grid.Row="4" Grid.Column="1" x:Name="KeyFont" Minimum="16" Maximum="120" TickFrequency="2" Value="{Binding Settings.KeyDisplay.FontSize}" />
+                        <TextBlock Grid.Row="4" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyFont}" />
+                        <TextBlock Grid.Row="5" Text="{x:Static l:Strings.SetPosition}" Style="{StaticResource Label}" />
+                        <ComboBox Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding Settings.KeyDisplay.Position}">
                             <ComboBoxItem Tag="{x:Static m:KeyDisplayPosition.BottomCenter}" Content="{x:Static l:Strings.SetPosBottomCenter}" />
                             <ComboBoxItem Tag="{x:Static m:KeyDisplayPosition.BottomLeft}" Content="{x:Static l:Strings.SetPosBottomLeft}" />
                             <ComboBoxItem Tag="{x:Static m:KeyDisplayPosition.BottomRight}" Content="{x:Static l:Strings.SetPosBottomRight}" />
@@ -433,23 +440,23 @@
                             <ComboBoxItem Tag="{x:Static m:KeyDisplayPosition.TopLeft}" Content="{x:Static l:Strings.SetPosTopLeft}" />
                             <ComboBoxItem Tag="{x:Static m:KeyDisplayPosition.TopRight}" Content="{x:Static l:Strings.SetPosTopRight}" />
                         </ComboBox>
-                        <TextBlock Grid.Row="5" Text="{x:Static l:Strings.SetTextColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyTextColor" Color="{Binding Settings.KeyDisplay.TextColor}" />
-                        <TextBlock Grid.Row="6" Text="{x:Static l:Strings.SetBackColor}" Style="{StaticResource Label}" />
-                        <c:ColorField Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyBackColor" Color="{Binding Settings.KeyDisplay.BackgroundColor}" />
-                        <TextBlock Grid.Row="7" Text="{x:Static l:Strings.SetBackOpacity}" Style="{StaticResource Label}" />
-                        <Slider Grid.Row="7" Grid.Column="1" x:Name="KeyBgOpacity" Minimum="0" Maximum="1" TickFrequency="0.05" Value="{Binding Settings.KeyDisplay.BackgroundOpacity}" />
-                        <TextBlock Grid.Row="7" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyBgOpacity, StringFormat={}{0:P0}}" />
-                        <TextBlock Grid.Row="8" Text="{x:Static l:Strings.SetChordSeconds}" Style="{StaticResource Label}" />
-                        <Slider Grid.Row="8" Grid.Column="1" x:Name="KeyChord" Minimum="0.5" Maximum="10" TickFrequency="0.5" Value="{Binding Settings.KeyDisplay.ChordSeconds}" />
-                        <TextBlock Grid.Row="8" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyChord, StringFormat={}{0:0.0}}" />
-                        <TextBlock Grid.Row="9" Text="{x:Static l:Strings.SetTextSeconds}" Style="{StaticResource Label}" />
-                        <Slider Grid.Row="9" Grid.Column="1" x:Name="KeyText" Minimum="1" Maximum="30" TickFrequency="0.5" Value="{Binding Settings.KeyDisplay.TextSeconds}" />
-                        <TextBlock Grid.Row="9" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyText, StringFormat={}{0:0.0}}" />
-                        <TextBlock Grid.Row="10" Text="{x:Static l:Strings.SetEnterSeconds}" Style="{StaticResource Label}" />
-                        <Slider Grid.Row="10" Grid.Column="1" x:Name="KeyEnter" Minimum="0.3" Maximum="10" TickFrequency="0.1" Value="{Binding Settings.KeyDisplay.EnterHoldSeconds}" />
-                        <TextBlock Grid.Row="10" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyEnter, StringFormat={}{0:0.0}}" />
-                        <ContentControl Grid.Row="11" Grid.ColumnSpan="3" Margin="0,8,0,0" Content="{Binding Hotkeys.ToggleKeyDisplay}" ContentTemplate="{StaticResource HotkeyRow}" />
+                        <TextBlock Grid.Row="6" Text="{x:Static l:Strings.SetTextColor}" Style="{StaticResource Label}" />
+                        <c:ColorField Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyTextColor" Color="{Binding Settings.KeyDisplay.TextColor}" />
+                        <TextBlock Grid.Row="7" Text="{x:Static l:Strings.SetBackColor}" Style="{StaticResource Label}" />
+                        <c:ColorField Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" x:Name="KeyBackColor" Color="{Binding Settings.KeyDisplay.BackgroundColor}" />
+                        <TextBlock Grid.Row="8" Text="{x:Static l:Strings.SetBackOpacity}" Style="{StaticResource Label}" />
+                        <Slider Grid.Row="8" Grid.Column="1" x:Name="KeyBgOpacity" Minimum="0" Maximum="1" TickFrequency="0.05" Value="{Binding Settings.KeyDisplay.BackgroundOpacity}" />
+                        <TextBlock Grid.Row="8" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyBgOpacity, StringFormat={}{0:P0}}" />
+                        <TextBlock Grid.Row="9" Text="{x:Static l:Strings.SetChordSeconds}" Style="{StaticResource Label}" />
+                        <Slider Grid.Row="9" Grid.Column="1" x:Name="KeyChord" Minimum="0.5" Maximum="10" TickFrequency="0.5" Value="{Binding Settings.KeyDisplay.ChordSeconds}" />
+                        <TextBlock Grid.Row="9" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyChord, StringFormat={}{0:0.0}}" />
+                        <TextBlock Grid.Row="10" Text="{x:Static l:Strings.SetTextSeconds}" Style="{StaticResource Label}" />
+                        <Slider Grid.Row="10" Grid.Column="1" x:Name="KeyText" Minimum="1" Maximum="30" TickFrequency="0.5" Value="{Binding Settings.KeyDisplay.TextSeconds}" />
+                        <TextBlock Grid.Row="10" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyText, StringFormat={}{0:0.0}}" />
+                        <TextBlock Grid.Row="11" Text="{x:Static l:Strings.SetEnterSeconds}" Style="{StaticResource Label}" />
+                        <Slider Grid.Row="11" Grid.Column="1" x:Name="KeyEnter" Minimum="0.3" Maximum="10" TickFrequency="0.1" Value="{Binding Settings.KeyDisplay.EnterHoldSeconds}" />
+                        <TextBlock Grid.Row="11" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=KeyEnter, StringFormat={}{0:0.0}}" />
+                        <ContentControl Grid.Row="12" Grid.ColumnSpan="3" Margin="0,8,0,0" Content="{Binding Hotkeys.ToggleKeyDisplay}" ContentTemplate="{StaticResource HotkeyRow}" />
                     </Grid>
                 </ScrollViewer>
                 </DockPanel>

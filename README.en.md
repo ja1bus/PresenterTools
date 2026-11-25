@@ -17,7 +17,7 @@ This repository contains the source code of the publicly released PresenterTools
 - Colors, sizes, timings and shortcuts can be changed in Settings, with a live preview of the appearance
 - English and Japanese UI (follows the Windows display language, or can be fixed in Settings)
 
-**While Key Display is on, everything you type, including passwords, is shown on the screen.** Turn it off before typing anything you do not want to show. PresenterTools never sends what you type or your settings over the internet (see the privacy policy below).
+**While Key Display is on, what you type is shown on the screen.** Keys typed in password fields are hidden automatically (from 1.6.0; you can turn this off in the settings), but turn Key Display off before typing anything that is not hidden automatically, such as in terminal windows or one-time code boxes. PresenterTools never sends what you type or your settings over the internet (see the privacy policy below).
 
 ## Supported OS and runtime
 

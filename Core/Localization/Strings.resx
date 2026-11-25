@@ -205,7 +205,9 @@ Open this address in your browser:
   <data name="SetMagHelp" xml:space="preserve"><value>The magnifier follows the cursor and is placed where it does not cover the area around the cursor.</value></data>
 
   <!-- 設定画面: Key Display -->
-  <data name="SetKeyWarning" xml:space="preserve"><value>While ON, everything you type is shown on the screen, including passwords. Turn it OFF before you type passwords.</value></data>
+  <data name="SetKeyWarning" xml:space="preserve"><value>While ON, what you type is shown on the screen. Turn it OFF before typing anything that is not hidden automatically.</value></data>
+  <data name="SetKeyHidePassword" xml:space="preserve"><value>Do not show keys typed in password fields</value></data>
+  <data name="SetKeyHidePasswordNote" xml:space="preserve"><value>Works in password fields of Edge, Chrome, and other apps. Terminal windows and one-time code boxes are not detected, so turn Key Display OFF before typing in them.</value></data>
   <data name="SetFontSize" xml:space="preserve"><value>Font size</value></data>
   <data name="SetPosition" xml:space="preserve"><value>Position</value></data>
   <data name="SetPosBottomCenter" xml:space="preserve"><value>Bottom center</value></data>

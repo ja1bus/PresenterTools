@@ -60,8 +60,11 @@ public sealed class LowLevelInputHook : IDisposable
     /// <summary>ボタンの押下・解放（UI スレッド）。</summary>
     public event Action<MouseButtonKind, bool, PointInt>? MouseButton;
 
-    /// <summary>キーイベント（UI スレッド）。2 つ目の引数はイベント時点のフォアグラウンドウィンドウ。</summary>
-    public event Action<KeyInput, IntPtr>? KeyEvent;
+    /// <summary>
+    /// キーイベント（UI スレッド）。2 つ目の引数はイベント時点のフォアグラウンドウィンドウ、3 つ目はフックで受けた時刻
+    /// （<see cref="System.Diagnostics.Stopwatch.GetTimestamp"/>。パスワード欄の判定で照会との前後を決める。V1.6.0）。
+    /// </summary>
+    public event Action<KeyInput, IntPtr, long>? KeyEvent;
 
     /// <summary>フックの導入に失敗した（UI スレッド）。引数はマウスなら true、エラーコード。</summary>
     public event Action<bool, int>? HookFailed;
@@ -197,9 +200,10 @@ public sealed class LowLevelInputHook : IDisposable
             var isDown = msg is WM_KEYDOWN or WM_SYSKEYDOWN;
             if (isDown || msg is WM_KEYUP or WM_SYSKEYUP)
             {
+                var time = System.Diagnostics.Stopwatch.GetTimestamp();
                 var foreground = GetForegroundWindow();
                 var input = _translator.Translate(info->vkCode, info->scanCode, isDown, foreground);
-                _dispatcher.BeginInvoke(DispatcherPriority.Input, () => KeyEvent?.Invoke(input, foreground));
+                _dispatcher.BeginInvoke(DispatcherPriority.Input, () => KeyEvent?.Invoke(input, foreground, time));
             }
         }
         return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);

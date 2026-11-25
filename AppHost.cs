@@ -30,6 +30,14 @@ public sealed class AppHost : IDisposable
     private readonly Stopwatch _clock = Stopwatch.StartNew();
     private readonly KeyDisplayModel _keyModel = new();
     private readonly DispatcherTimer _keyTimer;
+    // パスワード欄での自動非表示（V1.6.0。詳細設計 §2）。時刻は Stopwatch.GetTimestamp の値。
+    private static readonly long SettleDelay = Stopwatch.Frequency * 120 / 1000;
+    private static readonly long QueryTimeout = Stopwatch.Frequency * 300 / 1000;
+    private static readonly long PasswordPoll = Stopwatch.Frequency * 150 / 1000;
+    private readonly PasswordInputGate _gate = new(SettleDelay, QueryTimeout, PasswordPoll);
+    private readonly DispatcherTimer _gateTimer;
+    private FocusWatchWorker? _focusWorker;
+    private bool _gateTimeoutLogged;
     private MonitorService? _monitors;
     private OverlayManager? _overlays;
     private MagnifierController? _magnifier;
@@ -59,6 +67,12 @@ public sealed class AppHost : IDisposable
         _uiCulture = UiLanguage.Resolve(UiLanguage.System, windowsUiCulture);
         _keyTimer = new DispatcherTimer(DispatcherPriority.Normal, dispatcher);
         _keyTimer.Tick += OnKeyTimer;
+        _gateTimer = new DispatcherTimer(DispatcherPriority.Input, dispatcher);
+        _gateTimer.Tick += (_, _) =>
+        {
+            _gateTimer.Stop();
+            PumpGate();
+        };
     }
 
     public bool IsExiting { get; private set; }
@@ -285,6 +299,9 @@ public sealed class AppHost : IDisposable
         IsExiting = true;
         _state.Changed -= OnStateChanged;
         _keyTimer.Stop();
+        StopPasswordGate();
+        _focusWorker?.Dispose();   // 以後の通知は回の番号で捨てる。購読の解除は 2 秒で打ち切る
+        _focusWorker = null;
         _keyModel.Clear();
         _settingsWindow?.Close();
         _hook?.Dispose();          // フック解除（SPEC §22）
@@ -369,8 +386,113 @@ public sealed class AppHost : IDisposable
         else _magnifier.Stop();
 
         UpdateHooks();
+        UpdatePasswordGate();
         RefreshUi();
         if (save) SaveSettings();
+    }
+
+    // ---- パスワード欄での自動非表示（V1.6.0。詳細設計 §2） ----
+
+    /// <summary>最終の状態から、監視を 1 回だけ開始・停止する（§2.4）。</summary>
+    private void UpdatePasswordGate()
+    {
+        var want = !IsExiting && _hook is not null
+            && _state.EffectiveKeyDisplayMode != KeyDisplayMode.Off
+            && _settings.KeyDisplay.HidePasswordInput;
+        if (want == _gate.IsActive) return;
+        if (!want)
+        {
+            StopPasswordGate();
+            return;
+        }
+        _focusWorker ??= new FocusWatchWorker(new UiaFocusedFieldProbe(), Stopwatch.GetTimestamp,
+            ticks => TimeSpan.FromSeconds((double)ticks / Stopwatch.Frequency),
+            notice => _dispatcher.BeginInvoke(DispatcherPriority.Input, () => OnFocusNotice(notice)),
+            kind => _dispatcher.BeginInvoke(() => ErrorLog.Write("Password field check failed: " + kind)));
+#if DEBUG
+        _focusWorker.Trace ??= what => TestTrace.Write("worker", what);
+#endif
+        var generation = _gate.Start(Stopwatch.GetTimestamp());
+        _focusWorker.Start(generation, _gate.NextQueryAt); // 開始時の照会を購読より先に行う
+        TestTrace.Write("gate-start", generation.ToString(CultureInfo.InvariantCulture));
+        PumpGate();
+    }
+
+    /// <summary>監視を止め、保留を捨てる。離したイベントだけは表示処理へ渡す（§2.3）。</summary>
+    private void StopPasswordGate()
+    {
+        if (!_gate.IsActive) return;
+        _gateTimer.Stop();
+        _focusWorker?.Stop();
+        foreach (var up in _gate.Stop()) _keyModel.Process(up, Now);
+        TestTrace.Write("gate-stop");
+    }
+
+    private void OnFocusNotice(FocusNotice notice)
+    {
+        if (!_gate.IsActive || notice.Generation != _gate.Generation) return; // 停止・終了後や古い回の通知（D2）
+        if (notice.Kind == FocusNoticeKind.QueryFailed)
+        {
+            _gate.OnQueryFailed(notice.Generation, notice.Time);
+            TestTrace.Write("query-failed");
+        }
+        else
+        {
+            var isEvent = notice.Kind == FocusNoticeKind.Event;
+            _gate.OnObservation(notice.Generation, notice.Field, notice.Time, notice.Foreground, isEvent, notice.End);
+            TestTrace.Write(isEvent ? "event" : "query", $"{notice.Field}\t{notice.Time}\t{notice.End}");
+        }
+        PumpGate();
+    }
+
+    /// <summary>判定の済んだキーを順に表示処理へ渡し、次の照会と時間切れを予約する。</summary>
+    private void PumpGate()
+    {
+        if (!_gate.IsActive) return;
+        // 実行中の照会を判定に知らせてから判定する（区切りより前に始めた照会の結果を待つため。R1・R4）。
+        if (_focusWorker?.LastQueryStart(_gate.Generation) is { } started) _gate.NoteQueryStarted(started);
+        var resolved = _gate.TakeResolved(Stopwatch.GetTimestamp());
+        foreach (var key in resolved)
+        {
+            // 表示先は、キーを押した時の前面の窓のモニター（§2.4、D6）。
+            if (key.Foreground != IntPtr.Zero && _hook?.IsOwnWindow(key.Foreground) == false) _lastExternalForeground = key.Foreground;
+            if (key.Hidden)
+            {
+                _keyModel.ObserveHidden(key.Input);
+                TestTrace.Write("hide-key", key.Timestamp.ToString(CultureInfo.InvariantCulture));
+                ClearKeyDisplayForPassword();
+            }
+            else
+            {
+                if (key.Input.IsKeyDown) TestTrace.Write("show-key", key.Timestamp.ToString(CultureInfo.InvariantCulture));
+                if (_keyModel.Process(key.Input, Now)) RefreshKeyDisplay();
+            }
+        }
+        if (_gate.ConsumePasswordObserved()) ClearKeyDisplayForPassword();
+        if (_gate.TimedOutCount > 0 && !_gateTimeoutLogged)
+        {
+            _gateTimeoutLogged = true;
+            ErrorLog.Write("Password field check timed out");
+        }
+
+        if (_gate.NextQueryAt is { } at) _focusWorker?.RequestQuery(_gate.Generation, at);
+        _gateTimer.Stop();
+        if (_gate.NextTimeoutAt is { } deadline)
+        {
+            var wait = TimeSpan.FromSeconds((double)(deadline - Stopwatch.GetTimestamp()) / Stopwatch.Frequency);
+            _gateTimer.Interval = wait < TimeSpan.FromMilliseconds(1) ? TimeSpan.FromMilliseconds(1) : wait;
+            _gateTimer.Start();
+        }
+    }
+
+    /// <summary>表示中の文字・キー名を消す。除外中のショートカットの押下状態は残す（§2.3、D4）。</summary>
+    private void ClearKeyDisplayForPassword()
+    {
+        var wasEmpty = _keyModel.IsEmpty;
+        _keyModel.ClearDisplay();
+        _keyTimer.Stop();
+        _overlays?.HideKeyDisplay();
+        if (!wasEmpty) TestTrace.Write("clear");
     }
 
     /// <summary>必要なときだけフックを導入する（SPEC §11.4・§21）。</summary>
@@ -511,9 +633,16 @@ public sealed class AppHost : IDisposable
         }
     }
 
-    private void OnKeyEvent(KeyInput input, IntPtr foreground)
+    private void OnKeyEvent(KeyInput input, IntPtr foreground, long timestamp)
     {
         if (_hook is null) return;
+        if (_gate.IsActive)
+        {
+            // パスワード欄での自動非表示が働いている間は、判定が済むまで保留する（V1.6.0。詳細設計 §2）。
+            _gate.Enqueue(input, timestamp, foreground);
+            PumpGate();
+            return;
+        }
         if (foreground != IntPtr.Zero && !_hook.IsOwnWindow(foreground)) _lastExternalForeground = foreground;
         if (_keyModel.Process(input, Now)) RefreshKeyDisplay();
     }
@@ -524,6 +653,7 @@ public sealed class AppHost : IDisposable
         // 表示先はアクティブウィンドウのモニター。自分のウィンドウなら直前の他アプリのモニター（SPEC §13）。
         var target = _lastExternalForeground != IntPtr.Zero ? _monitors.FromWindow(_lastExternalForeground) : _monitors.Primary;
         _overlays.ShowKeyDisplay(target, _keyModel);
+        TestTrace.Write("show", $"{TestTrace.Map(_keyModel.DisplayText)}\t{TestTrace.MapChord(_keyModel.ChordKeys)}\t{target.DeviceName}");
         ScheduleKeyTimer();
     }
 

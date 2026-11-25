@@ -159,6 +159,8 @@ public sealed class KeyDisplaySettings
     public double TextSeconds { get; set; } = 5.0;
     /// <summary>Enter 後に文字列を残す時間（秒）。</summary>
     public double EnterHoldSeconds { get; set; } = 1.5;
+    /// <summary>パスワード欄（UI Automation の IsPassword）で押したキーを表示しない（V1.6.0）。旧版の設定ファイルには無く、既定値 true になる。</summary>
+    public bool HidePasswordInput { get; set; } = true;
 }
 
 public sealed class ControlPanelSettings

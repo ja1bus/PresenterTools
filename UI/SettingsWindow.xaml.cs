@@ -589,6 +589,7 @@ public partial class SettingsWindow : Window
                 "clickEffect.rightColor" => ClickRightColor,
                 "laser.color" => LaserColor,
                 "pen.color" => PenColor,
+                "pen.highlighterColor" => PenHighlighterColor,
                 SettingsValidator.PenThinWidthField => PenThinWidth,
                 "keyDisplay.textColor" => KeyTextColor,
                 "keyDisplay.backgroundColor" => KeyBackColor,

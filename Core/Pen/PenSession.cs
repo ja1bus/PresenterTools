@@ -46,6 +46,17 @@ public sealed class PenSession
         return same;
     }
 
+    /// <summary>
+    /// 開始（<see cref="Start"/>）の後に入力面を出せなかった: 所有者と保留の状態を開始前に戻す（コードレビュー R4）。
+    /// 世代番号は戻さない（開始前の所有者は自分の世代を持ったまま）。
+    /// </summary>
+    public void RevertStart(PenOwner? previous, bool previousPending)
+    {
+        Owner = previous;
+        IsPending = previous is not null && previousPending;
+        SurfaceShown = false;
+    }
+
     /// <summary>入力面を閉じた。描線が無ければ所有者を解放して true。</summary>
     public bool SurfaceClosed(bool hasLines)
     {

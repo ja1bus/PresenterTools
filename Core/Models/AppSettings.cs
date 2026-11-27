@@ -184,6 +184,8 @@ public sealed class PenSettings
     /// <summary>読み込んだ書き込み先をこの PC で特定できず、選び直しが必要（D3・D9）。</summary>
     public bool TargetReselect { get; set; }
     public string Color { get; set; } = "#FF2020";
+    /// <summary>蛍光マーカーの色（V1.8.0。既定は黄色）。</summary>
+    public string HighlighterColor { get; set; } = "#FFD400";
     public double ThinWidth { get; set; } = 2;
     public double MediumWidth { get; set; } = 4;
     public double ThickWidth { get; set; } = 8;

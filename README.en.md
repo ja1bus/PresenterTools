@@ -13,7 +13,7 @@ This repository contains the source code of the publicly released PresenterTools
 - Laser: draws the cursor trail like a laser pointer while a shortcut is held (or toggled on each press); the trail fades from the end
 - Magnifier: a small window showing the area around the cursor at 200% / 300% / 400%, placed so it does not hide the cursor
 - Key Display: shows typed text and shortcuts (such as `Ctrl+C`) in large letters on the screen (always off at startup)
-- Pen (from 1.7.0): draw freehand on the display you choose in Settings, over any app; right-click for line widths, undo and clear all. The lines stay when you leave the pen so you can keep working as usual (lines are never saved)
+- Pen (from 1.7.0): draw freehand on the display you choose in Settings, over any app; right-click for line widths, undo and clear all. From 1.8.0, right-click also offers a highlighter, an eraser that removes one line at a time, and switching the display you draw on. The lines stay when you leave the pen so you can keep working as usual (lines are never saved)
 - Each feature can be turned on and off on its own, and Master hides them all at once; control them from the control panel, the tray, global shortcuts or (optionally) mouse side buttons
 - Colors, sizes, timings and shortcuts can be changed in Settings, with a live preview of the appearance
 - English and Japanese UI (follows the Windows display language, or can be fixed in Settings)

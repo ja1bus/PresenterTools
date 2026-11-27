@@ -163,6 +163,7 @@ public static class SettingsNormalizer
         if (p.TargetDevicePath.Length == 0 && p.TargetDeviceName.Length == 0 && p.TargetLabel.Length == 0) p.TargetReselect = false;
 
         p.Color = Color(fixes, "pen.color", p.Color, d.Color);
+        p.HighlighterColor = Color(fixes, "pen.highlighterColor", p.HighlighterColor, d.HighlighterColor);
         p.ThinWidth = PenWidthValue(fixes, "pen.thinWidth", p.ThinWidth, d.ThinWidth);
         p.MediumWidth = PenWidthValue(fixes, "pen.mediumWidth", p.MediumWidth, d.MediumWidth);
         p.ThickWidth = PenWidthValue(fixes, "pen.thickWidth", p.ThickWidth, d.ThickWidth);

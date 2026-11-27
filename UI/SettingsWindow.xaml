@@ -363,6 +363,7 @@
                             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock Text="{x:Static l:Strings.SetPenTarget}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenTargetToolTip}" />
                         <DockPanel Grid.Column="1" Grid.ColumnSpan="2">
@@ -396,9 +397,11 @@
                             <ComboBoxItem Tag="{x:Static m:PenWidth.Medium}" Content="{x:Static l:Strings.PenMedium}" />
                             <ComboBoxItem Tag="{x:Static m:PenWidth.Thick}" Content="{x:Static l:Strings.PenThick}" />
                         </ComboBox>
-                        <TextBlock Grid.Row="7" Text="{x:Static l:Strings.SetPenPreview}" Style="{StaticResource Label}" VerticalAlignment="Top" />
-                        <c:PenPreviewBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PenPreview" Height="90" Margin="0,6" />
-                        <TextBlock Grid.Row="8" Grid.ColumnSpan="3" Style="{StaticResource Help}" Text="{x:Static l:Strings.SetPenHelp}" />
+                        <TextBlock Grid.Row="7" Text="{x:Static l:Strings.SetPenHighlighterColor}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenHighlighterColorToolTip}" />
+                        <c:ColorField Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PenHighlighterColor" Color="{Binding Settings.Pen.HighlighterColor}" ToolTip="{x:Static l:Strings.SetPenHighlighterColorToolTip}" />
+                        <TextBlock Grid.Row="8" Text="{x:Static l:Strings.SetPenPreview}" Style="{StaticResource Label}" VerticalAlignment="Top" />
+                        <c:PenPreviewBox Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PenPreview" Height="120" Margin="0,6" />
+                        <TextBlock Grid.Row="9" Grid.ColumnSpan="3" Style="{StaticResource Help}" Text="{x:Static l:Strings.SetPenHelp}" />
                     </Grid>
                 </ScrollViewer>
                 </DockPanel>

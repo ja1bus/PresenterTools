@@ -336,11 +336,19 @@
 <data name="SetPenStartWidth" xml:space="preserve"><value>開始時の太さ</value></data>
 <data name="SetPenStartWidthToolTip" xml:space="preserve"><value>起動時と、この設定を変えて適用したときに使う太さ</value></data>
 <data name="SetPenPreview" xml:space="preserve"><value>見本</value></data>
-<data name="SetPenHelp" xml:space="preserve"><value>書き込み先の画面でドラッグすると描けます。その画面で右クリックすると、太さの選択・一画戻す・全消去ができます。終了は、同じショートカット、操作パネルの Pen のボタン、書き込み先をクリックした後の Esc です。ペンの間は、その画面のホイール・中ボタン・タスクバーは使えません。線は保存されず、アプリを終了すると消えます。</value></data>
+<data name="SetPenHelp" xml:space="preserve"><value>書き込み先の画面でドラッグすると描けます。その画面で右クリックすると、太さ・蛍光マーカー・消しゴムの選択、書き込み先の切り替え、一画戻す・全消去ができます。終了は、同じショートカット、操作パネルの Pen のボタン、書き込み先をクリックした後の Esc です。ペンの間は、その画面のホイール・中ボタン・タスクバーは使えません。線は保存されず、アプリを終了すると消えます。</value></data>
 <data name="PenMenuUndo" xml:space="preserve"><value>一画戻す</value></data>
 <data name="PenMenuClearAll" xml:space="preserve"><value>全消去</value></data>
 <data name="PenMenuClearExit" xml:space="preserve"><value>全消去して通常操作に戻る</value></data>
-<data name="PenMenuLimit" xml:space="preserve"><value>描線の上限に達しました。一画戻すか全消去すると続けて描けます。</value></data>
+<data name="PenMenuLimit" xml:space="preserve"><value>描線の上限に達しました。一画戻す・消しゴム・全消去で線を減らすと続けて描けます。</value></data>
+<data name="PenHighlighter" xml:space="preserve"><value>蛍光マーカー</value></data>
+<data name="PenEraser" xml:space="preserve"><value>消しゴム</value></data>
+<data name="PenMenuTarget" xml:space="preserve"><value>書き込み先</value></data>
+<data name="PenMenuTargetItemFormat" xml:space="preserve"><value>{0}: {1}{2}</value></data>
+<data name="PenSwitchFailedFormat" xml:space="preserve"><value>{0} に切り替えられませんでした。画面の接続を確かめてください</value></data>
+<data name="SetPenHighlighterColor" xml:space="preserve"><value>蛍光マーカーの色</value></data>
+<data name="SetPenHighlighterColorToolTip" xml:space="preserve"><value>半透明で太さが一定の線の色</value></data>
+<data name="ColorNamePenHighlighter" xml:space="preserve"><value>蛍光マーカーの色</value></data>
 <data name="PanelPenToolTip" xml:space="preserve"><value>ペンの開始・終了。同じショートカット・このボタン・Esc（書き込み先をクリックした後）で終了します。書き込み先をクリックする前や、別の窓を操作している間は Esc で終了できません</value></data>
 <data name="PenGuideSettingsOpen" xml:space="preserve"><value>設定画面を閉じてから開始してください</value></data>
 <data name="PenGuideNotSelected" xml:space="preserve"><value>書き込み先を選んでください</value></data>
@@ -348,6 +356,7 @@
 <data name="PenGuideReselect" xml:space="preserve"><value>読み込んだ設定の書き込み先をこの PC で特定できません。ペン タブで選び直してください</value></data>
 <data name="PenGuideUnknown" xml:space="preserve"><value>書き込み先の画面を特定できません。ペン タブで選び直してください</value></data>
 <data name="PenBalloonTitle" xml:space="preserve"><value>PresenterTools: ペン</value></data>
+<data name="StatusPenStartFailed" xml:space="preserve"><value>ペンを開始できませんでした。もう一度お試しください</value></data>
 <data name="StatusPenDiscarded" xml:space="preserve"><value>書き込み先の画面が変わったため、ペンを終了して線を消しました</value></data>
 <data name="NoticeImportPenReselect" xml:space="preserve"><value>ペンの書き込み先がこの PC に見つかりません。ペン タブで選び直してください。</value></data>
 </root>

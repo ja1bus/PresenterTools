@@ -32,6 +32,24 @@ public enum PenOwnerDecision
     Pending,
 }
 
+/// <summary>書き込み先の切り替えの判定の種類（docs/archive/design-1.8.0.md P6）。</summary>
+public enum PenSwitchKind
+{
+    /// <summary>移動元の情報を取得できない（保留。切り替えない）。</summary>
+    SourcePending,
+    /// <summary>移動元が使えなくなった（破棄。切り替えない）。</summary>
+    SourceDiscard,
+    /// <summary>選んだ画面に切り替えられない（<see cref="PenSwitchDecision.Status"/> が理由）。</summary>
+    Failed,
+    /// <summary>今の画面を選んだ。</summary>
+    Same,
+    /// <summary>切り替える。</summary>
+    Go,
+}
+
+/// <summary>切り替えの判定の結果。Go では移動先と移動元（どちらも今回の列挙の記述）を持つ。</summary>
+public sealed record PenSwitchDecision(PenSwitchKind Kind, PenTargetStatus Status = PenTargetStatus.Unknown, DisplayDescriptor? Target = null, DisplayDescriptor? Source = null);
+
 /// <summary>入力面と描線が属する実行中の画面（D11）。設定の書き込み先とは別に持つ。</summary>
 public sealed record PenOwner(DisplayIdentity Identity, string DeviceKey, string DeviceName, RectInt Bounds, double Scale, long Generation)
 {
@@ -119,6 +137,50 @@ public static class PenTargetResolver
 
         // Gdi: GDI 名と配置で識別する（同じ番号・同じ配置の別機器は区別できない。D14 の15）。
         return same.Count == 1 && SamePlacement(owner, same[0]) ? PenOwnerDecision.Keep : PenOwnerDecision.Discard;
+    }
+
+    // ---- 書き込み先の切り替え（V1.8.0。docs/archive/design-1.8.0.md P6） ----
+
+    /// <summary>右クリックのサブメニューに出す画面。列挙が不完全なら空。識別に失敗した画面は出さない。</summary>
+    public static IReadOnlyList<DisplayDescriptor> SwitchCandidates(DisplaySnapshot snapshot) =>
+        !snapshot.ListComplete || snapshot.Placeholder
+            ? []
+            : snapshot.Displays.Where(d => d.Identity != DisplayIdentity.Failed).ToList();
+
+    /// <summary>メニューを開いた時点の記述 <paramref name="chosen"/> を、新しい列挙で探し直す。</summary>
+    public static PenTargetResult FindCurrent(DisplayDescriptor chosen, DisplaySnapshot snapshot)
+    {
+        if (!snapshot.ListComplete || snapshot.Placeholder) return new(PenTargetStatus.Unknown);
+        var matches = chosen.Identity switch
+        {
+            DisplayIdentity.Key => snapshot.Displays.Where(d => d.Identity == DisplayIdentity.Key && d.DeviceKey == chosen.DeviceKey).ToList(),
+            DisplayIdentity.Gdi => snapshot.Displays.Where(d => d.Identity == DisplayIdentity.Gdi
+                && string.Equals(d.DeviceName, chosen.DeviceName, StringComparison.OrdinalIgnoreCase)).ToList(),
+            _ => [],
+        };
+        if (matches.Count == 1) return new(PenTargetStatus.Resolved, matches[0]);
+        if (matches.Count > 1) return new(PenTargetStatus.Ambiguous);
+        return snapshot.HasUnidentified ? new(PenTargetStatus.Unknown) : new(PenTargetStatus.NotConnected);
+    }
+
+    /// <summary>
+    /// 切り替えの判定（P6 の手順 3）。上から順に: 移動元を D11 で比べ（保留・破棄を優先）、選んだ画面を探し、
+    /// 今の画面なら Same、そうでなければ Go。
+    /// </summary>
+    public static PenSwitchDecision DecideSwitch(PenOwner owner, DisplayDescriptor chosen, DisplaySnapshot snapshot)
+    {
+        switch (Compare(owner, snapshot))
+        {
+            case PenOwnerDecision.Pending: return new(PenSwitchKind.SourcePending);
+            case PenOwnerDecision.Discard: return new(PenSwitchKind.SourceDiscard);
+        }
+        var found = FindCurrent(chosen, snapshot);
+        if (!found.IsResolved) return new(PenSwitchKind.Failed, found.Status);
+        var target = found.Display!;
+        if (SameIdentity(owner, target) && SamePlacement(owner, target)) return new(PenSwitchKind.Same, PenTargetStatus.Resolved, target);
+        // 保持の判定なので、所有者と同じ識別の画面はちょうど 1 台ある。
+        var source = snapshot.Displays.First(d => SameIdentity(owner, d));
+        return new(PenSwitchKind.Go, PenTargetStatus.Resolved, target, source);
     }
 
     /// <summary>

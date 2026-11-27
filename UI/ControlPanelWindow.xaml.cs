@@ -71,8 +71,13 @@ public partial class ControlPanelWindow : Window
                 return;
             }
             // 登録失敗の表示などで縦に伸びたとき、作業領域の下へはみ出した分を内側へずらす。
+            // SizeChanged の時点では窓の矩形（GetWindowRect）がまだ前の高さのことがある（V1.8.0 の工程Fで、ペンの案内が
+            // 2 行増えたときに下端がタスクバーの下へ出たまま残った。コードレビュー R5）。配置の更新が終わった後に確かめる。
             if (e.HeightChanged && e.NewSize.Height > e.PreviousSize.Height && _placementReady && IsVisible && _monitors is not null)
-                EnsureOnScreen(_monitors.Monitors);
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
+                {
+                    if (IsVisible && _monitors is not null) EnsureOnScreen(_monitors.Monitors);
+                });
             SchedulePlacementSave();
         };
     }

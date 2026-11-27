@@ -336,11 +336,19 @@ File: {1}</value></data>
   <data name="SetPenStartWidth" xml:space="preserve"><value>Starting width</value></data>
   <data name="SetPenStartWidthToolTip" xml:space="preserve"><value>Used at startup and when you apply a change to this setting</value></data>
   <data name="SetPenPreview" xml:space="preserve"><value>Preview</value></data>
-  <data name="SetPenHelp" xml:space="preserve"><value>Drag on the selected display to draw. Right-click there to change the width, undo, or clear. End the pen with the same shortcut, the Pen button on the control panel, or Esc after clicking the display. While the pen is on, the mouse wheel, the middle button, and the taskbar on that display do not work. Lines are not saved and disappear when the app ends.</value></data>
+  <data name="SetPenHelp" xml:space="preserve"><value>Drag on the selected display to draw. Right-click there to change the width, choose the highlighter or the eraser, switch the display you draw on, undo, or clear. End the pen with the same shortcut, the Pen button on the control panel, or Esc after clicking the display. While the pen is on, the mouse wheel, the middle button, and the taskbar on that display do not work. Lines are not saved and disappear when the app ends.</value></data>
   <data name="PenMenuUndo" xml:space="preserve"><value>Undo</value></data>
   <data name="PenMenuClearAll" xml:space="preserve"><value>Clear all</value></data>
   <data name="PenMenuClearExit" xml:space="preserve"><value>Clear all and exit pen</value></data>
-  <data name="PenMenuLimit" xml:space="preserve"><value>The drawing limit has been reached. Undo or clear all to keep drawing.</value></data>
+  <data name="PenMenuLimit" xml:space="preserve"><value>The drawing limit has been reached. Undo, erase, or clear lines to keep drawing.</value></data>
+  <data name="PenHighlighter" xml:space="preserve"><value>Highlighter</value></data>
+  <data name="PenEraser" xml:space="preserve"><value>Eraser</value></data>
+  <data name="PenMenuTarget" xml:space="preserve"><value>Draw on</value></data>
+  <data name="PenMenuTargetItemFormat" xml:space="preserve"><value>{0}: {1}{2}</value></data>
+  <data name="PenSwitchFailedFormat" xml:space="preserve"><value>Could not switch to {0}. Check that the display is connected.</value></data>
+  <data name="SetPenHighlighterColor" xml:space="preserve"><value>Highlighter color</value></data>
+  <data name="SetPenHighlighterColorToolTip" xml:space="preserve"><value>Translucent line with a fixed width</value></data>
+  <data name="ColorNamePenHighlighter" xml:space="preserve"><value>Highlighter color</value></data>
   <data name="PanelPenToolTip" xml:space="preserve"><value>Start or stop the pen. End it with the same shortcut, this button, or Esc (after clicking the display you draw on). Esc does not work before you click that display or while another window is active.</value></data>
   <data name="PenGuideSettingsOpen" xml:space="preserve"><value>Close the settings window before starting the pen</value></data>
   <data name="PenGuideNotSelected" xml:space="preserve"><value>Select the display to draw on</value></data>
@@ -348,6 +356,7 @@ File: {1}</value></data>
   <data name="PenGuideReselect" xml:space="preserve"><value>The display in the imported settings cannot be found on this PC. Select it again on the Pen tab</value></data>
   <data name="PenGuideUnknown" xml:space="preserve"><value>The display to draw on cannot be identified. Select it again on the Pen tab</value></data>
   <data name="PenBalloonTitle" xml:space="preserve"><value>PresenterTools: Pen</value></data>
+  <data name="StatusPenStartFailed" xml:space="preserve"><value>Could not start the pen. Try again.</value></data>
   <data name="StatusPenDiscarded" xml:space="preserve"><value>The display to draw on changed, so the pen ended and its lines were cleared</value></data>
   <data name="NoticeImportPenReselect" xml:space="preserve"><value> The display for the pen was not found on this PC. Select it again on the Pen tab.</value></data>
 </root>

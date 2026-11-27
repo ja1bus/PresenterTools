@@ -25,6 +25,16 @@ public interface IPenSurfaceSink
     /// <summary>入力面がアクティブになる直前の前面の窓（戻す候補）。</summary>
     void NoteForeground(IntPtr foreground);
     void CaptureFailed();
+    /// <summary>消しゴムを選んでいる（V1.8.0。docs/archive/design-1.8.0.md P8）。</summary>
+    bool IsEraser { get; }
+    /// <summary>消しゴムの間、ボタンを押していない移動。</summary>
+    void Hover(PenSurfaceWindow surface, Point p);
+    /// <summary>消しゴムの間に入力面の外へ出た・非アクティブのままになった。</summary>
+    void HoverEnded(PenSurfaceWindow surface);
+    /// <summary>消しゴムの間の左ボタンの押下。</summary>
+    void EraseAt(PenSurfaceWindow surface, Point p);
+    /// <summary>消しゴムの間に左ボタンを離した。</summary>
+    void EraserReleased(PenSurfaceWindow surface, Point p);
 }
 
 /// <summary>
@@ -38,6 +48,9 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
     private bool _escDown;
     private bool _rightArmed;
     private bool _allowClose;
+    // 最初のマウスのボタンまでアクティブにならない（WS_EX_NOACTIVATE）。作成時の DPI 処理や、前の入力面を閉じた後の
+    // OS の選択で前面になり、クリック前のキー・Esc を受けるのを防ぐ（docs/archive/design-1.8.0.md P6 手順 9。コードレビュー R3）。
+    private bool _activationEnabled;
 
     public PenSurfaceWindow(IPenSurfaceSink sink, RectInt bounds)
     {
@@ -62,14 +75,36 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
         Activated += (_, _) => _sink.SurfaceActivated();
         // 自アプリのクリック透過の窓が一瞬アクティブになり、すぐ返される場合がある（拡大窓が画面をまたいだとき。ClickThroughWindow）。
         // その間は画を続け、返されずに非アクティブのままなら（Alt+Tab 等）そこまでで確定する。
-        Deactivated += (_, _) => Dispatcher.BeginInvoke(DispatcherPriority.Background, () => { if (!IsActive) FinishStroke(); });
+        Deactivated += (_, _) => Dispatcher.BeginInvoke(DispatcherPriority.Background, () =>
+        {
+            if (IsActive) return;
+            FinishStroke();
+            _sink.HoverEnded(this); // 通知先が今の入力面と照合する（古い入力面の遅れた通知で消さない）
+        });
+        MouseLeave += (_, _) => _sink.HoverEnded(this);
         LostMouseCapture += (_, _) => FinishStroke();
     }
 
-    protected override int ExtendedStyle => WS_EX_TOOLWINDOW;
+    protected override int ExtendedStyle => WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
 
-    /// <summary>上限到達中は禁止のカーソルにする（D5）。</summary>
-    public void SetLimitCursor(bool atLimit) => Cursor = atLimit ? Cursors.No : Cursors.Pen;
+    /// <summary>最初のマウスのボタンを受けた（それまでは前面になっても前の窓へ返す。PenController.OnForegroundChanged。R3）。</summary>
+    public bool ActivationEnabled => _activationEnabled;
+
+    /// <summary>最初のマウスのボタンで、アクティブになれるようにする（以後は通常の窓と同じ。Esc で終えられる）。</summary>
+    private void EnableActivation()
+    {
+        if (_activationEnabled) return;
+        _activationEnabled = true;
+        if (Handle == IntPtr.Zero) return;
+        var current = GetWindowLongPtr(Handle, GWL_EXSTYLE).ToInt64();
+        SetWindowLongPtr(Handle, GWL_EXSTYLE, new IntPtr(current & ~(long)WS_EX_NOACTIVATE));
+    }
+
+    /// <summary>道具・上限に応じたカーソル（P4。PenController.UpdateCursor が決める）。</summary>
+    public void SetToolCursor(Cursor cursor)
+    {
+        if (!ReferenceEquals(Cursor, cursor)) Cursor = cursor;
+    }
 
     /// <summary>描いている画をそこまでで確定し、キャプチャを外す（旗で一度だけ）。</summary>
     public void FinishStroke()
@@ -94,6 +129,13 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
         {
             // アクティブになる直前の前面を、終了時に戻す候補として記録する（D4）。応答は既定（MA_ACTIVATE）のまま。
             _sink.NoteForeground(GetForegroundWindow());
+            if (!_activationEnabled)
+            {
+                // 最初のクリック: ここでは OS にアクティブにさせず（WS_EX_NOACTIVATE のままの応答では、スレッドの中だけ
+                // アクティブになり前面が元の窓に残る。工程Fで確認）、押下の処理で前面にする（OnPreviewMouseDown。R3）。
+                handled = true;
+                return new IntPtr(MA_NOACTIVATE);
+            }
         }
         return IntPtr.Zero;
     }
@@ -104,6 +146,11 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
     {
         e.Handled = true;
         if (_sink.IsMenuOpen || _drawing) return;
+        if (_sink.IsEraser)
+        {
+            _sink.EraseAt(this, e.GetPosition(this));
+            return;
+        }
         if (!_sink.CanBeginStroke) return;
         if (!CaptureMouse())
         {
@@ -116,7 +163,12 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
 
     protected override void OnPreviewMouseMove(MouseEventArgs e)
     {
-        if (!_drawing) return;
+        if (!_drawing)
+        {
+            if (_sink.IsEraser && e.LeftButton != MouseButtonState.Pressed && e.RightButton != MouseButtonState.Pressed)
+                _sink.Hover(this, e.GetPosition(this));
+            return;
+        }
         if (e.LeftButton != MouseButtonState.Pressed)
         {
             // 離した通知を取りこぼした（別の窓で離した等）。そこまでで確定する。
@@ -130,6 +182,11 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
     protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
     {
         e.Handled = true;
+        if (!_drawing && _sink.IsEraser)
+        {
+            _sink.EraserReleased(this, e.GetPosition(this));
+            return;
+        }
         FinishStroke();
     }
 
@@ -154,6 +211,14 @@ public sealed class PenSurfaceWindow : PinnedBoundsWindow
 
     protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
     {
+        if (!_activationEnabled)
+        {
+            // 最初のクリック: WS_EX_NOACTIVATE を外して前面にする（クリックを受けた本人のプロセスなので前面にできる。R3）。
+            // アクティブになった後にパネルを上へ置き直す（PenController.SurfaceActivated）。
+            EnableActivation();
+            var ok = SetForegroundWindow(Handle);
+            PresenterTools.Services.TestTrace.Write("pen-surface-activate", ok ? "ok" : "refused");
+        }
         if (e.ChangedButton is MouseButton.Middle or MouseButton.XButton1 or MouseButton.XButton2) e.Handled = true;
         base.OnPreviewMouseDown(e);
     }

@@ -28,6 +28,13 @@ public static class PenDisplayLabel
             Number(d.DeviceName), Name(d), marks, d.Bounds.Width, d.Bounds.Height, percent);
     }
 
+    /// <summary>右クリックの「書き込み先」の項目（V1.8.0）。「番号: 名前（主）（複製）」。解像度・拡大率は出さない。</summary>
+    public static string MenuLabel(DisplayDescriptor d)
+    {
+        var marks = (d.IsPrimary ? Strings.PenPrimaryMark : "") + (d.IsDuplicate ? Strings.PenDuplicateMark : "");
+        return string.Format(CultureInfo.CurrentCulture, Strings.PenMenuTargetItemFormat, Number(d.DeviceName), Name(d), marks);
+    }
+
     /// <summary>未接続のときに出す名前として保存する値（名前、取れなければ番号付きの「ディスプレイ」）。</summary>
     public static string SavedLabel(DisplayDescriptor d) =>
         string.IsNullOrWhiteSpace(d.FriendlyName) ? Strings.PenDisplayName + " " + Number(d.DeviceName) : d.FriendlyName.Trim();

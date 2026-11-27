@@ -61,6 +61,8 @@ public sealed class AppHost : IDisposable, IPenHost
     private string? _penEndReason;
     private string? _penGuide;
     private string? _penNotice;
+    // 切り替えの失敗の案内（SwitchPenTarget の中だけ。直後の再確認の破棄の案内を 2 行目に続ける。コードレビュー R2）。
+    private string? _penSwitchFailNotice;
     private bool _masterWasEnabled;
     /// <summary>起動時の Windows の表示言語（「Windows の表示言語に合わせる」の判定に使う）。</summary>
     private readonly CultureInfo _windowsUiCulture;
@@ -231,9 +233,22 @@ public sealed class AppHost : IDisposable, IPenHost
             ShowPenGuide(status.ToString(), text, fromHotkey);
             return;
         }
+        try
+        {
+            _pen.Activate(target, _overlays);
+        }
+        catch (Exception ex)
+        {
+            // 入力面を出せなかった。ペンは OFF のまま、前の画面の線と所有者は PenController が戻した（コードレビュー R4）。
+            ErrorLog.Write("Pen: could not show the input surface.", ex);
+            TestTrace.Write("pen-guide", "StartFailed");
+            _penNotice = Strings.StatusPenStartFailed;
+            if (fromHotkey) _tray?.ShowBalloon(Strings.PenBalloonTitle, Strings.StatusPenStartFailed, warning: false);
+            RefreshUi();
+            return;
+        }
         _penGuide = null;
         _penNotice = null;
-        _pen.Activate(target, _overlays);
         _state.SetPen(true);
     }
 
@@ -287,17 +302,74 @@ public sealed class AppHost : IDisposable, IPenHost
 
     void IPenHost.NotifyDiscarded()
     {
-        _penNotice = Strings.StatusPenDiscarded;
+        // 切り替えの失敗の案内を出した直後の再確認で捨てた場合は、失敗の文を残して 2 行にする（コードレビュー R2）。
+        _penNotice = _penSwitchFailNotice is { } failed && _penNotice == failed
+            ? failed + "\n" + Strings.StatusPenDiscarded
+            : Strings.StatusPenDiscarded;
         RefreshUi();
     }
 
     void IPenHost.RecheckPen(string trigger) => RecheckPen(trigger);
 
+    DisplaySnapshot IPenHost.CurrentDisplays => _monitors?.Snapshot ?? DisplaySnapshot.Incomplete;
+
+    /// <summary>
+    /// 書き込み先の切り替え（V1.8.0。docs/archive/design-1.8.0.md P6）。選んだ時点で列挙し直して判定し、結果を案内する。
+    /// 設定の書き込み先は変えない。
+    /// </summary>
+    void IPenHost.SwitchPenTarget(DisplayDescriptor chosen)
+    {
+        if (_pen is null || _monitors is null || _overlays is null || IsExiting) return;
+        var snapshot = PenSwitchFault.Apply(_monitors.QuerySnapshot(), chosen, _pen.Owner);
+        var label = PenDisplayLabel.MenuLabel(chosen);
+        var result = _pen.ExecuteSwitch(chosen, snapshot, _overlays);
+        switch (result)
+        {
+            case PenSwitchResult.Ok:
+                _penNotice = null;
+                RefreshUi();
+                UpdateRing(trace: true); // マウスを止めたままでもリングを今の所有者で判定し直す（設計レビュー D8）
+                break;
+            case PenSwitchResult.Failed:
+            case PenSwitchResult.FailedDiscarded:
+            {
+                var text = string.Format(CultureInfo.CurrentCulture, Strings.PenSwitchFailedFormat, label);
+                // 移動元を捨てた場合は既存の破棄の案内を 2 行目に続ける（NotifyDiscarded が先に書いた文を失わない）。
+                var full = result == PenSwitchResult.FailedDiscarded ? text + "\n" + Strings.StatusPenDiscarded : text;
+                _penNotice = full;
+                _tray?.ShowBalloon(Strings.PenBalloonTitle, full, warning: false);
+                RefreshUi();
+                ClearPenGuideIfResolved(snapshot);
+                _penSwitchFailNotice = full;
+                break;
+            }
+        }
+        // 切り替えの間の DPI 通知の再確認は、案内・リングを更新した後に行う（コードレビュー R2）。
+        try
+        {
+            _pen.RunDeferredRecheck();
+        }
+        finally
+        {
+            _penSwitchFailNotice = null;
+        }
+    }
+
+    /// <summary>Cursor Highlight のリングを今のカーソルの位置で出し直す（ApplyState と同じ条件）。</summary>
+    private void UpdateRing(bool trace)
+    {
+        if (_overlays is null) return;
+        var cursor = CursorPosition();
+        var visible = _state.IsCursorHighlightVisible && !_state.IsLaserActive && _pen?.Covers(cursor) != true;
+        _overlays.SetRingVisible(visible, cursor);
+        if (trace) TestTrace.Write("pen-ring", visible ? "shown" : "hidden");
+    }
+
     /// <summary>列挙し直して所有者と比べる（DPI 変更・保留の再試行・Master ON。D11）。窓は作り直さない。</summary>
     private void RecheckPen(string trigger)
     {
         if (_pen?.Owner is null || _monitors is null || _overlays is null || IsExiting) return;
-        var snapshot = _monitors.QuerySnapshot();
+        var snapshot = PenSwitchFault.ApplyRecheck(_monitors.QuerySnapshot(), trigger, _pen.Owner);
         _pen.OnDisplaysChanged(trigger, snapshot, _overlays);
         ClearPenGuideIfResolved(snapshot);
         RefreshUi();
@@ -553,8 +625,7 @@ public sealed class AppHost : IDisposable, IPenHost
         }
         if (!_state.LaserTriggers.HasFlag(LaserTrigger.Keyboard)) _laserHoldKey = 0;
 
-        var cursor = CursorPosition();
-        _overlays.SetRingVisible(_state.IsCursorHighlightVisible && !laserActive && _pen?.Covers(cursor) != true, cursor);
+        UpdateRing(trace: false);
         if (!_state.IsClickEffectVisible) _overlays.HideHold();
 
         if (_state.IsMagnifierVisible) _magnifier.Start();

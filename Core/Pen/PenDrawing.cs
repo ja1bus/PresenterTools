@@ -13,14 +13,27 @@ public sealed class PenStroke
 {
     private readonly List<List<PenPoint>> _parts = [[]];
 
-    public PenStroke(ArgbColor color, double width)
+    public PenStroke(ArgbColor color, double width, PenTool kind = PenTool.Pen, double opacity = 1.0)
     {
         Color = color;
         Width = width;
+        Kind = kind;
+        Opacity = opacity;
     }
 
     public ArgbColor Color { get; }
     public double Width { get; }
+    /// <summary>描いた道具（<see cref="PenTool.Pen"/> か <see cref="PenTool.Highlighter"/>。V1.8.0）。</summary>
+    public PenTool Kind { get; }
+    /// <summary>画全体に掛ける不透明度（蛍光マーカー。通常のペンは 1 で、色のアルファのまま描く）。</summary>
+    public double Opacity { get; }
+
+    /// <summary>確定時の外接矩形（点の座標。線幅は含まない）。確定前は空。</summary>
+    public double MinX { get; private set; }
+    public double MinY { get; private set; }
+    public double MaxX { get; private set; }
+    public double MaxY { get; private set; }
+    public bool HasBounds { get; private set; }
     /// <summary>部分の一覧（描画で毎回複製しないよう内部の一覧をそのまま返す。最後の部分は空のことがある）。</summary>
     public IReadOnlyList<IReadOnlyList<PenPoint>> Parts => _parts;
     public int PointCount { get; private set; }
@@ -41,6 +54,103 @@ public sealed class PenStroke
     {
         if (_parts[^1].Count > 0) _parts.Add([]);
     }
+
+    /// <summary>当たり判定で点を調べる単位（隣の塊と 1 点を共有し、その間の線分も含む）。</summary>
+    private const int ChunkPoints = 32;
+    private readonly record struct Chunk(int Part, int Start, int End, double MinX, double MinY, double MaxX, double MaxY);
+    private List<Chunk>? _chunks;
+
+    internal void ComputeBounds()
+    {
+        _chunks = [];
+        for (var pi = 0; pi < _parts.Count; pi++)
+        {
+            var part = _parts[pi];
+            for (var start = 0; start < part.Count; start += ChunkPoints)
+            {
+                // 線分 [i-1, i] を両方の塊で扱えるよう、前の塊の最後の点から始める。
+                var from = Math.Max(0, start - 1);
+                var to = Math.Min(part.Count, start + ChunkPoints);
+                double cx0 = double.MaxValue, cy0 = double.MaxValue, cx1 = double.MinValue, cy1 = double.MinValue;
+                for (var i = from; i < to; i++)
+                {
+                    var q = part[i];
+                    if (q.X < cx0) cx0 = q.X;
+                    if (q.Y < cy0) cy0 = q.Y;
+                    if (q.X > cx1) cx1 = q.X;
+                    if (q.Y > cy1) cy1 = q.Y;
+                }
+                _chunks.Add(new Chunk(pi, from, to, cx0, cy0, cx1, cy1));
+            }
+        }
+        double minX = double.MaxValue, minY = double.MaxValue, maxX = double.MinValue, maxY = double.MinValue;
+        foreach (var part in _parts)
+            foreach (var p in part)
+            {
+                if (p.X < minX) minX = p.X;
+                if (p.Y < minY) minY = p.Y;
+                if (p.X > maxX) maxX = p.X;
+                if (p.Y > maxY) maxY = p.Y;
+            }
+        HasBounds = PointCount > 0;
+        (MinX, MinY, MaxX, MaxY) = HasBounds ? (minX, minY, maxX, maxY) : (0, 0, 0, 0);
+    }
+
+    /// <summary>点 p が画の線（幅の半分 + margin 以内）に当たるか（P7）。切れ目の間は線分にしない。</summary>
+    public bool Hits(PenPoint p, double margin)
+    {
+        var r = Width / 2 + margin;
+        if (_chunks is null) ComputeBounds();
+        if (p.X < MinX - r || p.X > MaxX + r || p.Y < MinY - r || p.Y > MaxY + r) return false;
+        var r2 = r * r;
+        foreach (var c in _chunks!)
+        {
+            if (p.X < c.MinX - r || p.X > c.MaxX + r || p.Y < c.MinY - r || p.Y > c.MaxY + r) continue;
+            var part = _parts[c.Part];
+            if (part.Count == 1)
+            {
+                if (Dist2(p, part[0]) <= r2) return true;
+                continue;
+            }
+            for (var i = Math.Max(1, c.Start + 1); i < c.End; i++)
+                if (SegmentDist2(p, part[i - 1], part[i]) <= r2) return true;
+        }
+        return false;
+    }
+
+    private static double Dist2(PenPoint a, PenPoint b)
+    {
+        var dx = a.X - b.X;
+        var dy = a.Y - b.Y;
+        return dx * dx + dy * dy;
+    }
+
+    private static double SegmentDist2(PenPoint p, PenPoint a, PenPoint b)
+    {
+        var vx = b.X - a.X;
+        var vy = b.Y - a.Y;
+        var len2 = vx * vx + vy * vy;
+        if (len2 <= 0) return Dist2(p, a);
+        var t = ((p.X - a.X) * vx + (p.Y - a.Y) * vy) / len2;
+        t = Math.Clamp(t, 0, 1);
+        var dx = p.X - (a.X + t * vx);
+        var dy = p.Y - (a.Y + t * vy);
+        return dx * dx + dy * dy;
+    }
+}
+
+/// <summary>切り替えの間に退避した描線（<see cref="PenDrawing.TakeAll"/>。docs/archive/design-1.8.0.md P6 の手順 8）。</summary>
+public sealed class PenDrawingContents
+{
+    internal PenDrawingContents(List<PenStroke> strokes, int totalPoints)
+    {
+        Strokes = strokes;
+        TotalPoints = totalPoints;
+    }
+
+    internal List<PenStroke> Strokes { get; }
+    public int TotalPoints { get; }
+    public int StrokeCount => Strokes.Count;
 }
 
 /// <summary>
@@ -73,11 +183,11 @@ public sealed class PenDrawing
     public bool CurrentHitLimit { get; private set; }
 
     /// <summary>画を始める。上限に達していれば始めず false。</summary>
-    public bool BeginStroke(PenPoint p, ArgbColor color, double width)
+    public bool BeginStroke(PenPoint p, ArgbColor color, double width, PenTool kind = PenTool.Pen, double opacity = 1.0)
     {
         if (Current is not null) EndStroke();
         if (IsAtLimit) return false;
-        Current = new PenStroke(color, width);
+        Current = new PenStroke(color, width, kind, opacity);
         MovesReceived = 0;
         CurrentHitLimit = false;
         _breakPending = false;
@@ -133,8 +243,47 @@ public sealed class PenDrawing
         _breakPending = false;
         if (s is null) return null;
         if (s.PointCount == 0) return null;
+        s.ComputeBounds();
         _strokes.Add(s);
         return s;
+    }
+
+    /// <summary>
+    /// 消しゴムの当たり判定（P7）。確定した画を最後から調べ、最初に当たった画の添字を返す（無ければ -1）。
+    /// 描いている画は対象にしない。
+    /// </summary>
+    public int HitTest(PenPoint p, double margin = PenEraser.HitMargin)
+    {
+        for (var i = _strokes.Count - 1; i >= 0; i--)
+            if (_strokes[i].Hits(p, margin)) return i;
+        return -1;
+    }
+
+    /// <summary>一画を消す（P7）。一覧に無ければ false。点数を引き、上限に達していれば空きが戻る。</summary>
+    public bool Remove(PenStroke stroke)
+    {
+        var i = _strokes.IndexOf(stroke);
+        if (i < 0) return false;
+        _strokes.RemoveAt(i);
+        TotalPoints -= stroke.PointCount;
+        return true;
+    }
+
+    /// <summary>確定した画を取り出して描線を空にする（切り替えの退避。描いている画は確定させる）。</summary>
+    public PenDrawingContents TakeAll()
+    {
+        if (Current is not null) EndStroke();
+        var taken = new PenDrawingContents([.. _strokes], TotalPoints);
+        Clear();
+        return taken;
+    }
+
+    /// <summary><see cref="TakeAll"/> で取り出した描線を戻す（今の描線は捨てる）。</summary>
+    public void Restore(PenDrawingContents contents)
+    {
+        Clear();
+        _strokes.AddRange(contents.Strokes);
+        TotalPoints = contents.TotalPoints;
     }
 
     /// <summary>最後の画を消す。消した画があれば true。</summary>

@@ -40,6 +40,7 @@ public static class SettingsValidator
             problems.Add(new(SettingsSection.Laser, LaserMouseField, Strings.ValidationSameMouseButton));
         // 画面ペン（V1.7.0）。書き込み先の未指定・未接続は問題にしない（開始時に案内する）。
         Color(SettingsSection.Pen, "pen.color", Strings.ColorNamePen, s.Pen.Color);
+        Color(SettingsSection.Pen, "pen.highlighterColor", Strings.ColorNamePenHighlighter, s.Pen.HighlighterColor);
         if (!(s.Pen.ThinWidth < s.Pen.MediumWidth && s.Pen.MediumWidth < s.Pen.ThickWidth))
             problems.Add(new(SettingsSection.Pen, PenThinWidthField, Strings.ValidationPenWidthOrder));
         Color(SettingsSection.KeyDisplay, "keyDisplay.textColor", Strings.ColorNameKeyText, s.KeyDisplay.TextColor);

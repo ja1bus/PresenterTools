@@ -258,7 +258,7 @@
   <data name="RestartPrompt" xml:space="preserve"><value>言語の変更は PresenterTools の再起動後に反映されます。
 
 今すぐ PresenterTools を再起動しますか？</value></data>
-  <data name="RestartPromptStateReset" xml:space="preserve"><value>再起動すると Key Display と Magnifier は OFF になり、描画中の Laser も終わります。</value></data>
+  <data name="RestartPromptStateReset" xml:space="preserve"><value>再起動すると Key Display と Magnifier は OFF になり、描画中の Laser も終わり、ペンの線も消えます。</value></data>
   <data name="RestartFailed" xml:space="preserve"><value>PresenterTools を再起動できませんでした。終了してから起動し直してください。</value></data>
 
   <!-- 未適用の変更・［キャンセル］（V1.5.0。SettingsWindow） -->
@@ -313,4 +313,41 @@
   <data name="NoticeImportCorrected" xml:space="preserve"><value>（範囲外の値などを補正しました）</value></data>
   <data name="TabGeneral" xml:space="preserve"><value>全般</value></data>
   <data name="TabAbout" xml:space="preserve"><value>バージョン情報</value></data>
+<!-- 画面ペン（V1.7.0。docs/screen-pen.md D12） -->
+<data name="TabPen" xml:space="preserve"><value>ペン</value></data>
+<data name="ActionTogglePen" xml:space="preserve"><value>ペンの開始・終了</value></data>
+<data name="ColorNamePen" xml:space="preserve"><value>ペンの色</value></data>
+<data name="ValidationPenWidthOrder" xml:space="preserve"><value>・ペンの太さは 細＜中＜太 にしてください</value></data>
+<data name="SetPenTarget" xml:space="preserve"><value>書き込み先</value></data>
+<data name="SetPenTargetToolTip" xml:space="preserve"><value>ペンで書き込む画面。カーソルを別の画面へ移しても変わりません</value></data>
+<data name="SetPenIdentify" xml:space="preserve"><value>識別</value></data>
+<data name="SetPenIdentifyToolTip" xml:space="preserve"><value>各画面の中央に番号を3秒表示します</value></data>
+<data name="PenTargetNone" xml:space="preserve"><value>自動（内蔵ディスプレイ、なければメイン）</value></data>
+<data name="PenTargetNotConnectedFormat" xml:space="preserve"><value>{0}（接続されていません）</value></data>
+<data name="PenTargetReselectFormat" xml:space="preserve"><value>{0}（選び直してください）</value></data>
+<data name="PenDisplayItemFormat" xml:space="preserve"><value>{0}: {1}{2} {3}×{4} {5}%</value></data>
+<data name="PenDisplayName" xml:space="preserve"><value>ディスプレイ</value></data>
+<data name="PenPrimaryMark" xml:space="preserve"><value>（主）</value></data>
+<data name="PenDuplicateMark" xml:space="preserve"><value>（複製）</value></data>
+<data name="PenThin" xml:space="preserve"><value>細</value></data>
+<data name="PenMedium" xml:space="preserve"><value>中</value></data>
+<data name="PenThick" xml:space="preserve"><value>太</value></data>
+<data name="SetPenWidthToolTip" xml:space="preserve"><value>線の太さ（DIP、1〜40）。細＜中＜太にします</value></data>
+<data name="SetPenStartWidth" xml:space="preserve"><value>開始時の太さ</value></data>
+<data name="SetPenStartWidthToolTip" xml:space="preserve"><value>起動時と、この設定を変えて適用したときに使う太さ</value></data>
+<data name="SetPenPreview" xml:space="preserve"><value>見本</value></data>
+<data name="SetPenHelp" xml:space="preserve"><value>書き込み先の画面でドラッグすると描けます。その画面で右クリックすると、太さの選択・一画戻す・全消去ができます。終了は、同じショートカット、操作パネルの Pen のボタン、書き込み先をクリックした後の Esc です。ペンの間は、その画面のホイール・中ボタン・タスクバーは使えません。線は保存されず、アプリを終了すると消えます。</value></data>
+<data name="PenMenuUndo" xml:space="preserve"><value>一画戻す</value></data>
+<data name="PenMenuClearAll" xml:space="preserve"><value>全消去</value></data>
+<data name="PenMenuClearExit" xml:space="preserve"><value>全消去して通常操作に戻る</value></data>
+<data name="PenMenuLimit" xml:space="preserve"><value>描線の上限に達しました。一画戻すか全消去すると続けて描けます。</value></data>
+<data name="PanelPenToolTip" xml:space="preserve"><value>ペンの開始・終了。同じショートカット・このボタン・Esc（書き込み先をクリックした後）で終了します。書き込み先をクリックする前や、別の窓を操作している間は Esc で終了できません</value></data>
+<data name="PenGuideSettingsOpen" xml:space="preserve"><value>設定画面を閉じてから開始してください</value></data>
+<data name="PenGuideNotSelected" xml:space="preserve"><value>書き込み先を選んでください</value></data>
+<data name="PenGuideNotConnectedFormat" xml:space="preserve"><value>書き込み先 {0} が接続されていません</value></data>
+<data name="PenGuideReselect" xml:space="preserve"><value>読み込んだ設定の書き込み先をこの PC で特定できません。ペン タブで選び直してください</value></data>
+<data name="PenGuideUnknown" xml:space="preserve"><value>書き込み先の画面を特定できません。ペン タブで選び直してください</value></data>
+<data name="PenBalloonTitle" xml:space="preserve"><value>PresenterTools: ペン</value></data>
+<data name="StatusPenDiscarded" xml:space="preserve"><value>書き込み先の画面が変わったため、ペンを終了して線を消しました</value></data>
+<data name="NoticeImportPenReselect" xml:space="preserve"><value>ペンの書き込み先がこの PC に見つかりません。ペン タブで選び直してください。</value></data>
 </root>

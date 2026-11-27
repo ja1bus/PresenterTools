@@ -20,6 +20,8 @@ public sealed class AppSettings
     public LaserSettings Laser { get; set; } = new();
     public MagnifierSettings Magnifier { get; set; } = new();
     public KeyDisplaySettings KeyDisplay { get; set; } = new();
+    /// <summary>画面ペン（V1.7.0）。旧版の設定ファイルには無く、既定値になる。</summary>
+    public PenSettings Pen { get; set; } = new();
     public ControlPanelSettings ControlPanel { get; set; } = new();
 
     /// <summary>JSON の往復で深い複製を作る（Settings 画面の編集用）。</summary>
@@ -60,6 +62,8 @@ public sealed class HotkeySettings
     public string LaserHold { get; set; } = "";
     public string ToggleMagnifier { get; set; } = "";
     public string ToggleKeyDisplay { get; set; } = "";
+    /// <summary>画面ペンの開始・終了（V1.7.0）。</summary>
+    public string TogglePen { get; set; } = "";
     // V1.2 の改訂 3 で Key Display 即時 OFF（keyDisplayOff）を廃止した。古い設定ファイルの値は読み込み時に無視する。
 
     public string Get(HotkeyAction action) => action switch
@@ -72,6 +76,7 @@ public sealed class HotkeySettings
         HotkeyAction.LaserHold => LaserHold,
         HotkeyAction.ToggleMagnifier => ToggleMagnifier,
         HotkeyAction.ToggleKeyDisplay => ToggleKeyDisplay,
+        HotkeyAction.TogglePen => TogglePen,
         _ => throw new ArgumentOutOfRangeException(nameof(action)),
     };
 
@@ -87,6 +92,7 @@ public sealed class HotkeySettings
             case HotkeyAction.LaserHold: LaserHold = value; break;
             case HotkeyAction.ToggleMagnifier: ToggleMagnifier = value; break;
             case HotkeyAction.ToggleKeyDisplay: ToggleKeyDisplay = value; break;
+            case HotkeyAction.TogglePen: TogglePen = value; break;
             default: throw new ArgumentOutOfRangeException(nameof(action));
         }
     }
@@ -161,6 +167,41 @@ public sealed class KeyDisplaySettings
     public double EnterHoldSeconds { get; set; } = 1.5;
     /// <summary>パスワード欄（UI Automation の IsPassword）で押したキーを表示しない（V1.6.0）。旧版の設定ファイルには無く、既定値 true になる。</summary>
     public bool HidePasswordInput { get; set; } = true;
+}
+
+/// <summary>
+/// 画面ペン（V1.7.0。docs/archive/design-1.7.0.md D9）。書き込み先の 4 項目（TargetDevicePath・TargetDeviceName・TargetLabel・TargetReselect）は 1 組で扱う。
+/// 幅は小数・数値の文字列でも設定全体を壊さないよう double で読み、補正で整数にする。
+/// </summary>
+public sealed class PenSettings
+{
+    /// <summary>書き込み先の出力先の識別（ScreenPen.DeviceKey の形式）。空はデバイスパスを取れない環境で選んだか未指定。</summary>
+    public string TargetDevicePath { get; set; } = "";
+    /// <summary>書き込み先の GDI 名（\\.\DISPLAY2 など）。</summary>
+    public string TargetDeviceName { get; set; } = "";
+    /// <summary>未接続のときに一覧へ出す名前（比較には使わない）。</summary>
+    public string TargetLabel { get; set; } = "";
+    /// <summary>読み込んだ書き込み先をこの PC で特定できず、選び直しが必要（D3・D9）。</summary>
+    public bool TargetReselect { get; set; }
+    public string Color { get; set; } = "#FF2020";
+    public double ThinWidth { get; set; } = 2;
+    public double MediumWidth { get; set; } = 4;
+    public double ThickWidth { get; set; } = 8;
+    public PenWidth StartWidth { get; set; } = PenWidth.Medium;
+
+    [JsonIgnore]
+    public bool HasTarget => TargetDevicePath.Length > 0 || TargetDeviceName.Length > 0 || TargetLabel.Length > 0 || TargetReselect;
+
+    public double WidthOf(PenWidth width) => width switch
+    {
+        PenWidth.Thin => ThinWidth,
+        PenWidth.Thick => ThickWidth,
+        _ => MediumWidth,
+    };
+
+    /// <summary>書き込み先の組（表示用の名前を除く）が同じか（D9 の適用時の判定）。</summary>
+    public bool SameTargetAs(PenSettings other) =>
+        TargetDevicePath == other.TargetDevicePath && TargetDeviceName == other.TargetDeviceName && TargetReselect == other.TargetReselect;
 }
 
 public sealed class ControlPanelSettings

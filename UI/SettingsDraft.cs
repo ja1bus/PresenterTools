@@ -113,6 +113,7 @@ public sealed class HotkeyDraft
     public HotkeyEntry LaserHold => this[HotkeyAction.LaserHold];
     public HotkeyEntry ToggleMagnifier => this[HotkeyAction.ToggleMagnifier];
     public HotkeyEntry ToggleKeyDisplay => this[HotkeyAction.ToggleKeyDisplay];
+    public HotkeyEntry TogglePen => this[HotkeyAction.TogglePen];
 
     /// <summary>入力欄の値を指定の設定に置き換える（既定値に戻す操作用）。</summary>
     public void Load(HotkeySettings hotkeys)

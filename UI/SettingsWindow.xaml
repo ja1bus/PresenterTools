@@ -345,6 +345,65 @@
                 </DockPanel>
             </TabItem>
 
+            <!-- 画面ペン（V1.7.0。docs/archive/design-1.7.0.md D9） -->
+            <TabItem Header="{x:Static l:Strings.TabPen}" x:Name="PenTab">
+                <DockPanel>
+                <StackPanel Style="{StaticResource TabFooter}">
+                    <Button Style="{StaticResource RevertButton}" Tag="Pen" Click="OnRevertSection" />
+                    <Button Style="{StaticResource ResetButton}" Tag="Pen" Click="OnResetSection" />
+                </StackPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="130" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{x:Static l:Strings.SetPenTarget}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenTargetToolTip}" />
+                        <DockPanel Grid.Column="1" Grid.ColumnSpan="2">
+                            <Button DockPanel.Dock="Right" x:Name="PenIdentifyButton" Margin="8,3,0,3" Padding="10,0" Content="{x:Static l:Strings.SetPenIdentify}"
+                                    ToolTip="{x:Static l:Strings.SetPenIdentifyToolTip}" Click="OnPenIdentify" />
+                            <ComboBox x:Name="PenTargetBox" HorizontalAlignment="Stretch"
+                                      ToolTip="{x:Static l:Strings.SetPenTargetToolTip}" SelectionChanged="OnPenTargetChanged">
+                                <!-- 長い名前は省略記号で切り、項目のツールチップに全文を出す（D9） -->
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Label}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DockPanel>
+                        <ContentControl Grid.Row="1" Grid.ColumnSpan="3" Margin="0,4,0,0" Content="{Binding Hotkeys.TogglePen}" ContentTemplate="{StaticResource HotkeyRow}" />
+                        <TextBlock Grid.Row="2" Text="{x:Static l:Strings.SetColor}" Style="{StaticResource Label}" />
+                        <c:ColorField Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PenColor" Color="{Binding Settings.Pen.Color}" />
+                        <TextBlock Grid.Row="3" Text="{x:Static l:Strings.PenThin}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenWidthToolTip}" />
+                        <Slider Grid.Row="3" Grid.Column="1" x:Name="PenThinWidth" Minimum="1" Maximum="40" TickFrequency="1" Value="{Binding Settings.Pen.ThinWidth}" ToolTip="{x:Static l:Strings.SetPenWidthToolTip}" />
+                        <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=PenThinWidth}" />
+                        <TextBlock Grid.Row="4" Text="{x:Static l:Strings.PenMedium}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenWidthToolTip}" />
+                        <Slider Grid.Row="4" Grid.Column="1" x:Name="PenMediumWidth" Minimum="1" Maximum="40" TickFrequency="1" Value="{Binding Settings.Pen.MediumWidth}" ToolTip="{x:Static l:Strings.SetPenWidthToolTip}" />
+                        <TextBlock Grid.Row="4" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=PenMediumWidth}" />
+                        <TextBlock Grid.Row="5" Text="{x:Static l:Strings.PenThick}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenWidthToolTip}" />
+                        <Slider Grid.Row="5" Grid.Column="1" x:Name="PenThickWidth" Minimum="1" Maximum="40" TickFrequency="1" Value="{Binding Settings.Pen.ThickWidth}" ToolTip="{x:Static l:Strings.SetPenWidthToolTip}" />
+                        <TextBlock Grid.Row="5" Grid.Column="2" Style="{StaticResource Value}" Text="{Binding Value, ElementName=PenThickWidth}" />
+                        <TextBlock Grid.Row="6" Text="{x:Static l:Strings.SetPenStartWidth}" Style="{StaticResource Label}" ToolTip="{x:Static l:Strings.SetPenStartWidthToolTip}" />
+                        <ComboBox Grid.Row="6" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding Settings.Pen.StartWidth}" ToolTip="{x:Static l:Strings.SetPenStartWidthToolTip}">
+                            <ComboBoxItem Tag="{x:Static m:PenWidth.Thin}" Content="{x:Static l:Strings.PenThin}" />
+                            <ComboBoxItem Tag="{x:Static m:PenWidth.Medium}" Content="{x:Static l:Strings.PenMedium}" />
+                            <ComboBoxItem Tag="{x:Static m:PenWidth.Thick}" Content="{x:Static l:Strings.PenThick}" />
+                        </ComboBox>
+                        <TextBlock Grid.Row="7" Text="{x:Static l:Strings.SetPenPreview}" Style="{StaticResource Label}" VerticalAlignment="Top" />
+                        <c:PenPreviewBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" x:Name="PenPreview" Height="90" Margin="0,6" />
+                        <TextBlock Grid.Row="8" Grid.ColumnSpan="3" Style="{StaticResource Help}" Text="{x:Static l:Strings.SetPenHelp}" />
+                    </Grid>
+                </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
             <!-- Magnifier -->
             <TabItem Header="Magnifier" x:Name="MagnifierTab">
                 <DockPanel>

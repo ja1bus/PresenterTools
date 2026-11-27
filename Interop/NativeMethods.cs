@@ -14,6 +14,8 @@ internal static class NativeMethods
     public const int WM_WINDOWPOSCHANGING = 0x0046;
     public const int WM_NCHITTEST = 0x0084;
     public const int WM_MOUSEACTIVATE = 0x0021;
+    public const int WM_ACTIVATE = 0x0006;
+    public const int WA_INACTIVE = 0;
     public const int WM_EXITSIZEMOVE = 0x0232;
     public const int HTTRANSPARENT = -1;
     public const int HTLEFT = 10;
@@ -278,6 +280,134 @@ internal static class NativeMethods
 
     [DllImport("gdi32.dll", SetLastError = true)]
     public static extern IntPtr CreateDIBSection(IntPtr hdc, ref BITMAPINFOHEADER pbmi, uint usage, out IntPtr ppvBits, IntPtr hSection, uint offset);
+
+    // ---- 画面ペン（V1.7.0。docs/archive/design-1.7.0.md D3・D4） ----
+    public const int MA_ACTIVATE = 1;
+    public const uint QDC_ONLY_ACTIVE_PATHS = 0x00000002;
+    public const int ERROR_SUCCESS = 0;
+    public const int ERROR_INSUFFICIENT_BUFFER = 122;
+    public const int DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME = 1;
+    public const int DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME = 2;
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LUID
+    {
+        public uint LowPart;
+        public int HighPart;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DISPLAYCONFIG_PATH_SOURCE_INFO
+    {
+        public LUID adapterId;
+        public uint id;
+        public uint modeInfoIdx;
+        public uint statusFlags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DISPLAYCONFIG_PATH_TARGET_INFO
+    {
+        public LUID adapterId;
+        public uint id;
+        public uint modeInfoIdx;
+        public uint outputTechnology;
+        public uint rotation;
+        public uint scaling;
+        public uint refreshRateNumerator;
+        public uint refreshRateDenominator;
+        public uint scanLineOrdering;
+        public int targetAvailable;
+        public uint statusFlags;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DISPLAYCONFIG_PATH_INFO
+    {
+        public DISPLAYCONFIG_PATH_SOURCE_INFO sourceInfo;
+        public DISPLAYCONFIG_PATH_TARGET_INFO targetInfo;
+        public uint flags;
+    }
+
+    /// <summary>モード情報（共用体を含めて 64 バイト。中身は使わない）。</summary>
+    [StructLayout(LayoutKind.Sequential, Size = 64)]
+    public struct DISPLAYCONFIG_MODE_INFO
+    {
+        public uint infoType;
+        public uint id;
+        public LUID adapterId;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct DISPLAYCONFIG_DEVICE_INFO_HEADER
+    {
+        public int type;
+        public uint size;
+        public LUID adapterId;
+        public uint id;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct DISPLAYCONFIG_SOURCE_DEVICE_NAME
+    {
+        public DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string viewGdiDeviceName;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct DISPLAYCONFIG_TARGET_DEVICE_NAME
+    {
+        public DISPLAYCONFIG_DEVICE_INFO_HEADER header;
+        public uint flags;
+        public uint outputTechnology;
+        public ushort edidManufactureId;
+        public ushort edidProductCodeId;
+        public uint connectorInstance;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string monitorFriendlyDeviceName;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string monitorDevicePath;
+    }
+
+    [DllImport("user32.dll")]
+    public static extern int GetDisplayConfigBufferSizes(uint flags, out uint numPathArrayElements, out uint numModeInfoArrayElements);
+
+    [DllImport("user32.dll")]
+    public static extern int QueryDisplayConfig(uint flags, ref uint numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] pathArray,
+        ref uint numModeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, IntPtr currentTopologyId);
+
+    [DllImport("user32.dll")]
+    public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_SOURCE_DEVICE_NAME requestPacket);
+
+    [DllImport("user32.dll")]
+    public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_TARGET_DEVICE_NAME requestPacket);
+
+    [DllImport("user32.dll")]
+    public static extern uint GetDpiForSystem();
+
+    public const uint EVENT_SYSTEM_FOREGROUND = 0x0003;
+    public const uint WINEVENT_OUTOFCONTEXT = 0x0000;
+
+    public delegate void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint eventThread, uint eventTime);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc, WinEventProc proc, uint idProcess, uint idThread, uint flags);
+
+    [DllImport("user32.dll")]
+    public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+    [DllImport("user32.dll")]
+    public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetActiveWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    public static extern bool IsWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    public static extern bool IsWindowVisible(IntPtr hWnd);
 
     // ---- 補助 ----
     public static void AddExtendedStyle(IntPtr hwnd, int style)

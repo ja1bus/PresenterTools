@@ -11,6 +11,8 @@ public enum SettingsSection
     Laser,
     Magnifier,
     KeyDisplay,
+    /// <summary>画面ペン（V1.7.0）。画面では Laser の次のタブだが、値は既存の番号を変えないよう末尾。</summary>
+    Pen,
 }
 
 /// <summary>
@@ -44,6 +46,17 @@ public static class SettingsReset
                 break;
             case SettingsSection.KeyDisplay:
                 s.KeyDisplay = new KeyDisplaySettings();
+                break;
+            case SettingsSection.Pen:
+                // 書き込み先は残す（docs/archive/design-1.7.0.md D14 の4）。［すべての設定を初期化］では未指定に戻す。
+                var p = s.Pen;
+                s.Pen = new PenSettings
+                {
+                    TargetDevicePath = p.TargetDevicePath,
+                    TargetDeviceName = p.TargetDeviceName,
+                    TargetLabel = p.TargetLabel,
+                    TargetReselect = p.TargetReselect,
+                };
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(section));
@@ -82,6 +95,9 @@ public static class SettingsReset
             case SettingsSection.KeyDisplay:
                 s.KeyDisplay = o.KeyDisplay;
                 break;
+            case SettingsSection.Pen:
+                s.Pen = o.Pen;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(section));
         }
@@ -97,6 +113,7 @@ public static class SettingsReset
         SettingsSection.Laser => [HotkeyAction.LaserHold, HotkeyAction.ToggleLaser],
         SettingsSection.Magnifier => [HotkeyAction.ToggleMagnifier],
         SettingsSection.KeyDisplay => [HotkeyAction.ToggleKeyDisplay],
+        SettingsSection.Pen => [HotkeyAction.TogglePen],
         _ => throw new ArgumentOutOfRangeException(nameof(section)),
     };
 
@@ -117,5 +134,6 @@ public static class SettingsReset
         s.Laser = d.Laser;
         s.Magnifier = d.Magnifier;
         s.KeyDisplay = d.KeyDisplay;
+        s.Pen = d.Pen;
     }
 }

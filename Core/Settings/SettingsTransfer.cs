@@ -112,8 +112,25 @@ public static class SettingsTransfer
         if (settings is null) return new(null, SettingsImportError.InvalidSettings, [], appVersion);
 
         var corrections = SettingsNormalizer.Normalize(settings);
+        MarkPenTargetForReselect(settings.Pen);
         var exportedAt = root["exportedAt"] is JsonValue e && e.TryGetValue<string>(out var at) ? at : null;
         return new(settings, SettingsImportError.None, corrections, appVersion, ExportedAt: exportedAt);
+    }
+
+    /// <summary>
+    /// インポートでは GDI 名だけの一致を認めない（docs/archive/design-1.7.0.md D3・D9）。デバイスパスが空で GDI 名・名前だけがある書き込み先は、
+    /// パスと GDI 名を空にして名前を残し、選び直しが必要にする（単画面でも自動で使わない）。
+    /// 元から未指定（`pen` が無い旧版のエクスポートを含む）とデバイスパスありは、そのまま読む。
+    /// </summary>
+    internal static void MarkPenTargetForReselect(PenSettings pen)
+    {
+        if (pen.TargetDevicePath.Length > 0 && !pen.TargetReselect) return;
+        if (!pen.HasTarget) return;
+        // 名前が無ければ GDI 名を名前として残す（3 項目とも空だと Normalize が選び直しを false に戻し、保存後に消えるため）。
+        if (pen.TargetLabel.Length == 0) pen.TargetLabel = pen.TargetDeviceName.Length > 0 ? pen.TargetDeviceName : "?";
+        pen.TargetDevicePath = "";
+        pen.TargetDeviceName = "";
+        pen.TargetReselect = true;
     }
 
     private static SettingsImportResult Fail(SettingsImportError error, string? detail = null) => new(null, error, [], null, detail);

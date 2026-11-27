@@ -65,6 +65,16 @@ public enum HotkeyAction
     LaserHold,
     ToggleMagnifier,
     ToggleKeyDisplay,
+    /// <summary>画面ペンの開始・終了（V1.7.0）。登録 ID（(int)action + 1）が既存の操作で変わらないよう末尾に置く。</summary>
+    TogglePen,
+}
+
+/// <summary>画面ペンの線の太さの選択（V1.7.0）。値は細・中・太の設定値を指す。</summary>
+public enum PenWidth
+{
+    Thin = 0,
+    Medium = 1,
+    Thick = 2,
 }
 
 public static class HotkeyActionNames
@@ -82,6 +92,7 @@ public static class HotkeyActionNames
         HotkeyAction.LaserHold => Strings.ActionLaserHold,
         HotkeyAction.ToggleMagnifier => Strings.ActionToggleMagnifier,
         HotkeyAction.ToggleKeyDisplay => Strings.ActionToggleKeyDisplay,
+        HotkeyAction.TogglePen => Strings.ActionTogglePen,
         _ => action.ToString(),
     };
 }

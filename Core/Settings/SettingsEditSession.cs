@@ -84,6 +84,8 @@ public sealed class SettingsEditSession
         if (!includeMouseButtons) i.Magnifier.MouseButton = s.Magnifier.MouseButton;
         s.Magnifier = i.Magnifier;
         s.KeyDisplay = i.KeyDisplay;
+        // 画面ペン（V1.7.0）。書き込み先の扱い（GDI 名だけなら選び直し）は SettingsTransfer.Parse で済んでいる。
+        s.Pen = i.Pen;
         if (includeHotkeys) s.Hotkeys = i.Hotkeys;
         Settings = s;
 
@@ -91,7 +93,7 @@ public sealed class SettingsEditSession
         var node = ToNode(Settings);
         var keep = new HashSet<string> { "enabled", "masterEnabled", "language" };
         if (!includeMouseButtons) keep.Add("mouseButton");
-        foreach (var section in new[] { "general", "cursorHighlight", "clickEffect", "laser", "magnifier", "keyDisplay" })
+        foreach (var section in new[] { "general", "cursorHighlight", "clickEffect", "laser", "magnifier", "keyDisplay", "pen" })
             ForceLeaves(node[section]!.AsObject(), section, keep);
         if (includeHotkeys) ForceLeaves(node["hotkeys"]!.AsObject(), "hotkeys");
     }
@@ -152,7 +154,9 @@ public sealed class SettingsEditSession
     {
         var name = JsonNamingPolicy.CamelCase.ConvertName(section.ToString());
         // 既定値に戻す操作（includeState = false）は ON/OFF と表示言語を変えないので、編集として扱わない。
-        ForceLeaves(ToNode(Settings)[name]!.AsObject(), name, includeState ? null : new HashSet<string> { "enabled", "masterEnabled", "language" });
+        // ペンの書き込み先もタブの既定値に戻す操作では残すため、強制しない（docs/archive/design-1.7.0.md D9）。
+        HashSet<string>? excluded = includeState ? null : ["enabled", "masterEnabled", "language", .. PenTargetKeys];
+        ForceLeaves(ToNode(Settings)[name]!.AsObject(), name, excluded);
         if (includeState && section == SettingsSection.General)
             foreach (var feature in new[] { "cursorHighlight", "clickEffect", "laser" }) _forced.Add(feature + ".enabled");
     }
@@ -163,12 +167,22 @@ public sealed class SettingsEditSession
             if (excluded?.Contains(key) != true) _forced.Add(path + "." + key);
     }
 
+    /// <summary>ペンの書き込み先の組（docs/archive/design-1.7.0.md D3・D9）。1 項目でも反映するときは組ごと反映し、混ざらないようにする。</summary>
+    private static readonly string[] PenTargetKeys = ["targetDevicePath", "targetDeviceName", "targetLabel", "targetReselect"];
+
     private void Merge(JsonObject baseline, JsonObject draft, JsonObject result, string path)
     {
+        var penTarget = path == "pen" && PenTargetKeys.Any(k =>
+            _forced.Contains("pen." + k) || !JsonNode.DeepEquals(baseline[k], draft[k]));
         foreach (var (key, value) in draft)
         {
             if (path.Length == 0 && key is "controlPanel" or "schemaVersion") continue;
             var field = path.Length == 0 ? key : path + "." + key;
+            if (path == "pen" && PenTargetKeys.Contains(key))
+            {
+                if (penTarget) result[key] = value?.DeepClone();
+                continue;
+            }
             if (value is JsonObject child)
                 Merge(baseline[key]!.AsObject(), child, result[key]!.AsObject(), field);
             else if (_forced.Contains(field) || !JsonNode.DeepEquals(baseline[key], value))

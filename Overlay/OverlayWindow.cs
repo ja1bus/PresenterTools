@@ -17,12 +17,28 @@ public sealed class OverlayWindow : ClickThroughWindow
     {
         Monitor = monitor;
         Title = "PresenterTools Overlay";
-        var root = new Grid { IsHitTestVisible = false };
-        root.Children.Add(Clicks);
-        root.Children.Add(Laser);
-        root.Children.Add(KeyDisplay);
-        Content = root;
+        _root.Children.Add(Clicks);
+        _root.Children.Add(_penHost);
+        _root.Children.Add(Laser);
+        _root.Children.Add(KeyDisplay);
+        Content = _root;
         SetBounds(monitor.Bounds);
+        // 拡大率だけの変更は DisplaySettingsChanged が来ないことがあるため、画面ペンの再確認に使う（docs/archive/design-1.7.0.md D11）。
+        DpiChanged += (_, _) => MonitorDpiChanged?.Invoke(this);
+    }
+
+    private readonly Grid _root = new() { IsHitTestVisible = false };
+    // 画面ペンの描線（V1.7.0）。波紋の上・Laser と Key Display の下。
+    private readonly Grid _penHost = new() { IsHitTestVisible = false };
+
+    /// <summary>この窓が WM_DPICHANGED を受けた。</summary>
+    public event Action<OverlayWindow>? MonitorDpiChanged;
+
+    /// <summary>画面ペンの描線を載せる（null で外す）。</summary>
+    public void SetPenLayer(UIElement? layer)
+    {
+        _penHost.Children.Clear();
+        if (layer is not null) _penHost.Children.Add(layer);
     }
 
     public MonitorInfo Monitor { get; }

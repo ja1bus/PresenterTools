@@ -97,6 +97,8 @@ public static class SettingsNormalizer
         kd.TextSeconds = Range(fixes, "keyDisplay.textSeconds", kd.TextSeconds, MinTextSeconds, MaxTextSeconds, d.KeyDisplay.TextSeconds);
         kd.EnterHoldSeconds = Range(fixes, "keyDisplay.enterHoldSeconds", kd.EnterHoldSeconds, MinEnterHoldSeconds, MaxEnterHoldSeconds, d.KeyDisplay.EnterHoldSeconds);
 
+        NormalizePen(s.Pen ??= Fix(fixes, "pen", new PenSettings()), fixes);
+
         var cp = s.ControlPanel;
         cp.Width = Range(fixes, "controlPanel.width", cp.Width, MinPanelWidth, MaxPanelWidth, d.ControlPanel.Width);
         cp.Height = Range(fixes, "controlPanel.height", cp.Height, MinPanelHeight, MaxPanelHeight, d.ControlPanel.Height);
@@ -142,6 +144,54 @@ public static class SettingsNormalizer
             var fallback = Shortcut.TryParse(defaults.Get(action), out var sc) && used.Add(sc) ? sc : Shortcut.None;
             hotkeys.Set(action, fallback.ToString());
         }
+    }
+
+    /// <summary>画面ペン（V1.7.0。docs/archive/design-1.7.0.md D9）。</summary>
+    private static void NormalizePen(PenSettings p, List<string> fixes)
+    {
+        var d = new PenSettings();
+        p.TargetDevicePath = (p.TargetDevicePath ?? "").Trim();
+        p.TargetDeviceName = (p.TargetDeviceName ?? "").Trim();
+        p.TargetLabel = (p.TargetLabel ?? "").Trim();
+        if (p.TargetDevicePath.Length > MaxPenTargetPath || p.TargetDeviceName.Length > MaxPenTargetText || p.TargetLabel.Length > MaxPenTargetText)
+        {
+            fixes.Add("pen.target");
+            p.TargetDevicePath = p.TargetDeviceName = p.TargetLabel = "";
+            p.TargetReselect = false;
+        }
+        // 選び直す対象が無ければ選び直しも要らない（記録しない）。
+        if (p.TargetDevicePath.Length == 0 && p.TargetDeviceName.Length == 0 && p.TargetLabel.Length == 0) p.TargetReselect = false;
+
+        p.Color = Color(fixes, "pen.color", p.Color, d.Color);
+        p.ThinWidth = PenWidthValue(fixes, "pen.thinWidth", p.ThinWidth, d.ThinWidth);
+        p.MediumWidth = PenWidthValue(fixes, "pen.mediumWidth", p.MediumWidth, d.MediumWidth);
+        p.ThickWidth = PenWidthValue(fixes, "pen.thickWidth", p.ThickWidth, d.ThickWidth);
+        if (!(p.ThinWidth < p.MediumWidth && p.MediumWidth < p.ThickWidth))
+        {
+            fixes.Add("pen.widthOrder");
+            p.ThinWidth = d.ThinWidth;
+            p.MediumWidth = d.MediumWidth;
+            p.ThickWidth = d.ThickWidth;
+        }
+        p.StartWidth = EnumValue(fixes, "pen.startWidth", p.StartWidth, d.StartWidth);
+    }
+
+    public const int MinPenWidth = 1, MaxPenWidth = 40;
+    /// <summary>書き込み先の識別の上限（選べる画面のキーの上限と同じ。D3・D9）。</summary>
+    public const int MaxPenTargetPath = 8192;
+    public const int MaxPenTargetText = 512;
+
+    /// <summary>非有限値はその幅だけ既定値、範囲外は丸め、小数は四捨五入（2.5 → 3）。</summary>
+    private static double PenWidthValue(List<string> fixes, string name, double value, double fallback)
+    {
+        if (!double.IsFinite(value))
+        {
+            fixes.Add(name);
+            return fallback;
+        }
+        var rounded = Math.Round(Math.Clamp(value, MinPenWidth, MaxPenWidth), MidpointRounding.AwayFromZero);
+        if (rounded != value) fixes.Add(name);
+        return rounded;
     }
 
     private static T Fix<T>(List<string> fixes, string name, T value)

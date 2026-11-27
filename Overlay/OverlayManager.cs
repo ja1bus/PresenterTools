@@ -82,11 +82,25 @@ public sealed class OverlayManager : IDisposable
         foreach (var m in _monitors.Monitors)
         {
             var o = new OverlayWindow(m);
+            o.MonitorDpiChanged += w => OverlayDpiChanged?.Invoke(w);
             _overlays.Add(o);
             if (_visible) o.Show();
         }
         ApplySettings(_settings);
     }
+
+    /// <summary>いずれかのオーバーレイが WM_DPICHANGED を受けた（V1.7.0。画面ペンの再確認）。</summary>
+    public event Action<OverlayWindow>? OverlayDpiChanged;
+
+    /// <summary>GDI 名と全体領域が一致するモニターのオーバーレイ（V1.7.0。画面ペンの描線を載せる先）。</summary>
+    public OverlayWindow? OverlayFor(string deviceName, RectInt bounds) =>
+        _overlays.FirstOrDefault(o => string.Equals(o.Monitor.DeviceName, deviceName, StringComparison.OrdinalIgnoreCase) && o.Monitor.Bounds == bounds);
+
+    /// <summary>
+    /// 押下中の印を出さない位置（V1.7.0。ペン中の書き込み先。docs/archive/design-1.7.0.md D8）。
+    /// 印の追従・遅延表示の満了の両方で確かめる。
+    /// </summary>
+    public Func<PointInt, bool>? HoldSuppressedAt { get; set; }
 
     /// <summary>Master に合わせて全体を表示・非表示にする。</summary>
     public void SetVisible(bool visible)
@@ -165,7 +179,7 @@ public sealed class OverlayManager : IDisposable
     public void MoveHold(PointInt cursor)
     {
         if (!_holdShown) return;
-        if (!AnyButtonDown())
+        if (!AnyButtonDown() || HoldSuppressedAt?.Invoke(cursor) == true)
         {
             HideHold();
             return;
@@ -192,6 +206,8 @@ public sealed class OverlayManager : IDisposable
             HideHold();
             return;
         }
+        // 別の画面で押し、遅延の間にペンの書き込み先へ移って止まった場合も出さない（docs/archive/design-1.7.0.md D8）。
+        if (HoldSuppressedAt?.Invoke(CursorPosition()) == true) return;
         _hold.SetButton(_leftHeld && _rightHeld ? _lastHeldRight : _rightHeld);
         _hold.MoveTo(CursorPosition(), _monitors.FromPoint(CursorPosition()).DpiScale);
         _holdShown = true;

@@ -50,6 +50,8 @@ public partial class SettingsWindow : Window
         RefreshStatuses();
         LaserPreview.ApplySettings(_draft.Settings.Laser);
         KeyPreview.ApplySettings(_draft.Settings.KeyDisplay);
+        PenPreview.ApplySettings(_draft.Settings.Pen);
+        RebuildPenTargets();
         UpdateDependentControls(_draft.Settings);
         UpdatePending();
         _host.Hotkeys.RegistrationsChanged += OnRegistrationsChanged;
@@ -95,12 +97,94 @@ public partial class SettingsWindow : Window
         SettingsSection.Laser => LaserTab,
         SettingsSection.Magnifier => MagnifierTab,
         SettingsSection.KeyDisplay => KeyDisplayTab,
+        SettingsSection.Pen => PenTab,
         _ => GeneralTab,
     };
 
     private void OnRegistrationsChanged(object? sender, EventArgs e) => RefreshStatuses();
 
-    private void OnDraftChanged(object? sender, PropertyChangedEventArgs e) => SchedulePreview();
+    private void OnDraftChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // 開いたときの値・既定値・読み込み・適用で設定が差し替わったら、書き込み先の選択も読み直す。
+        if (e.PropertyName == nameof(SettingsDraft.Settings)) RebuildPenTargets();
+        SchedulePreview();
+    }
+
+    // ---- 画面ペンの書き込み先（V1.7.0。docs/archive/design-1.7.0.md D9） ----
+
+    /// <summary>書き込み先の一覧の 1 項目。選ぶと 4 項目を組で設定する（選び直しは false）。</summary>
+    private sealed record PenTargetItem(string Label, string DevicePath, string DeviceName, string TargetLabel, bool Reselect)
+    {
+        // 読み上げ・UI Automation の名前に表示名だけを出す（デバイスパスを出さない）。
+        public override string ToString() => Label;
+    }
+
+    private bool _penTargetUpdating;
+
+    /// <summary>モニター構成が変わった（AppHost から。一覧を作り直す）。</summary>
+    public void OnDisplaysChanged()
+    {
+        if (!_closed) RebuildPenTargets();
+    }
+
+    private void RebuildPenTargets()
+    {
+        var pen = _draft.Settings.Pen;
+        var items = new List<PenTargetItem> { new(Strings.PenTargetNone, "", "", "", false) };
+        foreach (var d in _host.QueryDisplays().Displays.Where(d => d.Identity != Core.ScreenPen.DisplayIdentity.Failed))
+            items.Add(new(Core.ScreenPen.PenDisplayLabel.Format(d), d.DeviceKey, d.DeviceName, Core.ScreenPen.PenDisplayLabel.SavedLabel(d), false));
+
+        PenTargetItem selected;
+        if (!pen.HasTarget) selected = items[0];
+        else
+        {
+            var match = pen.TargetReselect ? null : items.Skip(1).FirstOrDefault(i =>
+                pen.TargetDevicePath.Length > 0
+                    ? string.Equals(i.DevicePath, pen.TargetDevicePath, StringComparison.Ordinal)
+                    : i.DevicePath.Length == 0 && string.Equals(i.DeviceName, pen.TargetDeviceName, StringComparison.OrdinalIgnoreCase));
+            if (match is not null) selected = match;
+            else
+            {
+                // 保存した画面が未接続・選び直しが必要なら、その状態を選択中の項目として出す（値は保つ）。
+                var name = Core.ScreenPen.PenDisplayLabel.Saved(pen);
+                selected = new(string.Format(pen.TargetReselect ? Strings.PenTargetReselectFormat : Strings.PenTargetNotConnectedFormat, name),
+                    pen.TargetDevicePath, pen.TargetDeviceName, pen.TargetLabel, pen.TargetReselect);
+                items.Insert(1, selected);
+            }
+        }
+        _penTargetUpdating = true;
+        try
+        {
+            PenTargetBox.ItemsSource = items;
+            PenTargetBox.SelectedItem = selected;
+        }
+        finally
+        {
+            _penTargetUpdating = false;
+        }
+        UpdatePenTargetToolTip();
+    }
+
+    /// <summary>選択欄では長い名前が省略記号で切れるため、ツールチップの先頭に選択中の項目の全文を出す（D9）。</summary>
+    private void UpdatePenTargetToolTip() =>
+        PenTargetBox.ToolTip = PenTargetBox.SelectedItem is PenTargetItem item
+            ? item.Label + Environment.NewLine + Strings.SetPenTargetToolTip
+            : Strings.SetPenTargetToolTip;
+
+    private void OnPenTargetChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_penTargetUpdating || PenTargetBox.SelectedItem is not PenTargetItem item) return;
+        UpdatePenTargetToolTip();
+        var pen = _draft.Settings.Pen;
+        pen.TargetDevicePath = item.DevicePath;
+        pen.TargetDeviceName = item.DeviceName;
+        pen.TargetLabel = item.TargetLabel;
+        pen.TargetReselect = item.Reselect;
+        SchedulePreview();
+    }
+
+    private void OnPenIdentify(object sender, RoutedEventArgs e) =>
+        Overlay.IdentifyWindow.ShowAll(_host.QueryDisplays().Displays.Select(d => (d.Bounds, Core.ScreenPen.PenDisplayLabel.Number(d.DeviceName))));
 
     // 操作パネル・ショートカットで ON/OFF を変えたときも、未適用の変更の表示を見直す。
     private void OnStateChanged(object? sender, StateChangedEventArgs e) => SchedulePreview();
@@ -121,6 +205,7 @@ public partial class SettingsWindow : Window
             _host.PreviewAppearance(pending);
             LaserPreview.ApplySettings(_draft.Settings.Laser);
             KeyPreview.ApplySettings(_draft.Settings.KeyDisplay);
+            PenPreview.ApplySettings(_draft.Settings.Pen);
             UpdateDependentControls(pending);
             UpdatePending();
         });
@@ -231,8 +316,8 @@ public partial class SettingsWindow : Window
     }
 
     /// <summary>戻した・読み込んだ内容はまだ確定していないことを示す。</summary>
-    private void ShowNotice(string what) =>
-        NoticeText.Text = string.Format(Strings.NoticeNotAppliedFormat, what);
+    private void ShowNotice(string what, string after = "") =>
+        NoticeText.Text = string.Format(Strings.NoticeNotAppliedFormat, what) + after;
 
     // ---- 設定の管理（V1.5.0。SPEC §10.2・§17.2） ----
 
@@ -324,7 +409,10 @@ public partial class SettingsWindow : Window
         _draft.Import(result.Settings, options.IncludeHotkeys, options.IncludeMouseButtons);
         var notice = string.Format(Strings.NoticeImportedFormat, Path.GetFileName(path));
         if (result.Corrections.Count > 0) notice += Strings.NoticeImportCorrected;
-        ShowNotice(notice);
+        // 読み込んだ書き込み先がこの PC の画面に一致しなければ選び直しを促す（D9）。「（まだ適用していません）。」の後に続ける。
+        var penTarget = Core.ScreenPen.PenTargetResolver.Resolve(result.Settings.Pen, _host.QueryDisplays()).Status;
+        var reselect = result.Settings.Pen.HasTarget && penTarget is Core.ScreenPen.PenTargetStatus.NotConnected or Core.ScreenPen.PenTargetStatus.Reselect;
+        ShowNotice(notice, reselect ? Strings.NoticeImportPenReselect : "");
     }
 
     private void ShowImportError(string path, string reason) =>
@@ -500,6 +588,8 @@ public partial class SettingsWindow : Window
                 "clickEffect.leftColor" => ClickLeftColor,
                 "clickEffect.rightColor" => ClickRightColor,
                 "laser.color" => LaserColor,
+                "pen.color" => PenColor,
+                SettingsValidator.PenThinWidthField => PenThinWidth,
                 "keyDisplay.textColor" => KeyTextColor,
                 "keyDisplay.backgroundColor" => KeyBackColor,
                 SettingsValidator.LaserMouseField => LaserMouseBox,
@@ -510,7 +600,7 @@ public partial class SettingsWindow : Window
             if (target is null) return;
             target.BringIntoView();
             if (target is ColorField color) color.FocusInput();
-            else if (target is ComboBox) target.Focus();
+            else if (target is ComboBox or Slider) target.Focus();
         });
     }
 

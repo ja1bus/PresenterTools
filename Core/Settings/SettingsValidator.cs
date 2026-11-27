@@ -16,6 +16,7 @@ public static class SettingsValidator
 {
     public const string LaserMouseField = "laser.mouseButton";
     public const string MagnifierMouseField = "magnifier.mouseButton";
+    public const string PenThinWidthField = "pen.thinWidth";
 
     /// <summary>問題を画面の上から順に返す。問題が無ければ空。</summary>
     public static IReadOnlyList<SettingsProblem> Validate(AppSettings s)
@@ -37,6 +38,10 @@ public static class SettingsValidator
         Color(SettingsSection.Laser, "laser.color", Strings.ColorNameLaser, s.Laser.Color);
         if (HasSameMouseButton(s))
             problems.Add(new(SettingsSection.Laser, LaserMouseField, Strings.ValidationSameMouseButton));
+        // 画面ペン（V1.7.0）。書き込み先の未指定・未接続は問題にしない（開始時に案内する）。
+        Color(SettingsSection.Pen, "pen.color", Strings.ColorNamePen, s.Pen.Color);
+        if (!(s.Pen.ThinWidth < s.Pen.MediumWidth && s.Pen.MediumWidth < s.Pen.ThickWidth))
+            problems.Add(new(SettingsSection.Pen, PenThinWidthField, Strings.ValidationPenWidthOrder));
         Color(SettingsSection.KeyDisplay, "keyDisplay.textColor", Strings.ColorNameKeyText, s.KeyDisplay.TextColor);
         Color(SettingsSection.KeyDisplay, "keyDisplay.backgroundColor", Strings.ColorNameKeyBackground, s.KeyDisplay.BackgroundColor);
         return problems;
@@ -61,6 +66,7 @@ public static class SettingsValidator
         HotkeyAction.ToggleLaser or HotkeyAction.LaserHold => SettingsSection.Laser,
         HotkeyAction.ToggleMagnifier => SettingsSection.Magnifier,
         HotkeyAction.ToggleKeyDisplay => SettingsSection.KeyDisplay,
+        HotkeyAction.TogglePen => SettingsSection.Pen,
         _ => SettingsSection.General,
     };
 }

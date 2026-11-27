@@ -39,6 +39,7 @@ public partial class ControlPanelWindow : Window
         HotkeyAction.ToggleClickEffect,
         HotkeyAction.ToggleLaser,
         HotkeyAction.LaserHold,
+        HotkeyAction.TogglePen,
         HotkeyAction.ToggleMagnifier,
         HotkeyAction.ToggleKeyDisplay,
     ];
@@ -132,6 +133,13 @@ public partial class ControlPanelWindow : Window
         // Laser が ON でも描く操作が 1 つも無ければ描けないので、設定へ案内する（V1.5.0）。
         LaserSetupNotice.Visibility = s.LaserEnabled && !SettingsValidator.HasLaserTrigger(settings) ? Visibility.Visible : Visibility.Collapsed;
 
+        // 画面ペン（V1.7.0。docs/archive/design-1.7.0.md D10）。設定画面が開いている間は薄くする（D2）。
+        var penOn = s.PenActive && master;
+        SetButton(PenButton, OnOff(penOn, master), penOn ? ActiveBrush : OffBrush, !master || _host.IsSettingsOpen);
+        var guide = master ? _host.PenGuideText : null;
+        PenGuideRun.Text = guide ?? "";
+        PenGuideNotice.Visibility = guide is null ? Visibility.Collapsed : Visibility.Visible;
+
         var zoom = settings.Magnifier.ZoomPercent;
         SetButton(MagnifierButton, s.MagnifierEnabled ? $"ON  {zoom}%" + (master ? "" : "  (Master OFF)") : OnOff(false, master),
             s.MagnifierEnabled ? OnBrush : OffBrush, !master);
@@ -143,7 +151,9 @@ public partial class ControlPanelWindow : Window
         SetButton(KeyDisplayButton, OnOff(keyOn, master), keyOn ? OnBrush : OffBrush, !master);
 
         PinButton.IsChecked = settings.General.AlwaysOnTop;
-        Topmost = settings.General.AlwaysOnTop;
+        // ペン中は入力面の上に出す（保存するピン設定とは別。D4）。
+        Topmost = settings.General.AlwaysOnTop || _host.IsPenSurfaceShown;
+        if (_host.IsPenSurfaceShown) RaiseAbovePen();
 
         StatusText.Text = status ?? "";
         StatusText.Visibility = string.IsNullOrEmpty(status) ? Visibility.Collapsed : Visibility.Visible;
@@ -167,6 +177,7 @@ public partial class ControlPanelWindow : Window
         SetHint(PointerHint, hints, isFailed, HotkeyAction.ToggleCursorHighlight);
         SetHint(ClickHint, hints, isFailed, HotkeyAction.ToggleClickEffect);
         SetHint(LaserHint, hints, isFailed, HotkeyAction.ToggleLaser, (HotkeyAction.LaserHold, Strings.PanelDrawPrefix));
+        SetHint(PenHint, hints, isFailed, HotkeyAction.TogglePen);
         SetHint(MagnifierHint, hints, isFailed, HotkeyAction.ToggleMagnifier);
         SetHint(KeyDisplayHint, hints, isFailed, HotkeyAction.ToggleKeyDisplay);
 
@@ -178,6 +189,8 @@ public partial class ControlPanelWindow : Window
         LaserButton.ToolTip = Tip(toggle ? Strings.PanelLaserToolTipToggle : Strings.PanelLaserToolTipHold,
             ("ON/OFF", HotkeyAction.ToggleLaser),
             (toggle ? Strings.PanelLaserDrawToggle : Strings.PanelLaserDrawHold, HotkeyAction.LaserHold));
+        PenButton.ToolTip = Tip(_host.IsSettingsOpen ? Strings.PenGuideSettingsOpen + Environment.NewLine + Strings.PanelPenToolTip : Strings.PanelPenToolTip,
+            (shortcut, HotkeyAction.TogglePen));
         MagnifierButton.ToolTip = Tip(Strings.PanelMagnifierToolTip, (shortcut, HotkeyAction.ToggleMagnifier));
         KeyDisplayButton.ToolTip = Tip(Strings.PanelKeyDisplayToolTip, (shortcut, HotkeyAction.ToggleKeyDisplay));
     }
@@ -299,6 +312,14 @@ public partial class ControlPanelWindow : Window
         _saveTimer.Start();
     }
 
+    /// <summary>ペン中、パネルを入力面の上へ置き直す（前面は奪わない。D4）。</summary>
+    public void RaiseAbovePen()
+    {
+        var handle = new WindowInteropHelper(this).Handle;
+        if (handle == IntPtr.Zero || !IsVisible) return;
+        SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+    }
+
     private static string OnOff(bool on, bool master) => (on ? "ON" : "OFF") + (master ? "" : "  (Master OFF)");
 
     private static void SetButton(Button b, string text, Brush background, bool dim)
@@ -324,6 +345,8 @@ public partial class ControlPanelWindow : Window
     private void OnPinClick(object sender, RoutedEventArgs e) => _host.SetAlwaysOnTop(PinButton.IsChecked == true);
     private void OnSettingsClick(object sender, RoutedEventArgs e) => _host.ShowSettings();
 
+    private void OnPenClick(object sender, RoutedEventArgs e) => _host.TogglePen(fromHotkey: false);
+    private void OnPenGuideClick(object sender, RoutedEventArgs e) => _host.ShowSettings(SettingsSection.Pen);
     private void OnLaserSetupClick(object sender, RoutedEventArgs e) => _host.ShowSettings(SettingsSection.Laser);
     private void OnExitClick(object sender, RoutedEventArgs e) => _host.Exit();
 

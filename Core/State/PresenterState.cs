@@ -38,6 +38,7 @@ public sealed class PresenterState
     private bool _magnifier;
     private KeyDisplayMode _keyDisplayMode = KeyDisplayMode.Off;
     private LaserTrigger _laserTriggers;
+    private bool _pen;
 
     /// <summary>いずれかの状態が変わったときに発生する。</summary>
     public event EventHandler<StateChangedEventArgs>? Changed;
@@ -56,6 +57,10 @@ public sealed class PresenterState
     public bool IsLaserActive => IsLaserReady && _laserTriggers != LaserTrigger.None;
     public bool IsMagnifierVisible => _master && _magnifier;
     public KeyDisplayMode EffectiveKeyDisplayMode => _master ? _keyDisplayMode : KeyDisplayMode.Off;
+
+    /// <summary>画面ペンのモード（V1.7.0。保存しない・起動時 OFF。docs/archive/design-1.7.0.md D2）。</summary>
+    public bool PenActive => _pen;
+    public bool IsPenActive => _master && _pen;
 
     public LaserStatus LaserStatus => !IsLaserReady ? LaserStatus.Off : IsLaserActive ? LaserStatus.Active : LaserStatus.Ready;
 
@@ -83,11 +88,29 @@ public sealed class PresenterState
     {
         if (_master == on) return;
         _master = on;
-        if (!on) _laserTriggers = LaserTrigger.None;
+        if (!on)
+        {
+            _laserTriggers = LaserTrigger.None;
+            // Master OFF で入力を解放する。ON に戻してもペンには戻らない（線だけ再び見える）。
+            _pen = false;
+        }
         OnChanged();
     }
 
     public void ToggleMaster() => SetMaster(!_master);
+
+    /// <summary>
+    /// ペンモードの開始・終了。開始できるか（書き込み先・設定画面）は呼び出し側（AppHost.TryStartPen）で判断する。
+    /// Master OFF の間は開始しない。開始すると Laser の ACTIVE を終える（Laser の ON/OFF は変えない）。
+    /// </summary>
+    public void SetPen(bool on)
+    {
+        if (on && !_master) return;
+        if (_pen == on) return;
+        _pen = on;
+        if (on) _laserTriggers = LaserTrigger.None;
+        OnChanged(persistSettings: false);
+    }
 
     public void SetCursorHighlight(bool on) => Set(ref _cursorHighlight, on);
     public void SetClickEffect(bool on) => Set(ref _clickEffect, on);
@@ -123,7 +146,8 @@ public sealed class PresenterState
     /// <summary>トリガー押下。Laser が READY でなければ無視して false。</summary>
     public bool BeginLaser(LaserTrigger trigger)
     {
-        if (!IsLaserReady || trigger == LaserTrigger.None) return false;
+        // ペン中はトリガーで描かない（docs/archive/design-1.7.0.md D2）。
+        if (!IsLaserReady || trigger == LaserTrigger.None || _pen) return false;
         if (_laserTriggers.HasFlag(trigger)) return true;
         var wasActive = IsLaserActive;
         _laserTriggers |= trigger;
@@ -147,7 +171,7 @@ public sealed class PresenterState
     public void ToggleLaserDrawing(LaserTrigger trigger)
     {
         if (IsLaserActive) EndAllLaser();
-        else BeginLaser(trigger);
+        else if (!_pen) BeginLaser(trigger);
     }
 
     /// <summary>すべてのトリガーを離したことにして ACTIVE を終える。</summary>
